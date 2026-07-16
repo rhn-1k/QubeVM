@@ -15,6 +15,9 @@ Emulates a full virtual machine (CPU, RAM, disk, display, sound, network) on And
 
 QubeVM currently runs on **QEMU 7.2.22**, built natively from the source for Android as a `.so` library, no third-party wrapper is used
 
+> [!NOTE]
+> QubeVM includes links to legally distributable operating systems only. Any other disk images, ISOs, or software run inside the app are the user's own responsibility.
+
 ## Supported CPU Architecture
 
 x86 / x86_64 for now, planning to support more in the future
@@ -70,4 +73,5 @@ Contributions from translators are welcome. Feel free to open a pull request to 
 [translation/](translation/)
 
 ## Credits
+
 QubeVM is a forked version of the <a href="https://github.com/limboemu/limbo">Limbo PC Emulator</a>

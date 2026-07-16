@@ -44,15 +44,13 @@ Qube supports two display modes:
 
 ## Screenshots
 
-<p align="center">
-  <img src="assets/1.jpg" alt="KolibriOS runs on Qube" width="250"/>
-  <img src="assets/2.jpg" alt="KolibriOS runs with network access (User type)" width="250"/>
-  <img src="assets/3.jpg" alt="KolibriOS runs glxgears" width="250"/>
-</p>
+| KolibriOS runs on Qube |
+|:---:|
+| <img src="assets/1.jpg" width="500"/> |
 
-<p align="center">
-  <sub>KolibriOS runs on Qube &nbsp;&nbsp;|&nbsp;&nbsp; KolibriOS runs with network access &nbsp;&nbsp;|&nbsp;&nbsp; KolibriOS runs glxgears</sub>
-</p>
+| KolibriOS runs with network access | KolibriOS runs glxgears |
+|:---:|:---:|
+| <img src="assets/2.jpg" width="250"/> | <img src="assets/3.jpg" width="250"/> |
 
 ## Network Support
 

@@ -57,7 +57,6 @@
     <string name="input_mode_dpad_pan_touchpad_mouse">Touch Mouse; D-Pad Pan</string>
     <string name="input_mode_touch_pan_zoom_mouse">Touch Mouse Pan and Zoom</string>
     <string name="input_mode_touchpad">トラックパッド</string>
-    <string name="keep_password_button">保持</string>
     <string name="intro_dont_show">今後表示しない</string>
     <string name="keys_caption">Keys</string>
     <string name="list_caption">List</string>
@@ -72,7 +71,6 @@
     <string name="one_to_one">標準 (1:1)</string>
     <string name="open_doc">説明書/Wiki</string>
     <string name="pan_follow_mouse">Pan Follows Mouse</string>
-    <string name="password_caption">パスワード</string>
     <string name="port_caption">ポート</string>
     <string name="repeater_button">リピーター</string>
     <string name="repeater_caption">Enter the repeater address &lt;b&gt;only if&lt;/b&gt; you are using an&lt;br&gt;&lt;i&gt;UltraVNC&lt;/i&gt;-type repeater</string>

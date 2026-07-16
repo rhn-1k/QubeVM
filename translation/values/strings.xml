@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">QubeVM Emulator</string>
+    <string name="app_name">QubeVM</string>
     <string name="app_short_name">Qube</string>
     <string name="address_caption">Address</string>
     <string name="alt_check">Alt</string>
@@ -57,7 +57,6 @@
     <string name="input_mode_dpad_pan_touchpad_mouse">Touch Mouse; D-Pad Pan</string>
     <string name="input_mode_touch_pan_zoom_mouse">Touch Mouse Pan and Zoom</string>
     <string name="input_mode_touchpad">Touchpad</string>
-    <string name="keep_password_button">Keep</string>
     <string name="intro_dont_show">Don\'t show again</string>
     <string name="keys_caption">Keys</string>
     <string name="list_caption">List</string>
@@ -72,7 +71,6 @@
     <string name="one_to_one">Normal (1:1)</string>
     <string name="open_doc">Manual/Wiki</string>
     <string name="pan_follow_mouse">Pan Follows Mouse</string>
-    <string name="password_caption">Password</string>
     <string name="port_caption">Port</string>
     <string name="repeater_button">Repeater</string>
     <string name="repeater_caption">Enter the repeater address &lt;b&gt;only if&lt;/b&gt; you are using an&lt;br&gt;&lt;i&gt;UltraVNC&lt;/i&gt;-type repeater</string>
@@ -131,8 +129,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="Running">Running</string>
     <string name="Suspended">Suspended</string>
     <string name="Stopped">Stopped</string>
-    <string name="savingState">Saving State</string>
-    <string name="paused">Paused</string>
     <string name="orientation">Orientation</string>
     <string name="keyboard">Keyboard</string>
     <string name="toolbarOn">Toolbar On</string>
@@ -146,7 +142,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="advancedTools">Advanced Tools</string>
     <string name="linksInstructions">Get Full Qwerty Keyboard, Download Manager for ISO and virtual disks images, SSH/FTP Client for network connection</string>
     <string name="discardVMState">Discard VM State</string>
-    <string name="discardVMInstructions">The VM is Paused. If you discard the state you might lose data. Continue?</string>
     <string name="tapUserId">TAP User Id</string>
     <string name="tapNotSupportInstructions">\"Your device doesn\'t support TAP, use \'User\' network mode instead \"</string>
     <string name="network">Network</string>
@@ -154,13 +149,11 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="faq">FAQ</string>
     <string name="open">Open</string>
     <string name="enableMTTCG">Enable MTTCG</string>
-    <string name="enableMTTCGWarning">Warning! Enabling MTTCG under Qube is not fully tested. \nYou need to have an Android Devices with multi core CPU. If you don\'t know what this is press Cancel.\n\nIf you experience app crashing or freezing disable this option. Do you want to continue?</string>
+    <string name="enableMTTCGWarning">Enabling MTTCG requires a phone with multi cores cpu.\If you don\'t know what this is press Cancel.\n\nIf you experience app crashing or freezing disable this option. Do you want to continue?</string>
     <string name="mttcgHelp">Help</string>
     <string name="failToCreateMachineDirError">Could not create internal machine directory</string>
     <string name="externalVNCWarning">VNC connections are Unencrypted therefore NOT secure. Make sure you\'re on a trusted network!\n</string>
-    <string name="Password">Password</string>
-    <string name="passwordCannotBeEmpty">Password cannot be empty!</string>
-    <string name="qmpExternalWarning">Warning: Allowing QMP to serve external connections is NOT Recommended! QMP connections are Passwordless and Unencrypted therefore NOT secure. Make sure you\'re on a private network and you trust other apps installed in your device!\n</string>
+    <string name="qmpExternalWarning">Warning: Allowing QMP to serve external connections is NOT Recommended! QMP connections are Unencrypted therefore NOT secure. Make sure you\'re on a private network and you trust other apps installed in your device!\n</string>
     <string name="Continue">Continue</string>
     <string name="chooseDirToCreateImage">Choose a directory to create your image</string>
     <string name="ImageCreated">Image Created</string>
@@ -171,19 +164,18 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="Enable">Enable</string>
     <string name="ImportMachines">Import Machines</string>
     <string name="DeleteVM">Delete VM</string>
-    <string name="deleteVMWarning">Delete VM? Only machine definition and state will be deleted, disk images files will not be deleted</string>
+    <string name="deleteVMWarning">Delete VM? you will lose the machine configuration only, disk images files will not be deleted</string>
     <string name="NoMachineSelected">No Machine selected</string>
     <string name="multipleVCPU">Multiple vCPUs</string>
     <string name="multipleVCPUWarning">Warning! Setting Multiple Virtual CPUs will NOT result in additional performance unless you use KVM or MTTCG. Your device might even be slow or the Guest OS might hang so it is advised to use 1 CPU. \n\n</string>
     <string name="disableTSCInstructions">If your guest OS is not able to boot check option \'Disable TSC\' and restart the VM.</string>
     <string name="DoYouWantToContinue">Do you want to continue?</string>
-    <string name="vCPUHelp">vCPU Help</string>
+    <string name="vCPUHelp">Help</string>
     <string name="Auto">Auto</string>
     <string name="Landscape">Landscape</string>
     <string name="LandscapeReverse">Landscape Reverse</string>
     <string name="Portrait">Portrait</string>
     <string name="PortraitReverse">Portrait Reverse</string>
-    <string name="PleaseWaitSavingVM">Please wait while saving VM State</string>
     <string name="DefaultRefreshRate">Default Refresh Rate</string>
     <string name="IdleRefreshRate">Idle Refresh Rate</string>
     <string name="importMachines">Import Machines</string>
@@ -207,7 +199,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="CreateMachine">Create machine</string>
     <string name="DeleteMachine">Delete Machine</string>
     <string name="Settings">Settings</string>
-    <string name="DiscardSavedState">Discard Saved State</string>
     <string name="ExportMachines">Export Machines</string>
     <string name="ViewLog">View Log</string>
     <string name="Changelog">Changelog</string>
@@ -215,14 +206,14 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="Exit">Exit</string>
     <string name="TapDeviceFound">TAP Device found</string>
     <string name="tunDeviceWarning">Warning! Make sure device /dev/net/tun has appropriate permissions\nUser ID</string>
-    <string name="TAPHelp">TAP Help</string>
+    <string name="TAPHelp">Help</string>
     <string name="VNCStarted">VNC Started</string>
     <string name="LogWarning">Something happened during last run, do you want to see the log?</string>
     <string name="SomethingWentWrong">Something went wrong</string>
     <string name="UnknownErrorCause">The VM stopped unexpectedly and the exact cause could not be determined.</string>
     <string name="AllowExternalVNCConnections">Allow External VNC Connections</string>
-    <string name="AllowExternalVNCSummary">Allow external VNC CLients. Needs app restart. VNC Connections including passwords are not encrypted so only use in a private network that you trust!</string>
-    <string name="EnableQMPServerSummary">Run QMP Server. This is needed to set a password for VNC, pausing the VM, and changing removable drives.</string>
+    <string name="AllowExternalVNCSummary">Allow external VNC CLients. Needs app restart. VNC Connections are not encrypted so only use in a private network that you trust!</string>
+    <string name="EnableQMPServerSummary">Run QMP Server. This is needed to changing removable drives.</string>
     <string name="EnableQMPServer">Enable QMP Server</string>
     <string name="AllowExternalQMPConnectionsSummary">Allow external QMP CLients. Needs app restart. Connections are not encrypted so only use in a private network that you trust!</string>
     <string name="AllowExternalQMPConnections">Allow External QMP Connections</string>
@@ -251,9 +242,7 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="VMIsReset">VM is reset</string>
     <string name="VMRunning">VM Running</string>
     <string name="MachineDeleted">Machine deleted</string>
-    <string name="VNCPasswordMissing">VNC Password is missing in Settings!</string>
-    <string name="VNCPasswordNotEnabledWarning">VNC Password is not enabled! Any application on your device can view and control your Virtual Machine! Make sure you trust your apps on your device otherwise set a password in settings. Continue?</string>
-    <string name="ExternalVNCEnabledWarning">You have enabled External VNC. Anyone on the same network could read your VNC password and control your virtual machine! Make sure you trust your network. Continue?</string>
+    <string name="ExternalVNCEnabledWarning">You have enabled External VNC. Anyone on the same network could access and control your virtual machine! Make sure you trust your network. Continue?</string>
     <string name="EnableKVMWarning">Warning! You will need an Android Device with the same architecture as the emulated Guest. Make sure you have installed an Android kernel with KVM support. If you do not know what this is press Cancel now.\n\nIf you experience crashes disable this option. Do you want to continue?</string>
     <string name="EnableKVM">Enable KVM</string>
     <string name="server">Server</string>
@@ -261,8 +250,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="MachineResolution">Machine resolution</string>
     <string name="Warning">Warning</string>
     <string name="MachineResoultionWarning">Machine Resolution is too high for Desktop Mode. Scaling will be used and Mouse Alignment will not be accurate. Reduce display resolution within the Guest OS for better experience.\n\n</string>
-    <string name="virgl_requires_sdl">3D acceleration uses SDL display. Qube will switch to SDL when available.</string>
-    <string name="virgl_requires_sdl_runtime">3D acceleration requires SDL display. Switch UI to SDL or choose a non-3D GPU.</string>
     <string name="CouldNotCreateBaseDir">Could not create base directory</string>
     <string name="CouldNotCreateMachineDir">Could not create machine directory</string>
     <string name="CouldNotCreateDirForImage">Could not create directory for image</string>
@@ -296,7 +283,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="SetKeyRepeat">Set Key Repeat</string>
     <string name="RemovedKeyRepeat">Removed Key Repeat</string>
     <string name="KeyMapperEnabled">Key Mapper Enabled</string>
-    <string name="CouldNotSetVNCPass">Could not set VNC Password</string>
     <string name="MachinesExported">Machines exported</string>
     <string name="LimboLog">Qube Log</string>
     <string name="CHANGELOG">CHANGELOG</string>
@@ -337,15 +323,12 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="NewDirectory">New Directory</string>
     <string name="Volume">Volume</string>
     <string name="DisplayMode">Display Mode</string>
-    <string name="VNCPassword">VNC password</string>
     <string name="NewVersion">New Version</string>
     <string name="Network">Network</string>
     <string name="NicCard">NIC Card</string>
     <string name="DNSServer">DNS Server</string>
     <string name="HostForward">Host Forward</string>
     <string name="EnableQMPForChangingDrives">Enable QMP in settings to change removable drives</string>
-    <string name="SetVNCPassword">Set VNC Password</string>
-    <string name="EnableVNCPassword">Enable VNC Password (recommended)</string>
     <string name="DisplayResolutionHighWarning">Display resolution is too high, mouse position is incorrect!</string>
     <string name="TouchScreenTitle">Touchscreen</string>
     <string name="ImmersiveMode">Immersive Mode</string>
@@ -367,8 +350,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="Interface">Interface</string>
     <string name="diskCache">Disk Cache</string>
     <string name="diskCacheSummary">Disk Cache might not work with Legacy Manager! If you encounter issues set to Default</string>
-    <string name="IgnoreBreakpointInvalidation">Ignore Breakpoint Invalidation</string>
-    <string name="IgnoreBreakpointInvalidationSummary">Ignore Breakpoint Invalidation</string>
     <string name="ImportBIOSFile">Import BIOS</string>
     <string name="importBIOSInstructions">Select a BIOS file (bin, rom, etc..) to import.</string>
     <string name="ResetBIOSFile">Restore Default BIOS</string>
@@ -411,8 +392,6 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
         <item>4GB (Growable)</item>
         <item>10 GB (Growable)</item>
         <item>20 GB (Growable)</item>
-        <item>48 GB (Growable)</item>
-        <item>64 GB (Growable)</item>
     </string-array>
 
     <!-- Removable Storage section -->

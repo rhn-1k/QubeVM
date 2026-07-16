@@ -57,7 +57,6 @@
     <string name="input_mode_dpad_pan_touchpad_mouse">触摸鼠标; D-Pad 平移</string>
     <string name="input_mode_touch_pan_zoom_mouse">触摸鼠标平移和缩放</string>
     <string name="input_mode_touchpad">触摸</string>
-    <string name="keep_password_button">保存</string>
     <string name="intro_dont_show">不再显示</string>
     <string name="keys_caption">键</string>
     <string name="list_caption">列表</string>
@@ -72,7 +71,6 @@
     <string name="one_to_one">正常 (1:1)</string>
     <string name="open_doc">Manual/维基</string>
     <string name="pan_follow_mouse">平移鼠标</string>
-    <string name="password_caption">密码</string>
     <string name="port_caption">端口</string>
     <string name="repeater_button">中继器</string>
     <string name="repeater_caption">输入中继地址 &lt;b&gt;仅 if&lt;/b&gt; 您正在使用 an&lt;br&gt;&lt;i&gt;UltraVNC&lt;/i&gt;-类型中继器</string>

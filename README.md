@@ -13,23 +13,33 @@ QEMU-based virtual machine emulator for Android
 
 Emulates a full virtual machine (CPU, RAM, disk, display, sound, network) on Android, allowing installation and execution of guest operating systems (Windows, Linux, BSD, legacy OSes) inside the app
 
-QubeVM currently runs on **QEMU 7.2.22**, built natively from the source for Android as a `.so` library, no third-party wrapper is used
+QubeVM is built upon **QEMU 11.0.2**, compiled natively for Android as a `.so` library without relying on third-party wrappers
 
 > [!NOTE]
 > QubeVM includes links to legally distributable operating systems only. Any other disk images, ISOs, or software run inside the app are the user's own responsibility.
+
+## Preview
+
+<img src="assets/1.jpg" width="500"/>
+<img src="assets/2.jpg" width="500"/>
+<img src="assets/3.jpg" width="500"/>
 
 ## Supported CPU Architecture
 
 x86 / x86_64 for now, planning to support more in the future
 
-## Acceleration
+### Acceleration
+QubeVM offers different ways to run your virtual machine depending on your device:
 
 | Mode | Status |
 |------|--------|
 | KVM | Supported for users with a custom kernel exposing /dev/kvm, hardware accelerated and significantly faster than TCG. Not available on stock Android by default, read below for more info |
 | TCG (software emulation, single-threaded) | Default, works on all devices |
 | MTTCG (Multi-Threaded TCG) | Supported, runs guest vCPUs on separate host threads for better SMP performance |
-| High Priority Mode | Supported, runs the VM emulation thread at its greatest state for improved performance |
+| High Priority Mode | Supported, runs the VM emulation thread at its greatest speed for improved performance |
+
+> [!CAUTION]
+> **High Priority Mode** may cause device overheating. Ensure your device has adequate cooling during extended sessions
 
 ## Display
 
@@ -37,23 +47,6 @@ Qube supports two display modes:
 
 - **SDL**, the default mode, smooth and supports audio, good for high stability
 - **VNC**, requires an external VNC client, runs at 60Hz refresh rate, good for reducing screen tearing
-
-## Features
-
-- **Disk image creation**, create new virtual disks in **qcow2** format directly from the app (with preset templates: 1G, 2G, 4G, 10G, 20G maximum), as well as raw image support
-- **Floppy drives**, attach/mount `.img` floppy disk images
-- **CD-ROM / optical drives**, attach/mount `.iso` images for OS installation media
-- **Shared folder**, share a folder between the host (Android) and the guest OS for file exchange, without needing network transfer
-
-## Screenshots
-
-| KolibriOS runs on Qube |
-|:---:|
-| <img src="assets/1.jpg" width="500"/> |
-
-| KolibriOS runs with network access | KolibriOS runs glxgears |
-|:---:|:---:|
-| <img src="assets/2.jpg" width="250"/> | <img src="assets/3.jpg" width="250"/> |
 
 ## Network Support
 
@@ -69,9 +62,8 @@ Users running a **custom kernel** with KVM enabled can use KVM acceleration inst
 ## Translations
 
 Contributions from translators are welcome. Feel free to open a pull request to add or improve a language
-
-[translation/](translation/)
+[Translation Files](translation/)
 
 ## Credits
 
-QubeVM is a forked version of the <a href="https://github.com/limboemu/limbo">Limbo PC Emulator</a>
+QubeVM is a modified and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo).

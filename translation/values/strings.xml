@@ -111,15 +111,14 @@
     <string name="isos_and_tools_descr">Do you want to view a list of Compatible OSes and Download Links?</string>
     <string name="customOperatingSystem">Custom Operating System - use your own ISO and HDD images</string>
     <string name="toggle_key_mapper">Toggle Key Mapper</string>
+    <string name="toggle_virtual_keys">Toggle Virtual Keys</string>
     <string name="clear_key">Clear Key</string>
     <string name="repeat_key">Repeat Key</string>
     <string name="add_keymapper">Add Key Mapper</string>
     <string name="use_keymapper">Use Key Mapper</string>
     <string name="add_special_keys">Add Special Keys/Buttons</string>
     <string name="remove_key_mapper">Remove Key Mapper</string>
-    <string name="welcomeText">Welcome to Qube Emulator, a port of QEMU for Android devices. Qube can emulate several operating systems. For links to downloads, guides, and virtual disk images visit the Qube Wiki. Download software and images only from trusted websites!
-
-Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limbo) and is not affiliated with the original developer. The original code is licensed under GPL v2. All new modifications and additions are the intellectual property of the current developer and are subject to a separate license. For source code inquiries, please contact the developer directly."</string>
+    <string name="welcomeText">Welcome to Qube Emulator, a port of QEMU for Android devices. Qube can emulate several operating systems. For links to downloads, guides, and virtual disk images visit the Qube Wiki. Download software and images only from trusted websites!</string>
     <string name="checkForUpdates">Check for Updates on Startup</string>
     <string name="sdcardNotMounted">Error: SD card is not mounted</string>
     <string name="machinesImported">Machines Imported</string>
@@ -149,7 +148,7 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="faq">FAQ</string>
     <string name="open">Open</string>
     <string name="enableMTTCG">Enable MTTCG</string>
-    <string name="enableMTTCGWarning">Enabling MTTCG requires a phone with multi cores cpu.\If you don\'t know what this is press Cancel.\n\nIf you experience app crashing or freezing disable this option. Do you want to continue?</string>
+    <string name="enableMTTCGWarning">Enabling MTTCG requires a phone with multi cores cpu.\nIf you don\'t know what this is press Cancel.\n\nIf you experience app crashing or freezing disable this option. Do you want to continue?</string>
     <string name="mttcgHelp">Help</string>
     <string name="failToCreateMachineDirError">Could not create internal machine directory</string>
     <string name="externalVNCWarning">VNC connections are Unencrypted therefore NOT secure. Make sure you\'re on a trusted network!\n</string>
@@ -212,7 +211,7 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="SomethingWentWrong">Something went wrong</string>
     <string name="UnknownErrorCause">The VM stopped unexpectedly and the exact cause could not be determined.</string>
     <string name="AllowExternalVNCConnections">Allow External VNC Connections</string>
-    <string name="AllowExternalVNCSummary">Allow external VNC CLients. Needs app restart. VNC Connections are not encrypted so only use in a private network that you trust!</string>
+    <string name="AllowExternalVNCSummary">Allow external VNC Clients. Needs app restart. VNC Connections are not encrypted so only use in a private network that you trust!</string>
     <string name="EnableQMPServerSummary">Run QMP Server. This is needed to changing removable drives.</string>
     <string name="EnableQMPServer">Enable QMP Server</string>
     <string name="AllowExternalQMPConnectionsSummary">Allow external QMP CLients. Needs app restart. Connections are not encrypted so only use in a private network that you trust!</string>
@@ -358,8 +357,9 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <string name="reset_bios_success">Default BIOS restored. Please restart your VM if its running.</string>
     <string name="RunningInBackground">Running in background</string>
     <string name="ClearDirHistory">Clear Directory History</string>
-    <string name="ClearDirHistorySummary">Remove all remembered file paths from spinners</string>
-    <string name="ClearDirHistoryConfirm">This will clear all remembered file paths from all spinners. Continue?</string>
+    <string name="ClearDirHistorySummary">Remove all remembered file paths from storages, removable storages</string>
+    <string name="ClearDirHistoryConfirm">This will clear all remembered file paths
+     Continue?</string>
     <string name="DirHistoryCleared">Directory history cleared</string>
 
     <!-- Main activity -->
@@ -449,5 +449,25 @@ Note: This project is a fork of Limbo Emulator (https://github.com/limboemu/limb
     <!-- Log view -->
     <string name="system_log_label">System Log</string>
     <string name="clear_label">Clear</string>
+
+    <!-- Virtual Keys editor -->
+    <string name="Save">Save</string>
+    <string name="pref_customize_virtual_keys">Customize Virtual Keys</string>
+    <string name="msg_tap_to_select_a_key">Tap a key to select it</string>
+    <string name="msg_saved">Saved</string>
+    <string name="title_add_key">Add key</string>
+    <string name="title_move_up">Move up</string>
+    <string name="title_move_down">Move down</string>
+    <string name="title_delete_key">Delete key</string>
+    <string name="title_load_defaults">Load defaults</string>
+    <string name="customizeVirtualKeysSummary">Add, remove or reorder virtual keys</string>
+    <string name="ShowAllVirtualKeys">Show all keys by default</string>
+    <string name="ShowAllVirtualKeysSummary">Adds F1-F12, Insert and Delete to the default layout</string>
+    <string name="OpenVirtualKeysWithKeyboard">Open with keyboard</string>
+    <string name="OpenVirtualKeysWithKeyboardSummary">Show virtual keys automatically when the soft keyboard opens</string>
+    <string name="UseSuperWithSingleTap">Single tap for Super key</string>
+    <string name="UseSuperWithSingleTapSummary">Send Super key on a single tap instead of toggling it</string>
+    <string name="VirtualKeysRowCount">Row count</string>
+    <string name="VirtualKeysRowCountSummary">Number of rows used to arrange virtual keys</string>
 
 </resources>

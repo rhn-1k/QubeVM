@@ -140,7 +140,6 @@
     <string name="sharedFolderWarning">Warning! Enabling Shared folder is buggy under Qube.\nIf you use Storage Cleaning apps exclude this folder. \nMake sure you keep a backup of your files. Pausing the Virtual Machine is not supported with this feature. \nIf you experience crashes disable this option. \nDo you want to continue?</string>
     <string name="advancedTools">Advanced Tools</string>
     <string name="linksInstructions">Get Full Qwerty Keyboard, Download Manager for ISO and virtual disks images, SSH/FTP Client for network connection</string>
-    <string name="discardVMState">Discard VM State</string>
     <string name="tapUserId">TAP User Id</string>
     <string name="tapNotSupportInstructions">\"Your device doesn\'t support TAP, use \'User\' network mode instead \"</string>
     <string name="network">Network</string>
@@ -372,7 +371,7 @@
 
     <!-- Board section -->
     <string name="section_board">Board</string>
-    <string name="machine_type_label">Machine Type:</string>
+    <string name="machine_type_label">Machine Type</string>
     <string name="cpu_model_label">CPU Model</string>
     <string name="cpu_cores_label">CPU Cores</string>
     <string name="ram_memory_label">RAM Memory (MB)</string>
@@ -411,6 +410,8 @@
     <!-- Graphics section -->
     <string name="section_graphics">Graphics</string>
     <string name="video_display_label">Video Display</string>
+    <string name="use_venus_accelerator_label">Venus Accelerator</string>
+    <string name="virgl_requires_sdl">3D acceleration uses SDL display. Qube switched to it</string>
     <string name="customResolutionLabel">Custom Resolution </string>
     <string name="customResolutionDefault">Default</string>
     <string name="customResolutionAdd">+ Add Resolution</string>
@@ -428,6 +429,20 @@
     <string name="customResolutionRangeError">Width and height must be greater than 0</string>
     <string name="customResolutionInfoTitle">Custom Resolution</string>
     <string name="customResolutionInfoMessage">Pick "Default" to boot with QEMU\'s normal resolution, or pick a saved resolution to use it instead.\n\nTo add a new one, choose "+ Add Resolution".\n\nTo edit or delete a saved resolution, select it first, then long-press the dropdown.</string>
+    <string name="videoDisplayInfoTitle">Video Display</string>
+    <string name="videoDisplayInfoMessage"><![CDATA[
+        <b>std</b> is the standard and stable option that comes with QEMU.<br/><br/>
+        <b>cirrus</b> is suitable for older operating systems from the 90s.<br/><br/>
+        <b>vmware</b> emulates VMware SVGA, good for Windows.<br/><br/>
+        <b>virtio</b> is the paravirtualized GPU, the origin of virtio drivers.<br/><br/>
+        <b>virtio-vga-gl</b> enables 3D acceleration via VirGL, may not work well with Windows, but helps reduce screen tearing.<br/><br/>
+        <b>nographic</b> disables VGA output entirely, uses serial console only, useful for headless runs.
+    ]]></string>
+
+    <string name="venusInfoTitle">Venus Accelerator</string>
+    <string name="venusInfoMessage"><![CDATA[
+        <b>Venus</b> is the new VirGL Vulkan accelerator. It improves graphics performance, but may be unstable on some devices or VM OSes.
+    ]]></string>
 
     <!-- Audio section -->
     <string name="section_audio">Audio</string>
@@ -469,5 +484,24 @@
     <string name="UseSuperWithSingleTapSummary">Send Super key on a single tap instead of toggling it</string>
     <string name="VirtualKeysRowCount">Row count</string>
     <string name="VirtualKeysRowCountSummary">Number of rows used to arrange virtual keys</string>
+
+    <!-- Summaries -->
+    <string name="summary_none">None</string>
+    <string name="summary_machine_type">Machine Type</string>
+    <string name="summary_cpu">CPU</string>
+    <string name="summary_cpu_plural">CPUs</string>
+    <string name="summary_mb">MB</string>
+    <string name="summary_hda">HDA</string>
+    <string name="summary_hdb">HDB</string>
+    <string name="summary_hdc">HDC</string>
+    <string name="summary_hdd">HDD</string>
+    <string name="summary_cdrom">CDROM</string>
+    <string name="summary_fda">FDA</string>
+    <string name="summary_fdb">FDB</string>
+    <string name="summary_boot_from">Boot from</string>
+    <string name="summary_kernel">kernel</string>
+    <string name="summary_initrd">initrd</string>
+    <string name="summary_append">append</string>
+    <string name="summary_video_card">Video Card</string>
 
 </resources>

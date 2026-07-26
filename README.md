@@ -1,6 +1,3 @@
-> [!WARNING]
-> This project is still in an early alpha state, errors and instability are expected
-
 <p align="center">
   <img src="assets/qube.png" alt="QubeVM" width="140"/>
 </p>

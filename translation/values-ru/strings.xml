@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">QubeVM</string>
+    <string name="app_short_name">Qube</string>
+    <string name="address_caption">Адрес</string>
+    <string name="alt_check">Alt</string>
+    <string name="arrow_down">Стрелка вниз</string>
+    <string name="arrow_left">Стрелка влево</string>
+    <string name="arrow_right">Стрелка вправо</string>
+    <string name="arrow_up">Стрелка вверх</string>
+    <string name="auto">Авто</string>
+    <string name="button_send_text">Отправить текст</string>
+    <string name="button_send_without_saving">Отправить текст/Не сохранять</string>
+    <string name="center_mouse">Мышь</string>
+    <string name="close">Закрыть</string>
+    <string name="color_format_caption">Формат цвета</string>
+    <string name="color_mode">Цветовой режим</string>
+    <string name="connect_button">Подключиться</string>
+    <string name="connection_caption">Подключение</string>
+    <string name="control_check">Ctrl</string>
+    <string name="reset">Сброс</string>
+    <string name="shutdown">Выключение</string>
+    <string name="copy_list_button">Копировать список</string>
+    <string name="ctrl_alt_del">Ctrl-Alt-Del</string>
+    <string name="ctrl_c">Ctrl-c</string>
+    <string name="delete_connection">Удалить подключение</string>
+    <string name="delete_key">Удалить выбранную клавишу</string>
+    <string name="delete_key_list">Удалить список клавиш</string>
+    <string name="disconnect">Отключиться</string>
+    <string name="devices">Устройства</string>
+    <string name="external_mouse">Внешняя мышь</string>
+    <string name="monitor">Монитор QEMU</string>
+    <string name="export_settings">Экспорт</string>
+    <string name="export_settings_path">Экспортировать в файл</string>
+    <string name="enter_text_title">Введите текст для отправки</string>
+    <string name="enter_text">Отправить текст</string>
+    <string name="stretch_to_screen">Растянуть на экран</string>
+    <string name="fit_to_screen">Подогнать под экран</string>
+    <string name="full_screen">Полноэкранный режим</string>
+    <string name="toggle_full_screen">Переключить полноэкранный режим</string>
+    <string name="zoom_in">Увеличить</string>
+    <string name="zoom_out">Уменьшить</string>
+    <string name="force_full_check">Принудительное полноэкранное растровое изображение</string>
+    <string name="import_export_settings">Импорт/экспорт настроек</string>
+    <string name="import_settings">Импорт</string>
+    <string name="import_settings_file_url">Импортировать из файла или URL</string>
+    <string name="info">Информация</string>
+    <string name="intro_text">Если вам нужна помощь, ознакомьтесь с &lt;a href="http://code.google.com/p/android-vnc-viewer/wiki/Documentation"&gt;руководством&lt;/a&gt; (нажмите кнопку «Меню» телефона, чтобы открыть руководство и другие пункты меню), или посетите &lt;a href="http://code.google.com/p/android-vnc-viewer/wiki/faq"&gt;FAQ&lt;/a&gt;.&lt;br&gt;</string>
+    <string name="intro_title">Добро пожаловать</string>
+    <string name="intro_version_text">&lt;br&gt;--Отправленный текст запоминается между сеансами (по желанию)&lt;br&gt;--Импорт/экспорт настроек в файл&lt;br&gt;--Кнопка с масштабированием для вызова клавиатуры&lt;br&gt;--Можно принудительно включить режим плиток (для очень больших экранов)</string>
+    <string name="input_mode">Режим ввода</string>
+    <string name="input_mode_fit_to_screen">Без панорамирования; мышь трекболом</string>
+    <string name="input_mode_mouse">Режим управления указателем мыши</string>
+    <string name="input_mode_panning">Режим панорамирования рабочего стола</string>
+    <string name="input_mode_touchpad_pan_trackball_mouse">Панорамирование касанием; мышь трекболом</string>
+    <string name="input_mode_dpad_pan_touchpad_mouse">Мышь касанием; панорамирование D-Pad</string>
+    <string name="input_mode_touch_pan_zoom_mouse">Мышь касанием с панорамированием и масштабированием</string>
+    <string name="input_mode_touchpad">Тачпад</string>
+    <string name="intro_dont_show">Больше не показывать</string>
+    <string name="keys_caption">Клавиши</string>
+    <string name="list_caption">Список</string>
+    <string name="list_name_caption">Название списка</string>
+    <string name="local_mouse_check">Локальный указатель мыши</string>
+    <string name="meta_key_title">Отправить специальные клавиши</string>
+    <string name="mouse_follow_pan">Мышь следует за панорамированием</string>
+    <string name="new_list_button">Новый список</string>
+    <string name="nickname_caption">Имя</string>
+    <string name="off">Выкл</string>
+    <string name="on">Вкл</string>
+    <string name="one_to_one">Обычный (1:1)</string>
+    <string name="open_doc">Руководство/Wiki</string>
+    <string name="pan_follow_mouse">Панорамирование следует за мышью</string>
+    <string name="port_caption">Порт</string>
+    <string name="repeater_button">Ретранслятор</string>
+    <string name="repeater_caption">Введите адрес ретранслятора &lt;b&gt;только если&lt;/b&gt; вы используете ретранслятор типа&lt;br&gt;&lt;i&gt;UltraVNC&lt;/i&gt;</string>
+    <string name="repeater_clear">Не использовать ретранслятор</string>
+    <string name="repeater_dialog_title">Информация о ретрансляторе</string>
+    <string name="repeater_empty_text">Ретранслятор не задан</string>
+    <string name="repeater_save">Использовать этот адрес ретранслятора</string>
+    <string name="save_as_copy">Сохранить как копию</string>
+    <string name="scaling">Масштабирование</string>
+    <string name="save_snapshot">Сохранить снимок</string>
+    <string name="scaling_zoomable">С масштабированием</string>
+    <string name="send_button">Отправить</string>
+    <string name="send_key_again">Отправить клавишу снова</string>
+    <string name="shift_check">Shift</string>
+    <string name="shortcut_label">VNC-подключение</string>
+    <string name="showkbd_label">Клавиатура</string>
+    <string name="special_keys">Специальные клавиши</string>
+    <string name="username_caption">Имя пользователя</string>
+    <string name="username_hint">Для аутентификации Windows</string>
+    <string name="right_click">Правая кнопка мыши</string>
+    <string name="help">Помощь</string>
+    <string name="drives">Диски</string>
+    <string name="volume">Громкость</string>
+    <string name="Default" translatable="false">default</string>
+    <string name="hide_toolbar">Скрыть панель инструментов</string>
+    <string name="view_log">Просмотреть журнал</string>
+    <string name="screenshot">Скриншот</string>
+    <string name="screenshot_saved">Скриншот сохранён: </string>
+    <string name="screenshot_failed">Не удалось сделать скриншот</string>
+    <string name="display_refresh_rate">Частота обновления экрана</string>
+    <string name="ui_mode">Режим интерфейса</string>
+    <string name="display">Дисплей</string>
+    <string name="absolutePointerInstructions">Убедитесь, что гостевая ОС поддерживает сенсорные устройства!\n\n \
+        Выберите Мышь = «usb-tablet» в Qube перед загрузкой машины.</string>
+    <string name="externalMouseInstructions">Подключите USB/Bluetooth-мышь к устройству Android.</string>
+    <string name="reconnect">Переподключить</string>
+    <string name="calibrate_mouse">Калибровка (исправление) мыши</string>
+    <string name="isos_and_tools_descr">Хотите просмотреть список совместимых ОС и ссылки для загрузки?</string>
+    <string name="customOperatingSystem">Пользовательская ОС - используйте свои образы ISO и HDD</string>
+    <string name="toggle_key_mapper">Переключить назначение клавиш</string>
+    <string name="toggle_virtual_keys">Переключить виртуальные клавиши</string>
+    <string name="clear_key">Очистить клавишу</string>
+    <string name="repeat_key">Повторить клавишу</string>
+    <string name="add_keymapper">Добавить назначение клавиш</string>
+    <string name="use_keymapper">Использовать назначение клавиш</string>
+    <string name="add_special_keys">Добавить специальные клавиши/кнопки</string>
+    <string name="remove_key_mapper">Удалить назначение клавиш</string>
+    <string name="welcomeText">Добро пожаловать в Qube Emulator, порт QEMU для устройств Android. Qube может эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков вы найдёте в Qube Wiki. Загружайте программы и образы только с надёжных сайтов!</string>
+    <string name="checkForUpdates">Проверять обновления при запуске</string>
+    <string name="sdcardNotMounted">Ошибка: SD-карта не подключена</string>
+    <string name="machinesImported">Машины импортированы</string>
+    <string name="reassignDiskFilesInstructions">Если это новая установка, вам нужно будет заново открыть все файлы дисков через файловый менеджер</string>
+    <string name="importInstructions">Выберите файл export.csv, который хотите импортировать.\n"ВНИМАНИЕ: любая машина с таким же именем будет заменена</string>
+    <string name="vmNotRunning">ВМ не запущена</string>
+    <string name="Running">Работает</string>
+    <string name="Suspended">Приостановлена</string>
+    <string name="Stopped">Остановлена</string>
+    <string name="orientation">Ориентация</string>
+    <string name="keyboard">Клавиатура</string>
+    <string name="toolbarOn">Панель инструментов вкл.</string>
+    <string name="mouse">Мышь</string>
+    <string name="fullscreen">Полноэкранный режим</string>
+    <string name="externalVncOn">Внешний VNC-сервер: вкл.</string>
+    <string name="externalQMPServerOn">Внешний QMP-сервер: вкл.</string>
+    <string name="desktopMode">Режим рабочего стола</string>
+    <string name="highPriorityWarning">Внимание! Высокий приоритет может увеличить скорость эмуляции, но замедлит работу вашего телефона!</string>
+    <string name="sharedFolderWarning">Внимание! Использование общей папки в Qube может работать нестабильно.\nЕсли вы используете приложения для очистки хранилища, исключите эту папку. \nОбязательно делайте резервные копии файлов. Приостановка виртуальной машины не поддерживается с этой функцией. \nЕсли возникают сбои, отключите эту опцию. \nПродолжить?</string>
+    <string name="advancedTools">Дополнительные инструменты</string>
+    <string name="linksInstructions">Полная QWERTY-клавиатура, менеджер загрузок для ISO и образов виртуальных дисков, SSH/FTP-клиент для сетевого подключения</string>
+    <string name="tapUserId">TAP User Id</string>
+    <string name="tapNotSupportInstructions">\"Ваше устройство не поддерживает TAP, используйте вместо этого сетевой режим \'User\' \"</string>
+    <string name="network">Сеть</string>
+    <string name="externalNetworkWarning">Внимание! Не рекомендуется включать внешнюю сеть для образов, которым вы не доверяете, или содержащих старые ОС. Если не используете сеть, выберите \'None\' перед запуском виртуальной машины.\n</string>
+    <string name="faq">FAQ</string>
+    <string name="open">Открыть</string>
+    <string name="enableMTTCG">Включить MTTCG</string>
+    <string name="enableMTTCGWarning">Для включения MTTCG требуется телефон с многоядерным процессором.\nЕсли вы не знаете, что это такое, нажмите Отмена.\n\nЕсли приложение зависает или вылетает, отключите эту опцию. Продолжить?</string>
+    <string name="mttcgHelp">Помощь</string>
+    <string name="failToCreateMachineDirError">Не удалось создать внутренний каталог машины</string>
+    <string name="externalVNCWarning">VNC-подключения не шифруются и поэтому НЕ являются безопасными. Убедитесь, что вы находитесь в надёжной сети!\n</string>
+    <string name="qmpExternalWarning">Внимание: разрешать QMP обслуживать внешние подключения НЕ рекомендуется! QMP-подключения не шифруются и поэтому НЕ являются безопасными. Убедитесь, что вы находитесь в частной сети и доверяете другим приложениям, установленным на вашем устройстве!\n</string>
+    <string name="Continue">Продолжить</string>
+    <string name="chooseDirToCreateImage">Выберите каталог для создания образа</string>
+    <string name="ImageCreated">Образ создан</string>
+    <string name="vncServer">VNC-сервер</string>
+    <string name="started">запущен</string>
+    <string name="vncUnecryptedWarning">Внимание: VNC-подключение не шифруется и небезопасно, убедитесь, что вы находитесь в частной сети!\n</string>
+    <string name="qmpServer">QMP-сервер</string>
+    <string name="Enable">Включить</string>
+    <string name="ImportMachines">Импорт машин</string>
+    <string name="DeleteVM">Удалить ВМ</string>
+    <string name="deleteVMWarning">Удалить ВМ? Будет удалена только конфигурация машины, файлы образов дисков удалены не будут</string>
+    <string name="NoMachineSelected">Машина не выбрана</string>
+    <string name="multipleVCPU">Несколько vCPU</string>
+    <string name="multipleVCPUWarning">Внимание! Настройка нескольких виртуальных процессоров НЕ приведёт к повышению производительности, если вы не используете KVM или MTTCG. Ваше устройство может замедлиться, либо гостевая ОС может зависнуть, поэтому рекомендуется использовать 1 CPU. \n\n</string>
+    <string name="disableTSCInstructions">Если ваша гостевая ОС не может загрузиться, включите опцию «Отключить TSC» и перезапустите ВМ.</string>
+    <string name="DoYouWantToContinue">Хотите продолжить?</string>
+    <string name="vCPUHelp">Помощь</string>
+    <string name="Auto">Авто</string>
+    <string name="Landscape">Альбомная</string>
+    <string name="LandscapeReverse">Альбомная перевёрнутая</string>
+    <string name="Portrait">Портретная</string>
+    <string name="PortraitReverse">Портретная перевёрнутая</string>
+    <string name="DefaultRefreshRate">Частота обновления по умолчанию</string>
+    <string name="IdleRefreshRate">Частота обновления в режиме простоя</string>
+    <string name="importMachines">Импорт машин</string>
+    <string name="PleaseWait">Пожалуйста, подождите</string>
+    <string name="InstallingBIOS">Установка BIOS</string>
+    <string name="CouldNotOpenDocFile">Не удалось открыть DocumentFile</string>
+    <string name="PleaseReassingYourDiskFiles">Пожалуйста, заново откройте файлы дисков через файловый менеджер</string>
+    <string name="RemovableDrives">Съёмные диски</string>
+    <string name="VNCReconnecting">Переподключение VNC</string>
+    <string name="EjectedDevice">Устройство извлечено</string>
+    <string name="ChangedDevice">Устройство изменено</string>
+    <string name="Error">Ошибка</string>
+    <string name="ChooseDirForVMExport">Выберите каталог для экспорта виртуальных машин</string>
+    <string name="ExportFilenameCannotBeEmpty">Имя файла экспорта не может быть пустым</string>
+    <string name="ChangeDirectory">Изменить каталог</string>
+    <string name="Export">Экспорт</string>
+    <string name="threeBySix">3x6</string>
+    <string name="fourByEight">4x8</string>
+    <string name="fiveByTen">5x10</string>
+    <string name="InstallRoms">Установить ROM</string>
+    <string name="CreateMachine">Создать машину</string>
+    <string name="DeleteMachine">Удалить машину</string>
+    <string name="Settings">Настройки</string>
+    <string name="ExportMachines">Экспорт машин</string>
+    <string name="ViewLog">Просмотреть журнал</string>
+    <string name="Changelog">Список изменений</string>
+    <string name="License">Лицензия</string>
+    <string name="Exit">Выход</string>
+    <string name="TapDeviceFound">Устройство TAP найдено</string>
+    <string name="tunDeviceWarning">Внимание! Убедитесь, что устройство /dev/net/tun имеет соответствующие права\nUser ID</string>
+    <string name="TAPHelp">Помощь</string>
+    <string name="VNCStarted">VNC запущен</string>
+    <string name="LogWarning">Что-то произошло во время последнего запуска, хотите просмотреть журнал?</string>
+    <string name="SomethingWentWrong">Что-то пошло не так</string>
+    <string name="UnknownErrorCause">ВМ неожиданно остановилась, точную причину определить не удалось.</string>
+    <string name="AllowExternalVNCConnections">Разрешить внешние VNC-подключения</string>
+    <string name="AllowExternalVNCSummary">Разрешить внешним VNC-клиентам подключение. Требуется перезапуск приложения. VNC-подключения не шифруются, используйте только в частной сети, которой доверяете!</string>
+    <string name="EnableQMPServerSummary">Запустить QMP-сервер. Это необходимо для смены съёмных дисков.</string>
+    <string name="EnableQMPServer">Включить QMP-сервер</string>
+    <string name="AllowExternalQMPConnectionsSummary">Разрешить внешним QMP-клиентам подключение. Требуется перезапуск приложения. Подключения не шифруются, используйте только в частной сети, которой доверяете!</string>
+    <string name="AllowExternalQMPConnections">Разрешить внешние QMP-подключения</string>
+    <string name="RunVMThreadHighPriority">Запускать поток ВМ с высоким приоритетом</string>
+    <string name="HighPriority">Высокий приоритет</string>
+    <string name="EnableDesktopMode">Включить режим рабочего стола</string>
+    <string name="AlwaysShowToolbar">Всегда показывать панель инструментов</string>
+    <string name="AlwaysToolbar">Всегда панель инструментов</string>
+    <string name="KeyMapperButtonLayout">Расположение кнопок назначения клавиш</string>
+    <string name="KeyMapperLayout">Раскладка назначения клавиш</string>
+    <string name="CheckSoftwareUpdates">Проверять обновления ПО</string>
+    <string name="CheckSoftwareUpdatesSummary">Проверять обновления ПО при запуске</string>
+    <string name="FailedToSaveLogFile">\"Не удалось сохранить файл журнала: \"</string>
+    <string name="SharedFolder">Общая папка</string>
+    <string name="SharedFolderNotSupported">Расположение общей папки недоступно на этом устройстве и было пропущено. Пожалуйста, выберите папку в основном внутреннем хранилище устройства.</string>
+    <string name="AudioCard">Звуковая карта</string>
+    <string name="IAcknowledge">Я подтверждаю</string>
+    <string name="NewMachineName">Имя новой машины</string>
+    <string name="Create">Создать</string>
+    <string name="MachineNameCannotBeEmpty">Имя машины не может быть пустым</string>
+    <string name="ShutdownVM">Выключить ВМ</string>
+    <string name="ShutdownVMWarning">Во избежание повреждения данных убедитесь, что вы уже выключили операционную систему внутри ВМ. Продолжить?</string>
+    <string name="VMSuspended">ВМ приостановлена</string>
+    <string name="ResetVM">Сброс ВМ</string>
+    <string name="ResetVMWarning">Во избежание повреждения данных убедитесь, что вы уже выключили операционную систему внутри ВМ. Продолжить?</string>
+    <string name="VMIsReset">ВМ сброшена</string>
+    <string name="VMRunning">ВМ работает</string>
+    <string name="MachineDeleted">Машина удалена</string>
+    <string name="ExternalVNCEnabledWarning">Вы включили внешний VNC. Любой в той же сети может получить доступ и управлять вашей виртуальной машиной! Убедитесь, что доверяете своей сети. Продолжить?</string>
+    <string name="EnableKVMWarning">Внимание! Вам понадобится устройство Android с той же архитектурой, что и эмулируемая гостевая система. Убедитесь, что установлено ядро Android с поддержкой KVM. Если вы не знаете, что это такое, нажмите Отмена.\n\nЕсли возникают сбои, отключите эту опцию. Хотите продолжить?</string>
+    <string name="EnableKVM">Включить KVM</string>
+    <string name="server">Сервер</string>
+    <string name="ExtraParams">Дополнительные параметры</string>
+    <string name="MachineResolution">Разрешение машины</string>
+    <string name="Warning">Внимание</string>
+    <string name="MachineResoultionWarning">Разрешение машины слишком высокое для режима рабочего стола. Будет использовано масштабирование, и выравнивание мыши будет неточным. Уменьшите разрешение экрана в гостевой ОС для лучшего результата.\n\n</string>
+    <string name="CouldNotCreateBaseDir">Не удалось создать базовый каталог</string>
+    <string name="CouldNotCreateMachineDir">Не удалось создать каталог машины</string>
+    <string name="CouldNotCreateDirForImage">Не удалось создать каталог для образа</string>
+    <string name="FileExistsChooseAnotherFilename">Файл существует, выберите другое имя файла</string>
+    <string name="FailedToExportFile">Не удалось экспортировать файл</string>
+    <string name="FailedSaveLogFile">Не удалось сохранить файл журнала</string>
+    <string name="LogfileSaved">Файл журнала сохранён</string>
+    <string name="CouldNotOpenRawFile">Не удалось открыть raw-файл</string>
+    <string name="TooManyKeysButtons">Слишком много клавиш/кнопок</string>
+    <string name="FeaturDisabled">Функция отключена</string>
+    <string name="AccessDeniedCannotRetrieveDirectory">Доступ запрещён: не удаётся получить каталог</string>
+    <string name="NotADirectory">Это не каталог</string>
+    <string name="DirNameCannotBeEmpty">Имя каталога не может быть пустым</string>
+    <string name="DirectoryAlreadyExists">Каталог уже существует!</string>
+    <string name="PressVolumeDownForRightClick">Нажмите Громкость вниз для правого клика</string>
+    <string name="NoRemovableDevicesAttached">Съёмные устройства не подключены</string>
+    <string name="MapperExistsChooseAnotherName">Такое назначение клавиш уже существует, выберите другое имя</string>
+    <string name="ClearedKey">Клавиша очищена</string>
+    <string name="FitToScreenDisableDesktopMode">«Подогнать под экран» отключено в режиме рабочего стола</string>
+    <string name="StretchScreenDisabledDesktopMode">«Растянуть на экран» отключено в режиме рабочего стола</string>
+    <string name="NoVMSelectedRestart">ВМ не выбрана, перезапустите Qube!</string>
+    <string name="ResizingPleaseWait">Изменение размера, подождите</string>
+    <string name="TrackpadEnabled">Трекпад включён</string>
+    <string name="ExternalMouseEnabled">Внешняя мышь включена</string>
+    <string name="ImageFilenameCannotBeEmpty">Имя файла образа не может быть пустым</string>
+    <string name="VMNotRunning">ВМ не запущена</string>
+    <string name="SelectOrCreateVirtualMachineFirst">Сначала выберите или создайте виртуальную машину</string>
+    <string name="SelectAMachineFirst">Сначала выберите машину</string>
+    <string name="VMNameExistsChooseAnother">Имя ВМ уже существует, выберите другое</string>
+    <string name="ChooseDirToSaveLogFile">Выберите каталог для сохранения файла журнала</string>
+    <string name="SetKeyRepeat">Установить повтор клавиши</string>
+    <string name="RemovedKeyRepeat">Повтор клавиши удалён</string>
+    <string name="KeyMapperEnabled">Назначение клавиш включено</string>
+    <string name="MachinesExported">Машины экспортированы</string>
+    <string name="LimboLog">Журнал Qube</string>
+    <string name="CHANGELOG">СПИСОК ИЗМЕНЕНИЙ</string>
+    <string name="WriteAccess">Доступ на запись</string>
+    <string name="FilePathNotSupportedWarning">Путь к файлу не поддерживается. Убедитесь, что выбираете файл/каталог из внутреннего хранилища или внешней SD-карты. Корневой каталог и папка Загрузки не поддерживаются.</string>
+    <string name="KVMHelp">Помощь</string>
+    <string name="FullAccessWarning">Пожалуйста, разрешите доступ к хранилищу устройства, без этого приложение будет работать, но с ограниченным набором функций.</string>
+    <string name="OkIUnderstand">Разрешить</string>
+    <string name="SendText">Отправить текст</string>
+    <string name="Send">Отправить</string>
+    <string name="GoToWiki">Онлайн Wiki</string>
+    <string name="DoNotShowAgain">Больше не показывать</string>
+    <string name="GenNewVersion">Получить новую версию</string>
+    <string name="Cancel">Отмена</string>
+    <string name="Apply">Применить</string>
+    <string name="Delete">Удалить</string>
+    <string name="KeyMapper">Назначение клавиш</string>
+    <string name="DeleteKeyMapper">Удалить назначение клавиш?</string>
+    <string name="CopyTo">Копировать в</string>
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+    <string name="NewVersionWarning">Доступна новая версия с исправлениями и новыми функциями. Хотите обновить?</string>
+    <string name="CannotListDirectory">Не удаётся отобразить содержимое каталога</string>
+    <string name="Ok">ОК</string>
+    <string name="TrackpadDescr">Трекпад (телефон)</string>
+    <string name="TouchScreen">Сенсорный экран (планшет)</string>
+    <string name="ExternalMouseDescr">Внешняя мышь (компьютер)</string>
+    <string name="Mouse">Мышь</string>
+    <string name="SelectADirectory">Выбрать каталог</string>
+    <string name="SelectAFile">Выбрать файл</string>
+    <string name="AccessDenied">Доступ запрещён</string>
+    <string name="SpecialKeysButtons">Специальные клавиши/кнопки</string>
+    <string name="KeyMapperName">Название назначения клавиш</string>
+    <string name="DownloadsOSes">Загрузки ОС</string>
+    <string name="ShowLog">Показать журнал</string>
+    <string name="ExportFilename">Имя файла экспорта</string>
+    <string name="ImageName">Название образа</string>
+    <string name="NewDirectory">Новый каталог</string>
+    <string name="Volume">Громкость</string>
+    <string name="DisplayMode">Режим дисплея</string>
+    <string name="NewVersion">Новая версия</string>
+    <string name="Network">Сеть</string>
+    <string name="NicCard">Сетевая карта</string>
+    <string name="DNSServer">DNS-сервер</string>
+    <string name="HostForward">Проброс портов хоста</string>
+    <string name="EnableQMPForChangingDrives">Включите QMP в настройках для смены съёмных дисков</string>
+    <string name="DisplayResolutionHighWarning">Разрешение дисплея слишком высокое, положение мыши определяется неверно!</string>
+    <string name="TouchScreenTitle">Сенсорный экран</string>
+    <string name="ImmersiveMode">Полноэкранный режим (Immersive)</string>
+    <string name="EnableImmersiveMode">Включить полноэкранный режим (Immersive)</string>
+    <string name="UsingKeyMapper">Используется назначение клавиш</string>
+    <string name="PreventMouseOutOfBounds">Не выпускать мышь за пределы экрана</string>
+    <string name="PreventMouseDescr">Предотвращает сбои некоторых ОС при использовании мыши «usb-tablet», когда указатель выходит за пределы экрана.\nВнимание: это может создать невидимую стену, если гостевая ОС не поддерживает «usb-tablet».</string>
+    <string name="other">Другое</string>
+    <string name="custom">Пользовательский</string>
+    <string name="otherOperatingSystem">Другие операционные системы</string>
+    <string name="DownloadISOAndVirtualHDDImages">Загрузить образы ISO и виртуальных HDD</string>
+    <string name="keyPressDelay">Задержка нажатия клавиш</string>
+    <string name="keyPressDelaySummary">Задержка между нажатиями клавиш. Меньшие значения повышают производительность, но эмулятор может не распознавать события клавиш, поэтому используйте большие значения при необходимости.</string>
+    <string name="mouseButtonDelay">Задержка клика мыши</string>
+    <string name="mouseButtonDelaySummary">Задержка между кликами кнопок мыши. Меньшие значения повышают производительность, но эмулятор может не распознавать события мыши, поэтому используйте большие значения при необходимости.</string>
+    <string name="machineHeader">Машина:</string>
+    <string name="EnableAaudio">Включить Aaudio</string>
+    <string name="EnableAaudioSummary">Aaudio является альтернативной нативной библиотекой звукового потока для улучшения качества звука. Требуется перезапуск приложения!</string>
+    <string name="Interface">Интерфейс</string>
+    <string name="diskCache">Кэш диска</string>
+    <string name="diskCacheSummary">Кэш диска может не работать с Legacy Manager! Если возникают проблемы, установите значение по умолчанию</string>
+    <string name="ImportBIOSFile">Импорт BIOS</string>
+    <string name="importBIOSInstructions">Выберите файл BIOS (bin, rom и т.д.) для импорта.</string>
+    <string name="ResetBIOSFile">Восстановить стандартный BIOS</string>
+    <string name="SystemInfo">Информация о системе</string>
+    <string name="reset_bios_confirm">Это удалит пользовательский BIOS и восстановит встроенный SeaBIOS. Продолжить?</string>
+    <string name="reset_bios_success">Стандартный BIOS восстановлен. Пожалуйста, перезапустите ВМ, если она запущена.</string>
+    <string name="RunningInBackground">Работает в фоновом режиме</string>
+    <string name="ClearDirHistory">Очистить историю каталогов</string>
+    <string name="ClearDirHistorySummary">Удалить все запомненные пути к файлам из хранилищ и съёмных хранилищ</string>
+    <string name="ClearDirHistoryConfirm">Это очистит все запомненные пути к файлам
+     Продолжить?</string>
+    <string name="DirHistoryCleared">История каталогов очищена</string>
+
+    <!-- Main activity -->
+
+    <!-- Machine -->
+    <string name="select_label">Выбрать</string>
+
+    <!-- User Interface section -->
+    <string name="section_user_interface">Пользовательский интерфейс</string>
+
+    <!-- Board section -->
+    <string name="section_board">Плата</string>
+    <string name="machine_type_label">Тип машины</string>
+    <string name="cpu_model_label">Модель CPU</string>
+    <string name="cpu_cores_label">Ядра CPU</string>
+    <string name="ram_memory_label">Оперативная память (МБ)</string>
+    <string name="disable_hpet_label">Отключить HPET</string>
+    <string name="disable_tsc_label">Отключить TSC</string>
+    <string name="disable_acpi_label">Отключить ACPI</string>
+
+    <!-- Storage section -->
+    <string name="section_disks">Диски</string>
+    <string name="hard_disk_a_label">Жёсткий диск A</string>
+    <string name="hard_disk_b_label">Жёсткий диск B</string>
+    <string name="hard_disk_c_label">Жёсткий диск C</string>
+    <string name="hard_disk_d_label">Жёсткий диск D</string>
+    <string-array name="diskSizeOptions">
+        <item>1 ГБ (расширяемый)</item>
+        <item>2 ГБ (расширяемый)</item>
+        <item>4 ГБ (расширяемый)</item>
+        <item>10 ГБ (расширяемый)</item>
+        <item>20 ГБ (расширяемый)</item>
+    </string-array>
+
+    <!-- Removable Storage section -->
+    <string name="section_removable">Съёмные носители</string>
+    <string name="cdrom_label">CDROM</string>
+    <string name="floppy_a_label">Дискета A</string>
+    <string name="floppy_b_label">Дискета B</string>
+
+    <!-- Boot section -->
+    <string name="section_boot">Загрузка</string>
+    <string name="boot_from_label">Загрузка с устройства</string>
+    <string name="kernel_label">Ядро</string>
+    <string name="initrd_label">Initrd</string>
+    <string name="append_label">Append</string>
+    <string name="append_hint">например: root=/dev/sda1</string>
+
+    <!-- Graphics section -->
+    <string name="section_graphics">Графика</string>
+    <string name="video_display_label">Видеодисплей</string>
+    <string name="use_venus_accelerator_label">Ускоритель Venus</string>
+    <string name="virgl_requires_sdl">3D-ускорение использует дисплей SDL. Qube переключился на него</string>
+    <string name="customResolutionLabel">Пользовательское разрешение </string>
+    <string name="customResolutionDefault">По умолчанию</string>
+    <string name="customResolutionAdd">+ Добавить разрешение</string>
+    <string name="customResolutionAddTitle">Добавить разрешение</string>
+    <string name="customResolutionAddBtn">Добавить</string>
+    <string name="customResolutionEditTitle">Изменить разрешение</string>
+    <string name="customResolutionEdit">Изменить</string>
+    <string name="customResolutionDelete">Удалить</string>
+    <string name="customResolutionCancel">Отмена</string>
+    <string name="customResolutionSave">Сохранить</string>
+    <string name="customResolutionWidth">Ширина</string>
+    <string name="customResolutionHeight">Высота</string>
+    <string name="customResolutionFillError">Пожалуйста, укажите ширину и высоту</string>
+    <string name="customResolutionNumberError">Ширина и высота должны быть числами</string>
+    <string name="customResolutionRangeError">Ширина и высота должны быть больше 0</string>
+    <string name="customResolutionInfoTitle">Пользовательское разрешение</string>
+    <string name="customResolutionInfoMessage">Выберите «По умолчанию», чтобы загрузиться со стандартным разрешением QEMU, или выберите сохранённое разрешение, чтобы использовать его вместо этого.\n\nЧтобы добавить новое, выберите «+ Добавить разрешение».\n\nЧтобы изменить или удалить сохранённое разрешение, сначала выберите его, затем удерживайте нажатым выпадающий список.</string>
+    <string name="videoDisplayInfoTitle">Видеодисплей</string>
+    <string name="videoDisplayInfoMessage"><![CDATA[
+        <b>std</b> является стандартным и стабильным вариантом, поставляемым вместе с QEMU.<br/><br/>
+        <b>cirrus</b> подходит для старых операционных систем 90-х годов.<br/><br/>
+        <b>vmware</b> эмулирует VMware SVGA, хорошо подходит для Windows.<br/><br/>
+        <b>virtio</b> является паравиртуализированным GPU, источником драйверов virtio.<br/><br/>
+        <b>virtio-vga-gl</b> включает 3D-ускорение через VirGL, может плохо работать с Windows, но помогает уменьшить разрывы изображения.<br/><br/>
+        <b>nographic</b> полностью отключает вывод VGA, использует только последовательную консоль, полезно для работы без дисплея.
+    ]]></string>
+
+    <string name="venusInfoTitle">Ускоритель Venus</string>
+    <string name="venusInfoMessage"><![CDATA[
+        <b>Venus</b> является новым ускорителем VirGL Vulkan. Он улучшает производительность графики, но может работать нестабильно на некоторых устройствах или гостевых ОС.
+    ]]></string>
+
+    <!-- Audio section -->
+    <string name="section_audio">Аудио</string>
+    <string name="sound_card_label">Звуковая карта</string>
+
+    <!-- Network section -->
+    <string name="section_network">Сеть</string>
+    <string name="network_label">Сеть</string>
+    <string name="network_card_label">Сетевая карта</string>
+    <string name="dns_server_label">DNS-сервер</string>
+    <string name="host_forward_label">Проброс портов хоста</string>
+    <string name="host_forward_hint">tcp:hostport1:guestport1,udp:hostport2:questport2,...</string>
+
+    <!-- Advanced section -->
+    <string name="section_advanced">Дополнительно</string>
+    <string name="extra_params_label">Дополнительные параметры</string>
+    <string name="extra_params_hint">-device sb16,-cpu max,...</string>
+
+    <!-- Log view -->
+    <string name="system_log_label">Системный журнал</string>
+    <string name="clear_label">Очистить</string>
+
+    <!-- Virtual Keys editor -->
+    <string name="Save">Сохранить</string>
+    <string name="pref_customize_virtual_keys">Настроить виртуальные клавиши</string>
+    <string name="msg_tap_to_select_a_key">Нажмите на клавишу, чтобы выбрать её</string>
+    <string name="msg_saved">Сохранено</string>
+    <string name="title_add_key">Добавить клавишу</string>
+    <string name="title_move_up">Переместить вверх</string>
+    <string name="title_move_down">Переместить вниз</string>
+    <string name="title_delete_key">Удалить клавишу</string>
+    <string name="title_load_defaults">Загрузить значения по умолчанию</string>
+    <string name="customizeVirtualKeysSummary">Добавление, удаление или изменение порядка виртуальных клавиш</string>
+    <string name="ShowAllVirtualKeys">Показывать все клавиши по умолчанию</string>
+    <string name="ShowAllVirtualKeysSummary">Добавляет F1-F12, Insert и Delete в стандартную раскладку</string>
+    <string name="OpenVirtualKeysWithKeyboard">Открывать вместе с клавиатурой</string>
+    <string name="OpenVirtualKeysWithKeyboardSummary">Автоматически показывать виртуальные клавиши при открытии программной клавиатуры</string>
+    <string name="UseSuperWithSingleTap">Одно нажатие для клавиши Super</string>
+    <string name="UseSuperWithSingleTapSummary">Отправлять клавишу Super при одном нажатии вместо переключения</string>
+    <string name="VirtualKeysRowCount">Количество рядов</string>
+    <string name="VirtualKeysRowCountSummary">Количество рядов для расположения виртуальных клавиш</string>
+
+    <!-- Summaries -->
+    <string name="summary_none">Нет</string>
+    <string name="summary_machine_type">Тип машины</string>
+    <string name="summary_cpu">CPU</string>
+    <string name="summary_cpu_plural">CPU</string>
+    <string name="summary_mb">МБ</string>
+    <string name="summary_hda">HDA</string>
+    <string name="summary_hdb">HDB</string>
+    <string name="summary_hdc">HDC</string>
+    <string name="summary_hdd">HDD</string>
+    <string name="summary_cdrom">CDROM</string>
+    <string name="summary_fda">FDA</string>
+    <string name="summary_fdb">FDB</string>
+    <string name="summary_boot_from">Загрузка с</string>
+    <string name="summary_kernel">ядро</string>
+    <string name="summary_initrd">initrd</string>
+    <string name="summary_append">append</string>
+    <string name="summary_video_card">Видеокарта</string>
+
+</resources>

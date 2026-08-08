@@ -100,24 +100,24 @@
     <string name="screenshot">Скриншот</string>
     <string name="screenshot_saved">Скриншот сохранён: </string>
     <string name="screenshot_failed">Не удалось сделать скриншот</string>
-    <string name="display_refresh_rate">Частота обновления экрана</string>
     <string name="ui_mode">Режим интерфейса</string>
     <string name="display">Дисплей</string>
+    <string name="displayInfoTitle">Дисплей</string>
+    <string name="displayInfoMessage"><![CDATA[
+        <b>QGE (Qube Graphics Engine)</b> это оптимизированная встроенная обёртка дисплея, которая принимает и отображает кадры нативно, без задержек.<br/><br/>
+        <b>VNC (Virtual Network Computing)</b> сбалансированный выбор для тех, кто хочет запускать приложение как хост. Он запускает VNC-сервер QEMU, не открывая средство просмотра внутри приложения, поэтому вы можете подключаться к ВМ из любого внешнего VNC-клиента.
+    ]]></string>
     <string name="absolutePointerInstructions">Убедитесь, что гостевая ОС поддерживает сенсорные устройства!\n\n \
         Выберите Мышь = «usb-tablet» в Qube перед загрузкой машины.</string>
     <string name="externalMouseInstructions">Подключите USB/Bluetooth-мышь к устройству Android.</string>
     <string name="reconnect">Переподключить</string>
     <string name="calibrate_mouse">Калибровка (исправление) мыши</string>
     <string name="isos_and_tools_descr">Хотите просмотреть список совместимых ОС и ссылки для загрузки?</string>
-    <string name="customOperatingSystem">Пользовательская ОС - используйте свои образы ISO и HDD</string>
-    <string name="toggle_key_mapper">Переключить назначение клавиш</string>
+    <string name="customOperatingSystem">Пользовательская операционная система - используйте свои образы ISO и HDD</string>
     <string name="toggle_virtual_keys">Переключить виртуальные клавиши</string>
     <string name="clear_key">Очистить клавишу</string>
     <string name="repeat_key">Повторить клавишу</string>
-    <string name="add_keymapper">Добавить назначение клавиш</string>
-    <string name="use_keymapper">Использовать назначение клавиш</string>
     <string name="add_special_keys">Добавить специальные клавиши/кнопки</string>
-    <string name="remove_key_mapper">Удалить назначение клавиш</string>
     <string name="welcomeText">Добро пожаловать в Qube Emulator, порт QEMU для устройств Android. Qube может эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков вы найдёте в Qube Wiki. Загружайте программы и образы только с надёжных сайтов!</string>
     <string name="checkForUpdates">Проверять обновления при запуске</string>
     <string name="sdcardNotMounted">Ошибка: SD-карта не подключена</string>
@@ -174,8 +174,6 @@
     <string name="LandscapeReverse">Альбомная перевёрнутая</string>
     <string name="Portrait">Портретная</string>
     <string name="PortraitReverse">Портретная перевёрнутая</string>
-    <string name="DefaultRefreshRate">Частота обновления по умолчанию</string>
-    <string name="IdleRefreshRate">Частота обновления в режиме простоя</string>
     <string name="importMachines">Импорт машин</string>
     <string name="PleaseWait">Пожалуйста, подождите</string>
     <string name="InstallingBIOS">Установка BIOS</string>
@@ -190,9 +188,6 @@
     <string name="ExportFilenameCannotBeEmpty">Имя файла экспорта не может быть пустым</string>
     <string name="ChangeDirectory">Изменить каталог</string>
     <string name="Export">Экспорт</string>
-    <string name="threeBySix">3x6</string>
-    <string name="fourByEight">4x8</string>
-    <string name="fiveByTen">5x10</string>
     <string name="InstallRoms">Установить ROM</string>
     <string name="CreateMachine">Создать машину</string>
     <string name="DeleteMachine">Удалить машину</string>
@@ -220,8 +215,6 @@
     <string name="EnableDesktopMode">Включить режим рабочего стола</string>
     <string name="AlwaysShowToolbar">Всегда показывать панель инструментов</string>
     <string name="AlwaysToolbar">Всегда панель инструментов</string>
-    <string name="KeyMapperButtonLayout">Расположение кнопок назначения клавиш</string>
-    <string name="KeyMapperLayout">Раскладка назначения клавиш</string>
     <string name="CheckSoftwareUpdates">Проверять обновления ПО</string>
     <string name="CheckSoftwareUpdatesSummary">Проверять обновления ПО при запуске</string>
     <string name="FailedToSaveLogFile">\"Не удалось сохранить файл журнала: \"</string>
@@ -264,7 +257,6 @@
     <string name="DirectoryAlreadyExists">Каталог уже существует!</string>
     <string name="PressVolumeDownForRightClick">Нажмите Громкость вниз для правого клика</string>
     <string name="NoRemovableDevicesAttached">Съёмные устройства не подключены</string>
-    <string name="MapperExistsChooseAnotherName">Такое назначение клавиш уже существует, выберите другое имя</string>
     <string name="ClearedKey">Клавиша очищена</string>
     <string name="FitToScreenDisableDesktopMode">«Подогнать под экран» отключено в режиме рабочего стола</string>
     <string name="StretchScreenDisabledDesktopMode">«Растянуть на экран» отключено в режиме рабочего стола</string>
@@ -280,7 +272,6 @@
     <string name="ChooseDirToSaveLogFile">Выберите каталог для сохранения файла журнала</string>
     <string name="SetKeyRepeat">Установить повтор клавиши</string>
     <string name="RemovedKeyRepeat">Повтор клавиши удалён</string>
-    <string name="KeyMapperEnabled">Назначение клавиш включено</string>
     <string name="MachinesExported">Машины экспортированы</string>
     <string name="LimboLog">Журнал Qube</string>
     <string name="CHANGELOG">СПИСОК ИЗМЕНЕНИЙ</string>
@@ -297,8 +288,6 @@
     <string name="Cancel">Отмена</string>
     <string name="Apply">Применить</string>
     <string name="Delete">Удалить</string>
-    <string name="KeyMapper">Назначение клавиш</string>
-    <string name="DeleteKeyMapper">Удалить назначение клавиш?</string>
     <string name="CopyTo">Копировать в</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
@@ -313,7 +302,6 @@
     <string name="SelectAFile">Выбрать файл</string>
     <string name="AccessDenied">Доступ запрещён</string>
     <string name="SpecialKeysButtons">Специальные клавиши/кнопки</string>
-    <string name="KeyMapperName">Название назначения клавиш</string>
     <string name="DownloadsOSes">Загрузки ОС</string>
     <string name="ShowLog">Показать журнал</string>
     <string name="ExportFilename">Имя файла экспорта</string>
@@ -331,20 +319,21 @@
     <string name="TouchScreenTitle">Сенсорный экран</string>
     <string name="ImmersiveMode">Полноэкранный режим (Immersive)</string>
     <string name="EnableImmersiveMode">Включить полноэкранный режим (Immersive)</string>
-    <string name="UsingKeyMapper">Используется назначение клавиш</string>
     <string name="PreventMouseOutOfBounds">Не выпускать мышь за пределы экрана</string>
     <string name="PreventMouseDescr">Предотвращает сбои некоторых ОС при использовании мыши «usb-tablet», когда указатель выходит за пределы экрана.\nВнимание: это может создать невидимую стену, если гостевая ОС не поддерживает «usb-tablet».</string>
     <string name="other">Другое</string>
     <string name="custom">Пользовательский</string>
     <string name="otherOperatingSystem">Другие операционные системы</string>
     <string name="DownloadISOAndVirtualHDDImages">Загрузить образы ISO и виртуальных HDD</string>
+    <string name="PointerSpeed">Скорость указателя</string>
+    <string name="PointerSpeedSummary">Скорость движения курсора в режиме тачпада/относительном режиме</string>
+    <string name="RefreshRate">Частота обновления ВМ</string>
+    <string name="RefreshRateSummary">Частота обновления дисплея виртуальной машины, более высокие значения обеспечивают более плавную картинку, но используют больше ресурсов</string>
     <string name="keyPressDelay">Задержка нажатия клавиш</string>
     <string name="keyPressDelaySummary">Задержка между нажатиями клавиш. Меньшие значения повышают производительность, но эмулятор может не распознавать события клавиш, поэтому используйте большие значения при необходимости.</string>
     <string name="mouseButtonDelay">Задержка клика мыши</string>
     <string name="mouseButtonDelaySummary">Задержка между кликами кнопок мыши. Меньшие значения повышают производительность, но эмулятор может не распознавать события мыши, поэтому используйте большие значения при необходимости.</string>
     <string name="machineHeader">Машина:</string>
-    <string name="EnableAaudio">Включить Aaudio</string>
-    <string name="EnableAaudioSummary">Aaudio является альтернативной нативной библиотекой звукового потока для улучшения качества звука. Требуется перезапуск приложения!</string>
     <string name="Interface">Интерфейс</string>
     <string name="diskCache">Кэш диска</string>
     <string name="diskCacheSummary">Кэш диска может не работать с Legacy Manager! Если возникают проблемы, установите значение по умолчанию</string>
@@ -391,6 +380,8 @@
         <item>4 ГБ (расширяемый)</item>
         <item>10 ГБ (расширяемый)</item>
         <item>20 ГБ (расширяемый)</item>
+        <item>48 ГБ (расширяемый)</item>
+        <item>64 ГБ (расширяемый)</item>
     </string-array>
 
     <!-- Removable Storage section -->
@@ -411,7 +402,6 @@
     <string name="section_graphics">Графика</string>
     <string name="video_display_label">Видеодисплей</string>
     <string name="use_venus_accelerator_label">Ускоритель Venus</string>
-    <string name="virgl_requires_sdl">3D-ускорение использует дисплей SDL. Qube переключился на него</string>
     <string name="customResolutionLabel">Пользовательское разрешение </string>
     <string name="customResolutionDefault">По умолчанию</string>
     <string name="customResolutionAdd">+ Добавить разрешение</string>

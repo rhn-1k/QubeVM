@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="refreshRateLabels">
+        <item>30 Hz</item>
+        <item>60 Hz</item>
+        <item>75 Hz</item>
+        <item>90 Hz</item>
+        <item>120 Hz</item>
+        <item>144 Hz</item>
+        <item>165 Hz</item>
+    </string-array>
+    <string-array name="refreshRateValues">
+        <item>30</item>
+        <item>60</item>
+        <item>75</item>
+        <item>90</item>
+        <item>120</item>
+        <item>144</item>
+        <item>165</item>
+    </string-array>
+
+    <string-array name="pointerSpeedLabels">
+        <item>0.5x</item>
+        <item>0.75x</item>
+        <item>1.0x (Default)</item>
+        <item>1.25x</item>
+        <item>1.5x</item>
+        <item>2.0x</item>
+    </string-array>
+    <string-array name="pointerSpeedValues">
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+        <item>125</item>
+        <item>150</item>
+        <item>200</item>
+    </string-array>
+
+    <string-array name="keyPressDelayLabels">
+        <item>20 ms</item>
+        <item>30 ms</item>
+        <item>40 ms</item>
+        <item>50 ms</item>
+        <item>60 ms</item>
+        <item>70 ms</item>
+        <item>80 ms</item>
+        <item>90 ms</item>
+        <item>100 ms</item>
+    </string-array>
+    <string-array name="keyPressDelayValues">
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="mouseButtonDelayLabels">
+        <item>20 ms</item>
+        <item>30 ms</item>
+        <item>40 ms</item>
+        <item>50 ms</item>
+        <item>60 ms</item>
+        <item>70 ms</item>
+        <item>80 ms</item>
+        <item>90 ms</item>
+        <item>100 ms</item>
+    </string-array>
+    <string-array name="mouseButtonDelayValues">
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="orientationLabels">
+        <item>@string/Auto</item>
+        <item>@string/Landscape</item>
+        <item>@string/LandscapeReverse</item>
+        <item>@string/Portrait</item>
+        <item>@string/PortraitReverse</item>
+    </string-array>
+    <string-array name="orientationValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="diskCacheLabels">
+        <item>default</item>
+        <item>none</item>
+        <item>writethrough</item>
+        <item>writeback</item>
+        <item>directsync</item>
+        <item>unsafe</item>
+    </string-array>
+    <string-array name="diskCacheValues">
+        <item>default</item>
+        <item>none</item>
+        <item>writethrough</item>
+        <item>writeback</item>
+        <item>directsync</item>
+        <item>unsafe</item>
+    </string-array>
+    <string-array name="vkRowCountLabels">
+        <item>1 row</item>
+        <item>2 rows</item>
+        <item>3 rows</item>
+    </string-array>
+    <string-array name="vkRowCountValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+</resources>

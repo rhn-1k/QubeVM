@@ -42,7 +42,7 @@ QubeVM offers different ways to run your virtual machine depending on your devic
 
 Qube supports two display modes:
 
-- **SDL**, the default mode, smooth and supports audio, good for high stability
+- **QGE**, the default mode, smooth and native, also supports native audio output using Aaudio, good for reducing resources usage
 - **VNC**, requires an external VNC client, runs at 60Hz refresh rate, good for reducing screen tearing
 
 ## Network Support

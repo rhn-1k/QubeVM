@@ -100,9 +100,13 @@
     <string name="screenshot">Screenshot</string>
     <string name="screenshot_saved">Screenshot saved: </string>
     <string name="screenshot_failed">Screenshot failed</string>
-    <string name="display_refresh_rate">Display Refresh Rate</string>
     <string name="ui_mode">UI Mode</string>
     <string name="display">Display</string>
+    <string name="displayInfoTitle">Display</string>
+    <string name="displayInfoMessage"><![CDATA[
+        <b>QGE (Qube Graphics Engine)</b> is the optimized built-in display wrapper, it receives and displays the frames in native way, without latency<br/><br/>
+        <b>VNC (Virtual Network Computing)</b> is the balanced choice for those who want to run the app as a host, it starts QEMU\'s VNC server without opening a viewer inside the app, so you can connect to the VM from any external VNC client instead.
+    ]]></string>
     <string name="absolutePointerInstructions">Make sure the guest os supports touch screen devices!\n\n \
         Choose Mouse = \"usb-tablet\" from Qube before you boot the machine.</string>
     <string name="externalMouseInstructions">Plug in your USB/Bluetooth Mouse in your Android device.</string>
@@ -110,14 +114,10 @@
     <string name="calibrate_mouse">Calibrate (Fix) Mouse</string>
     <string name="isos_and_tools_descr">Do you want to view a list of Compatible OSes and Download Links?</string>
     <string name="customOperatingSystem">Custom Operating System - use your own ISO and HDD images</string>
-    <string name="toggle_key_mapper">Toggle Key Mapper</string>
     <string name="toggle_virtual_keys">Toggle Virtual Keys</string>
     <string name="clear_key">Clear Key</string>
     <string name="repeat_key">Repeat Key</string>
-    <string name="add_keymapper">Add Key Mapper</string>
-    <string name="use_keymapper">Use Key Mapper</string>
     <string name="add_special_keys">Add Special Keys/Buttons</string>
-    <string name="remove_key_mapper">Remove Key Mapper</string>
     <string name="welcomeText">Welcome to Qube Emulator, a port of QEMU for Android devices. Qube can emulate several operating systems. For links to downloads, guides, and virtual disk images visit the Qube Wiki. Download software and images only from trusted websites!</string>
     <string name="checkForUpdates">Check for Updates on Startup</string>
     <string name="sdcardNotMounted">Error: SD card is not mounted</string>
@@ -174,8 +174,6 @@
     <string name="LandscapeReverse">Landscape Reverse</string>
     <string name="Portrait">Portrait</string>
     <string name="PortraitReverse">Portrait Reverse</string>
-    <string name="DefaultRefreshRate">Default Refresh Rate</string>
-    <string name="IdleRefreshRate">Idle Refresh Rate</string>
     <string name="importMachines">Import Machines</string>
     <string name="PleaseWait">Please Wait</string>
     <string name="InstallingBIOS">Installing BIOS</string>
@@ -190,9 +188,6 @@
     <string name="ExportFilenameCannotBeEmpty">Export filename cannot be empty</string>
     <string name="ChangeDirectory">Change Directory</string>
     <string name="Export">Export</string>
-    <string name="threeBySix">3x6</string>
-    <string name="fourByEight">4x8</string>
-    <string name="fiveByTen">5x10</string>
     <string name="InstallRoms">Install Roms</string>
     <string name="CreateMachine">Create machine</string>
     <string name="DeleteMachine">Delete Machine</string>
@@ -220,8 +215,6 @@
     <string name="EnableDesktopMode">Enable Desktop Mode</string>
     <string name="AlwaysShowToolbar">Always show the Toolbar</string>
     <string name="AlwaysToolbar">Always Toolbar</string>
-    <string name="KeyMapperButtonLayout">Key Mapper button layout</string>
-    <string name="KeyMapperLayout">Key Mapper layout</string>
     <string name="CheckSoftwareUpdates">Check for Software Updates</string>
     <string name="CheckSoftwareUpdatesSummary">Check for software updates on startup</string>
     <string name="FailedToSaveLogFile">\"Failed to save log file: \"</string>
@@ -264,7 +257,6 @@
     <string name="DirectoryAlreadyExists">Directory already exists!</string>
     <string name="PressVolumeDownForRightClick">Press Volume Down for Right Click</string>
     <string name="NoRemovableDevicesAttached">No removable devices attached</string>
-    <string name="MapperExistsChooseAnotherName">Mapper name exists, choose another name</string>
     <string name="ClearedKey">Cleared Key</string>
     <string name="FitToScreenDisableDesktopMode">Fit to Screen Disabled under Desktop Mode</string>
     <string name="StretchScreenDisabledDesktopMode">Stretch Screen Disabled under Desktop Mode</string>
@@ -280,7 +272,6 @@
     <string name="ChooseDirToSaveLogFile">Choose a Directory to save the logfile</string>
     <string name="SetKeyRepeat">Set Key Repeat</string>
     <string name="RemovedKeyRepeat">Removed Key Repeat</string>
-    <string name="KeyMapperEnabled">Key Mapper Enabled</string>
     <string name="MachinesExported">Machines exported</string>
     <string name="LimboLog">Qube Log</string>
     <string name="CHANGELOG">CHANGELOG</string>
@@ -297,8 +288,6 @@
     <string name="Cancel">Cancel</string>
     <string name="Apply">Apply</string>
     <string name="Delete">Delete</string>
-    <string name="KeyMapper">Key Mapper</string>
-    <string name="DeleteKeyMapper">Delete Key Mapper?</string>
     <string name="CopyTo">Copy To</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
@@ -313,7 +302,6 @@
     <string name="SelectAFile">Select a File</string>
     <string name="AccessDenied">Access Denied</string>
     <string name="SpecialKeysButtons">Special Keys/Buttons</string>
-    <string name="KeyMapperName">Key Mapper Name</string>
     <string name="DownloadsOSes">Downloads OSes</string>
     <string name="ShowLog">Show log</string>
     <string name="ExportFilename">Export Filename</string>
@@ -331,20 +319,21 @@
     <string name="TouchScreenTitle">Touchscreen</string>
     <string name="ImmersiveMode">Immersive Mode</string>
     <string name="EnableImmersiveMode">Enable Immersive Mode</string>
-    <string name="UsingKeyMapper">Using Key Mapper</string>
     <string name="PreventMouseOutOfBounds">Prevent Mouse out of Bounds</string>
     <string name="PreventMouseDescr">Prevents some OSes from crashing when using \"usb-tablet\" mouse and the pointer is outside of screen bounds.\nWarning: This might create an invisible wall if the guest OS does not support \"usb-tablet\".</string>
     <string name="other">Other</string>
     <string name="custom">Custom</string>
     <string name="otherOperatingSystem">Other Operating Systems</string>
     <string name="DownloadISOAndVirtualHDDImages">Download ISO and Virtual HDD Images</string>
+    <string name="PointerSpeed">Pointer Speed</string>
+    <string name="PointerSpeedSummary">Cursor movement speed in trackpad/relative mode</string>
+    <string name="RefreshRate">VM Refresh Rate</string>
+    <string name="RefreshRateSummary">Virtual Machine display refresh rate, Higher values are smoother but use more resources</string>
     <string name="keyPressDelay">Key Pressed Delay</string>
     <string name="keyPressDelaySummary">Delay between keyboard keys pressed. Lower values have better performance but key events might be not be understood by the emulator so use higher values.</string>
     <string name="mouseButtonDelay">Mouse Button Click Delay</string>
     <string name="mouseButtonDelaySummary">Delay between mouse button clicks. Lower values have better performance but mouse events might be not be understood by the emulator so use higher values.</string>
     <string name="machineHeader">Machine:</string>
-    <string name="EnableAaudio">Enable Aaudio</string>
-    <string name="EnableAaudioSummary">Aaudio is an alternative native sound streamer library for better audio performance. Needs app restart!</string>
     <string name="Interface">Interface</string>
     <string name="diskCache">Disk Cache</string>
     <string name="diskCacheSummary">Disk Cache might not work with Legacy Manager! If you encounter issues set to Default</string>
@@ -377,6 +366,7 @@
     <string name="ram_memory_label">RAM Memory (MB)</string>
     <string name="disable_hpet_label">Disable HPET</string>
     <string name="disable_tsc_label">Disable TSC</string>
+    <string name="enable_svm_label">Enable SVM</string>
     <string name="disable_acpi_label">Disable ACPI</string>
 
     <!-- Storage section -->
@@ -391,6 +381,8 @@
         <item>4GB (Growable)</item>
         <item>10 GB (Growable)</item>
         <item>20 GB (Growable)</item>
+        <item>48 GB (Growable)</item>
+        <item>64 GB (Growable)</item>
     </string-array>
 
     <!-- Removable Storage section -->
@@ -411,7 +403,6 @@
     <string name="section_graphics">Graphics</string>
     <string name="video_display_label">Video Display</string>
     <string name="use_venus_accelerator_label">Venus Accelerator</string>
-    <string name="virgl_requires_sdl">3D acceleration uses SDL display. Qube switched to it</string>
     <string name="customResolutionLabel">Custom Resolution </string>
     <string name="customResolutionDefault">Default</string>
     <string name="customResolutionAdd">+ Add Resolution</string>

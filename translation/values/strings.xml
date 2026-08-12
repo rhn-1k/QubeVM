@@ -201,8 +201,9 @@
     <string name="tunDeviceWarning">Warning! Make sure device /dev/net/tun has appropriate permissions\nUser ID</string>
     <string name="TAPHelp">Help</string>
     <string name="VNCStarted">VNC Started</string>
-    <string name="LogWarning">Something happened during last run, do you want to see the log?</string>
+    <!-- Summary for log errors -->
     <string name="SomethingWentWrong">Something went wrong</string>
+    <string name="CopySummary">Copy</string>
     <string name="UnknownErrorCause">The VM stopped unexpectedly and the exact cause could not be determined.</string>
     <string name="AllowExternalVNCConnections">Allow External VNC Connections</string>
     <string name="AllowExternalVNCSummary">Allow external VNC Clients. Needs app restart. VNC Connections are not encrypted so only use in a private network that you trust!</string>
@@ -337,12 +338,7 @@
     <string name="Interface">Interface</string>
     <string name="diskCache">Disk Cache</string>
     <string name="diskCacheSummary">Disk Cache might not work with Legacy Manager! If you encounter issues set to Default</string>
-    <string name="ImportBIOSFile">Import BIOS</string>
-    <string name="importBIOSInstructions">Select a BIOS file (bin, rom, etc..) to import.</string>
-    <string name="ResetBIOSFile">Restore Default BIOS</string>
     <string name="SystemInfo">System Info</string>
-    <string name="reset_bios_confirm">This will delete the custom BIOS and restore the built-in SeaBIOS. Continue?</string>
-    <string name="reset_bios_success">Default BIOS restored. Please restart your VM if its running.</string>
     <string name="RunningInBackground">Running in background</string>
     <string name="ClearDirHistory">Clear Directory History</string>
     <string name="ClearDirHistorySummary">Remove all remembered file paths from storages, removable storages</string>
@@ -394,6 +390,7 @@
     <!-- Boot section -->
     <string name="section_boot">Boot</string>
     <string name="boot_from_label">Boot from Device</string>
+    <string name="bios_label">BIOS</string>
     <string name="kernel_label">Kernel</string>
     <string name="initrd_label">Initrd</string>
     <string name="append_label">Append</string>
@@ -403,6 +400,7 @@
     <string name="section_graphics">Graphics</string>
     <string name="video_display_label">Video Display</string>
     <string name="use_venus_accelerator_label">Venus Accelerator</string>
+    <string name="virgl_requires_qge">3D acceleration uses QGE display. Qube switched to it</string>
     <string name="customResolutionLabel">Custom Resolution </string>
     <string name="customResolutionDefault">Default</string>
     <string name="customResolutionAdd">+ Add Resolution</string>
@@ -490,6 +488,7 @@
     <string name="summary_fda">FDA</string>
     <string name="summary_fdb">FDB</string>
     <string name="summary_boot_from">Boot from</string>
+    <string name="summary_bios">bios</string>
     <string name="summary_kernel">kernel</string>
     <string name="summary_initrd">initrd</string>
     <string name="summary_append">append</string>

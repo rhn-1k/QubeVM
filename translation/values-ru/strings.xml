@@ -202,7 +202,9 @@
     <string name="TAPHelp">Помощь</string>
     <string name="VNCStarted">VNC запущен</string>
     <string name="LogWarning">Что-то произошло во время последнего запуска, хотите просмотреть журнал?</string>
+    <!-- Summary for log errors -->
     <string name="SomethingWentWrong">Что-то пошло не так</string>
+    <string name="CopySummary">Копировать</string>
     <string name="UnknownErrorCause">ВМ неожиданно остановилась, точную причину определить не удалось.</string>
     <string name="AllowExternalVNCConnections">Разрешить внешние VNC-подключения</string>
     <string name="AllowExternalVNCSummary">Разрешить внешним VNC-клиентам подключение. Требуется перезапуск приложения. VNC-подключения не шифруются, используйте только в частной сети, которой доверяете!</string>
@@ -402,6 +404,7 @@
     <string name="section_graphics">Графика</string>
     <string name="video_display_label">Видеодисплей</string>
     <string name="use_venus_accelerator_label">Ускоритель Venus</string>
+    <string name="virgl_requires_qge">Для 3D-ускорения используется дисплей QGE. Qube переключился на него</string>
     <string name="customResolutionLabel">Пользовательское разрешение </string>
     <string name="customResolutionDefault">По умолчанию</string>
     <string name="customResolutionAdd">+ Добавить разрешение</string>

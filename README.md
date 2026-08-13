@@ -10,10 +10,10 @@ QEMU-based virtual machine emulator for Android
 
 Emulates a full virtual machine (CPU, RAM, disk, display, sound, network) on Android, allowing installation and execution of guest operating systems (Windows, Linux, BSD, legacy OSes) inside the app
 
-QubeVM is built upon **QEMU 11.0.3 and 7.2.22**, compiled natively for Android as a `.so` library without relying on third-party wrappers
+QubeVM currently supports **QEMU 11.1.0 and 7.2.22**, compiled natively for Android as a `.so` library without relying on third-party wrappers
 
 > [!NOTE]
-> QubeVM includes links to legally distributable operating systems only. Any other disk images, ISOs, or software run inside the app are the user's own responsibility.
+> QubeVM includes links to legally distributable operating systems only. Any other disk images, ISOs, or software run inside the app are the user's own responsibility
 
 ## Preview
 
@@ -42,8 +42,8 @@ QubeVM offers different ways to run your virtual machine depending on your devic
 
 Qube supports two display modes:
 
-- **QGE**, the default mode, smooth and native, also supports native audio output using Aaudio, good for reducing resources usage
-- **VNC**, requires an external VNC client, runs at 60Hz refresh rate, good for reducing screen tearing
+- **QGE (Qube Graphics Engine)**, the default mode, smooth and native, also supports native audio output using AAudio, good for reducing resources usage
+- **VNC (Virtual Network Computing)**, requires an external VNC client, runs at 60Hz refresh rate, good for reducing screen tearing
 
 ## Network Support
 
@@ -52,9 +52,9 @@ Qube supports two display modes:
 
 ## KVM Support
 
-Not available by default, stock Android does not expose `/dev/kvm` to apps, so TCG is used
+Not available by default, stock Android does not expose `/dev/kvm` to apps, so TCG is used as default Accelerator
 
-Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures. Currently isn't supported because we didn't release an ARM version yet
+Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures. Currently only supported for x86 devices, as we have only released the x86 version so far
 
 ## Translations
 

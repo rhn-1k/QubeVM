@@ -63,4 +63,4 @@ Contributions from translators are welcome. Feel free to open a pull request to 
 
 ## Credits
 
-QubeVM is a modified and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo).
+QubeVM is a forked and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo)

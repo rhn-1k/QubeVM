@@ -195,10 +195,6 @@
     <string name="DNSServer">DNS-сервер</string>
     <string name="HostForward">Проброс портов хоста</string>
     <string name="EnableQMPForChangingDrives">Включите QMP в настройках для смены съёмных дисков</string>
-    <string name="ImmersiveMode">Полноэкранный режим (Immersive)</string>
-    <string name="EnableImmersiveMode">Включить полноэкранный режим (Immersive)</string>
-    <string name="PreventMouseOutOfBounds">Не выпускать мышь за пределы экрана</string>
-    <string name="PreventMouseDescr">Предотвращает сбои некоторых ОС при использовании мыши «usb-tablet», когда указатель выходит за пределы экрана.\nВнимание: это может создать невидимую стену, если гостевая ОС не поддерживает «usb-tablet».</string>
     <string name="other">Другое</string>
     <string name="custom">Пользовательский</string>
     <string name="otherOperatingSystem">Другие операционные системы</string>
@@ -207,6 +203,8 @@
     <string name="PointerSpeedSummary">Скорость движения курсора в режиме тачпада/относительном режиме</string>
     <string name="RefreshRate">Частота обновления ВМ</string>
     <string name="RefreshRateSummary">Частота обновления дисплея виртуальной машины, более высокие значения обеспечивают более плавную картинку, но используют больше ресурсов</string>
+    <string name="keyPressDelay">Задержка нажатия клавиш</string>
+    <string name="keyPressDelaySummary">Задержка между нажатиями клавиш. Меньшие значения повышают производительность, но эмулятор может не распознавать события клавиш, поэтому используйте большие значения при необходимости.</string>
     <string name="mouseButtonDelay">Задержка клика мыши</string>
     <string name="mouseButtonDelaySummary">Задержка между кликами кнопок мыши. Меньшие значения повышают производительность, но эмулятор может не распознавать события мыши, поэтому используйте большие значения при необходимости.</string>
     <string name="machineHeader">Машина:</string>
@@ -260,6 +258,16 @@
     <string name="floppy_a_label">Дискета A</string>
     <string name="floppy_b_label">Дискета B</string>
 
+    <!-- BIOS section -->
+    <string name="section_bios">BIOS</string>
+    <string name="bios_type_label">Тип BIOS</string>
+    <string name="bios_code_label">Code</string>
+    <string name="bios_vars_label">Vars</string>
+    <string name="bios_default_type">По умолчанию</string>
+    <string name="bios_uefi_type">UEFI</string>
+    <string name="uefi_required_title">Загрузка UEFI недоступна</string>
+    <string name="uefi_required_message">Загрузка с UEFI невозможна без code, vars</string>
+
     <!-- Boot section -->
     <string name="section_boot">Загрузка</string>
     <string name="boot_from_label">Загрузка с устройства</string>
@@ -270,99 +278,4 @@
     <string name="append_hint">например: root=/dev/sda1</string>
 
     <!-- Graphics section -->
-    <string name="section_graphics">Графика</string>
-    <string name="video_display_label">Видеодисплей</string>
-    <string name="use_venus_accelerator_label">Ускоритель Venus</string>
-    <string name="virgl_requires_qge">Для 3D-ускорения используется дисплей QGE. Qube переключился на него</string>
-    <string name="customResolutionLabel">Пользовательское разрешение </string>
-    <string name="customResolutionDefault">По умолчанию</string>
-    <string name="customResolutionAdd">+ Добавить разрешение</string>
-    <string name="customResolutionAddTitle">Добавить разрешение</string>
-    <string name="customResolutionAddBtn">Добавить</string>
-    <string name="customResolutionEditTitle">Изменить разрешение</string>
-    <string name="customResolutionEdit">Изменить</string>
-    <string name="customResolutionDelete">Удалить</string>
-    <string name="customResolutionCancel">Отмена</string>
-    <string name="customResolutionSave">Сохранить</string>
-    <string name="customResolutionWidth">Ширина</string>
-    <string name="customResolutionHeight">Высота</string>
-    <string name="customResolutionFillError">Пожалуйста, укажите ширину и высоту</string>
-    <string name="customResolutionNumberError">Ширина и высота должны быть числами</string>
-    <string name="customResolutionRangeError">Ширина и высота должны быть больше 0</string>
-    <string name="customResolutionInfoTitle">Пользовательское разрешение</string>
-    <string name="customResolutionInfoMessage">Выберите «По умолчанию», чтобы загрузиться со стандартным разрешением QEMU, или выберите сохранённое разрешение, чтобы использовать его вместо этого.\n\nЧтобы добавить новое, выберите «+ Добавить разрешение».\n\nЧтобы изменить или удалить сохранённое разрешение, сначала выберите его, затем удерживайте нажатым выпадающий список.</string>
-    <string name="videoDisplayInfoTitle">Видеодисплей</string>
-    <string name="videoDisplayInfoMessage"><![CDATA[
-        <b>std</b> является стандартным и стабильным вариантом, поставляемым вместе с QEMU.<br/><br/>
-        <b>cirrus</b> подходит для старых операционных систем 90-х годов.<br/><br/>
-        <b>vmware</b> эмулирует VMware SVGA, хорошо подходит для Windows.<br/><br/>
-        <b>virtio</b> является паравиртуализированным GPU, источником драйверов virtio.<br/><br/>
-        <b>virtio-vga-gl</b> включает 3D-ускорение через VirGL, может плохо работать с Windows, но помогает уменьшить разрывы изображения.<br/><br/>
-        <b>nographic</b> полностью отключает вывод VGA, использует только последовательную консоль, полезно для работы без дисплея.
-    ]]></string>
-
-    <string name="venusInfoTitle">Ускоритель Venus</string>
-    <string name="venusInfoMessage"><![CDATA[
-        <b>Venus</b> является новым ускорителем VirGL Vulkan. Он улучшает производительность графики, но может работать нестабильно на некоторых устройствах или гостевых ОС.
-    ]]></string>
-
-    <!-- Audio section -->
-    <string name="section_audio">Аудио</string>
-    <string name="sound_card_label">Звуковая карта</string>
-
-    <!-- Network section -->
-    <string name="network_label">Сеть</string>
-    <string name="network_card_label">Сетевая карта</string>
-    <string name="dns_server_label">DNS-сервер</string>
-    <string name="host_forward_label">Проброс портов хоста</string>
-    <string name="host_forward_hint">tcp:hostport1:guestport1,udp:hostport2:questport2,...</string>
-
-    <!-- Advanced section -->
-    <string name="section_advanced">Дополнительно</string>
-    <string name="extra_params_label">Дополнительные параметры</string>
-    <string name="extra_params_hint">-device sb16,-cpu max,...</string>
-
-    <!-- Log view -->
-    <string name="clear_label">Очистить</string>
-
-    <!-- Virtual Keys editor -->
-    <string name="Save">Сохранить</string>
-    <string name="pref_customize_virtual_keys">Настроить виртуальные клавиши</string>
-    <string name="msg_tap_to_select_a_key">Нажмите на клавишу, чтобы выбрать её</string>
-    <string name="msg_saved">Сохранено</string>
-    <string name="title_add_key">Добавить клавишу</string>
-    <string name="title_move_up">Переместить вверх</string>
-    <string name="title_move_down">Переместить вниз</string>
-    <string name="title_delete_key">Удалить клавишу</string>
-    <string name="title_load_defaults">Загрузить значения по умолчанию</string>
-    <string name="customizeVirtualKeysSummary">Добавление, удаление или изменение порядка виртуальных клавиш</string>
-    <string name="ShowAllVirtualKeys">Показывать все клавиши по умолчанию</string>
-    <string name="ShowAllVirtualKeysSummary">Добавляет F1-F12, Insert и Delete в стандартную раскладку</string>
-    <string name="OpenVirtualKeysWithKeyboard">Открывать вместе с клавиатурой</string>
-    <string name="OpenVirtualKeysWithKeyboardSummary">Автоматически показывать виртуальные клавиши при открытии программной клавиатуры</string>
-    <string name="UseSuperWithSingleTap">Одно нажатие для клавиши Super</string>
-    <string name="UseSuperWithSingleTapSummary">Отправлять клавишу Super при одном нажатии вместо переключения</string>
-    <string name="VirtualKeysRowCount">Количество рядов</string>
-    <string name="VirtualKeysRowCountSummary">Количество рядов для расположения виртуальных клавиш</string>
-
-    <!-- Summaries -->
-    <string name="summary_none">Нет</string>
-    <string name="summary_machine_type">Тип машины</string>
-    <string name="summary_cpu">CPU</string>
-    <string name="summary_cpu_plural">CPU</string>
-    <string name="summary_mb">МБ</string>
-    <string name="summary_hda">HDA</string>
-    <string name="summary_hdb">HDB</string>
-    <string name="summary_hdc">HDC</string>
-    <string name="summary_hdd">HDD</string>
-    <string name="summary_cdrom">CDROM</string>
-    <string name="summary_fda">FDA</string>
-    <string name="summary_fdb">FDB</string>
-    <string name="summary_boot_from">Загрузка с</string>
-    <string name="summary_bios">bios</string>
-    <string name="summary_kernel">ядро</string>
-    <string name="summary_initrd">initrd</string>
-    <string name="summary_append">append</string>
-    <string name="summary_video_card">Видеокарта</string>
-
-</resources>
+    <string na

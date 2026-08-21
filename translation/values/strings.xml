@@ -196,10 +196,6 @@
     <string name="DNSServer">DNS Server</string>
     <string name="HostForward">Host Forward</string>
     <string name="EnableQMPForChangingDrives">Enable QMP in settings to change removable drives</string>
-    <string name="ImmersiveMode">Immersive Mode</string>
-    <string name="EnableImmersiveMode">Enable Immersive Mode</string>
-    <string name="PreventMouseOutOfBounds">Prevent Mouse out of Bounds</string>
-    <string name="PreventMouseDescr">Prevents some OSes from crashing when using \"usb-tablet\" mouse and the pointer is outside of screen bounds.\nWarning: This might create an invisible wall if the guest OS does not support \"usb-tablet\".</string>
     <string name="other">Other</string>
     <string name="custom">Custom</string>
     <string name="otherOperatingSystem">Other Operating Systems</string>
@@ -208,6 +204,8 @@
     <string name="PointerSpeedSummary">Cursor movement speed in trackpad/relative mode</string>
     <string name="RefreshRate">VM Refresh Rate</string>
     <string name="RefreshRateSummary">Virtual Machine display refresh rate, Higher values are smoother but use more resources</string>
+    <string name="keyPressDelay">Key Pressed Delay</string>
+    <string name="keyPressDelaySummary">Delay between keyboard keys pressed. Lower values have better performance but key events might not be understood by the emulator so use higher values.</string>
     <string name="mouseButtonDelay">Mouse Button Click Delay</string>
     <string name="mouseButtonDelaySummary">Delay between mouse button clicks. Lower values have better performance but mouse events might be not be understood by the emulator so use higher values.</string>
     <string name="machineHeader">Machine:</string>
@@ -261,6 +259,16 @@
     <string name="floppy_a_label">Floppy A</string>
     <string name="floppy_b_label">Floppy B</string>
 
+    <!-- BIOS section -->
+    <string name="section_bios">BIOS</string>
+    <string name="bios_type_label">BIOS type</string>
+    <string name="bios_code_label">Code</string>
+    <string name="bios_vars_label">Vars</string>
+    <string name="bios_default_type">Default</string>
+    <string name="bios_uefi_type">UEFI</string>
+    <string name="uefi_required_title">UEFI boot unavailable</string>
+    <string name="uefi_required_message">Booting with UEFI is not allowed without code, vars</string>
+
     <!-- Boot section -->
     <string name="section_boot">Boot</string>
     <string name="boot_from_label">Boot from Device</string>
@@ -275,95 +283,11 @@
     <string name="video_display_label">Video Display</string>
     <string name="use_venus_accelerator_label">Venus Accelerator</string>
     <string name="virgl_requires_qge">3D acceleration uses QGE display. Qube switched to it</string>
-    <string name="customResolutionLabel">Custom Resolution </string>
-    <string name="customResolutionDefault">Default</string>
-    <string name="customResolutionAdd">+ Add Resolution</string>
-    <string name="customResolutionAddTitle">Add Resolution</string>
-    <string name="customResolutionAddBtn">Add</string>
-    <string name="customResolutionEditTitle">Edit Resolution</string>
-    <string name="customResolutionEdit">Edit</string>
-    <string name="customResolutionDelete">Delete</string>
-    <string name="customResolutionCancel">Cancel</string>
-    <string name="customResolutionSave">Save</string>
-    <string name="customResolutionWidth">Width</string>
-    <string name="customResolutionHeight">Height</string>
-    <string name="customResolutionFillError">Please fill in width and height</string>
-    <string name="customResolutionNumberError">Width and height must be numbers</string>
-    <string name="customResolutionRangeError">Width and height must be greater than 0</string>
-    <string name="customResolutionInfoTitle">Custom Resolution</string>
-    <string name="customResolutionInfoMessage">Pick "Default" to boot with QEMU\'s normal resolution, or pick a saved resolution to use it instead.\n\nTo add a new one, choose "+ Add Resolution".\n\nTo edit or delete a saved resolution, select it first, then long-press the dropdown.</string>
     <string name="videoDisplayInfoTitle">Video Display</string>
     <string name="videoDisplayInfoMessage"><![CDATA[
         <b>std</b> is the standard and stable option that comes with QEMU.<br/><br/>
         <b>cirrus</b> is suitable for older operating systems from the 90s.<br/><br/>
         <b>vmware</b> emulates VMware SVGA, good for Windows.<br/><br/>
-        <b>virtio</b> is the paravirtualized GPU, the origin of virtio drivers.<br/><br/>
-        <b>virtio-vga-gl</b> enables 3D acceleration via VirGL, may not work well with Windows, but helps reduce screen tearing.<br/><br/>
-        <b>nographic</b> disables VGA output entirely, uses serial console only, useful for headless runs.
-    ]]></string>
-
-    <string name="venusInfoTitle">Venus Accelerator</string>
-    <string name="venusInfoMessage"><![CDATA[
-        <b>Venus</b> is the new VirGL Vulkan accelerator. It improves graphics performance, but may be unstable on some devices or VM OSes.
-    ]]></string>
-
-    <!-- Audio section -->
-    <string name="section_audio">Audio</string>
-    <string name="sound_card_label">Sound Card</string>
-
-    <!-- Network section -->
-    <string name="network_label">Network</string>
-    <string name="network_card_label">Network Card</string>
-    <string name="dns_server_label">DNS Server</string>
-    <string name="host_forward_label">Host Forward</string>
-    <string name="host_forward_hint">tcp:hostport1:guestport1,udp:hostport2:questport2,...</string>
-
-    <!-- Advanced section -->
-    <string name="section_advanced">Advanced</string>
-    <string name="extra_params_label">Extra Params</string>
-    <string name="extra_params_hint">-device sb16,-cpu max,...</string>
-
-    <!-- Log view -->
-    <string name="clear_label">Clear</string>
-
-    <!-- Virtual Keys editor -->
-    <string name="Save">Save</string>
-    <string name="pref_customize_virtual_keys">Customize Virtual Keys</string>
-    <string name="msg_tap_to_select_a_key">Tap a key to select it</string>
-    <string name="msg_saved">Saved</string>
-    <string name="title_add_key">Add key</string>
-    <string name="title_move_up">Move up</string>
-    <string name="title_move_down">Move down</string>
-    <string name="title_delete_key">Delete key</string>
-    <string name="title_load_defaults">Load defaults</string>
-    <string name="customizeVirtualKeysSummary">Add, remove or reorder virtual keys</string>
-    <string name="ShowAllVirtualKeys">Show all keys by default</string>
-    <string name="ShowAllVirtualKeysSummary">Adds F1-F12, Insert and Delete to the default layout</string>
-    <string name="OpenVirtualKeysWithKeyboard">Open with keyboard</string>
-    <string name="OpenVirtualKeysWithKeyboardSummary">Show virtual keys automatically when the soft keyboard opens</string>
-    <string name="UseSuperWithSingleTap">Single tap for Super key</string>
-    <string name="UseSuperWithSingleTapSummary">Send Super key on a single tap instead of toggling it</string>
-    <string name="VirtualKeysRowCount">Row count</string>
-    <string name="VirtualKeysRowCountSummary">Number of rows used to arrange virtual keys</string>
-
-    <!-- Summaries -->
-    <string name="summary_none">None</string>
-    <string name="summary_machine_type">Machine Type</string>
-    <string name="summary_cpu">CPU</string>
-    <string name="summary_cpu_plural">CPUs</string>
-    <string name="summary_mb">MB</string>
-    <string name="summary_hda">HDA</string>
-    <string name="summary_hdb">HDB</string>
-    <string name="summary_hdc">HDC</string>
-    <string name="summary_hdd">HDD</string>
-    <string name="summary_cdrom">CDROM</string>
-    <string name="summary_fda">FDA</string>
-    <string name="summary_fdb">FDB</string>
-    <string name="summary_boot_from">Boot from</string>
-    <string name="summary_bios">bios</string>
-    <string name="summary_kernel">kernel</string>
-    <string name="summary_initrd">initrd</string>
-    <string name="summary_append">append</string>
-    <string name="summary_video_card">Video Card</string>
-
-</resources>
+        <b>virtio</b> is the paravirtualized GPU without 3D acceleration.<br/><br/>
+        <b>virtio-gpu-pci</b> same as virtio but with PCI emulation<br/><br/>
+        <b>virtio-gpu-gl-pci</b> enables 3D acceleration via VirGL but with PCI emulation, may not work well with unsupported OSes, but hel

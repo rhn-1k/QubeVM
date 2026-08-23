@@ -54,7 +54,7 @@ Qube supports two display modes:
 
 Not available by default, stock Android does not expose `/dev/kvm` to apps, so TCG is used as default Accelerator
 
-Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures. Currently only supported for x86 devices, as we have only released the x86 version so far
+Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures.
 
 ## Translations
 

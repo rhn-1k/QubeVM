@@ -6,6 +6,12 @@
 
 QEMU-based virtual machine emulator for Android
 
+<p align="center">
+  <a href="https://t.me/QubeVM">
+    <img src="https://img.shields.io/badge/Telegram-@QubeVM-blue?logo=telegram" alt="Telegram">
+  </a>
+</p>
+
 ## What it does
 
 Emulates a full virtual machine (CPU, RAM, disk, display, sound, network) on Android, allowing installation and execution of guest operating systems (Windows, Linux, BSD, legacy OSes) inside the app

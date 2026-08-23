@@ -23,7 +23,7 @@ QubeVM currently supports **QEMU 11.1.0 and 7.2.22**, compiled natively for Andr
 
 ## Supported CPU Architecture
 
-x86 / x86_64 for now, planning to support more in the future
+x86 / ARM / PowerPC
 
 ### Acceleration
 QubeVM offers different ways to run your virtual machine depending on your device:

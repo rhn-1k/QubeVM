@@ -7,7 +7,7 @@
     <string name="button_send_text">Отправить текст</string>
     <string name="center_mouse">Мышь</string>
     <string name="close">Закрыть</string>
-    <string name="reset">Сброс</string>
+    <string name="reset">Перезагрузка</string>
     <string name="shutdown">Выключение</string>
     <string name="ctrl_alt_del">Ctrl-Alt-Del</string>
     <string name="ctrl_c">Ctrl-c</string>
@@ -21,14 +21,14 @@
     <string name="one_to_one">Обычный (1:1)</string>
     <string name="scaling">Масштабирование</string>
     <string name="showkbd_label">Клавиатура</string>
-    <string name="help">Помощь</string>
+    <string name="help">Справка</string>
     <string name="drives">Диски</string>
     <string name="share_folder_server">Сервер общей папки</string>
-    <string name="share_folder_stopped_title">Сервер общей папки не запущен</string>
-    <string name="share_folder_stopped_desc">Сервер общей папки это функция, которая позволяет вам делиться файлами, запуская HTTP-сервер, позволяет ВМ получать доступ к папке Загрузки устройства, он обнаруживает новые файлы напрямую, в отличие от обычной общей папки (vvfat), vvfat требует перезагрузки ВМ, чтобы изменения вступили в силу и новые файлы стали видны</string>
+    <string name="share_folder_stopped_title">Сервер общей папки остановлен</string>
+    <string name="share_folder_stopped_desc">Сервер общей папки запускает HTTP-сервер для доступа ВМ к папке «Загрузки» устройства. Он автоматически обнаруживает новые файлы, в отличие от стандартного режима (vvfat), требующего перезагрузки ВМ для применения изменений.</string>
     <string name="share_folder_running_title">Сервер общей папки запущен</string>
-    <string name="share_folder_running_desc">Сервер общей папки размещён по адресу:</string>
-    <string name="share_folder_start_error">Не удалось запустить сервер общего доступа. Возможно, порт уже используется</string>
+    <string name="share_folder_running_desc">Сервер общей папки доступен по адресу:</string>
+    <string name="share_folder_start_error">Не удалось запустить сервер общего доступа. Возможно, порт уже используется.</string>
     <string name="share_server_start">Запустить сервер</string>
     <string name="share_server_stop">Остановить общий доступ</string>
     <string name="copy_link">Копировать ссылку</string>
@@ -42,21 +42,20 @@
     <string name="display">Дисплей</string>
     <string name="displayInfoTitle">Дисплей</string>
     <string name="displayInfoMessage"><![CDATA[
-        <b>QGE (Qube Graphics Engine)</b> это оптимизированная встроенная обёртка дисплея, которая принимает и отображает кадры нативно, без задержек.<br/><br/>
-        <b>VNC (Virtual Network Computing)</b> сбалансированный выбор для тех, кто хочет запускать приложение как хост. Он запускает VNC-сервер QEMU, не открывая средство просмотра внутри приложения, поэтому вы можете подключаться к ВМ из любого внешнего VNC-клиента.
+        <b>QGE (Qube Graphics Engine)</b> — оптимизированный встроенный движок вывода изображения, отображающий кадры нативно и без задержек.<br/><br/>
+        <b>VNC (Virtual Network Computing)</b> — решение для запуска виртуальной машины в фоновом режиме. Запускает встроенный VNC-сервер QEMU без открытия локального экрана просмотра, позволяя подключаться к ВМ с любого внешнего VNC-клиента.
     ]]></string>
     <string name="CopySummary">Копировать</string>
-    <string name="absolutePointerInstructions">Убедитесь, что гостевая ОС поддерживает сенсорные устройства!\n\n \
-        Выберите Мышь = «usb-tablet» в Qube перед загрузкой машины.</string>
-    <string name="externalMouseInstructions">Подключите USB/Bluetooth-мышь к устройству Android.</string>
-    <string name="customOperatingSystem">Пользовательская операционная система - используйте свои образы ISO и HDD</string>
+    <string name="absolutePointerInstructions">Убедитесь, что гостевая ОС поддерживает сенсорный ввод!\n\nУстановите режим Мышь = «usb-tablet» в настройках Qube перед запуском машины.</string>
+    <string name="externalMouseInstructions">Подключите USB или Bluetooth-мышь к устройству Android.</string>
+    <string name="customOperatingSystem">Пользовательская ОС — использование собственных ISO и HDD-образов</string>
     <string name="toggle_virtual_keys">Переключить виртуальные клавиши</string>
-    <string name="welcomeText">Добро пожаловать в Qube Emulator, порт QEMU для устройств Android. Qube может эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков вы найдёте в Qube Wiki. Загружайте программы и образы только с надёжных сайтов!</string>
+    <string name="welcomeText">Добро пожаловать в Qube Emulator — порт QEMU для устройств Android. Qube позволяет эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков доступны в Qube Wiki. Загружайте ПО и образы только из проверенных источников!</string>
     <string name="checkForUpdates">Проверять обновления при запуске</string>
     <string name="sdcardNotMounted">Ошибка: SD-карта не подключена</string>
-    <string name="machinesImported">Машины импортированы</string>
-    <string name="reassignDiskFilesInstructions">Если это новая установка, вам нужно будет заново открыть все файлы дисков через файловый менеджер</string>
-    <string name="importInstructions">Выберите файл export.csv, который хотите импортировать.\n"ВНИМАНИЕ: любая машина с таким же именем будет заменена</string>
+    <string name="machinesImported">Машины успешно импортированы</string>
+    <string name="reassignDiskFilesInstructions">При чистой установке необходимо повторно указать пути к файлам дисков через файловый менеджер.</string>
+    <string name="importInstructions">Выберите файл export.csv для импорта.\n\nВНИМАНИЕ: Конфигурация любой машины с совпадающим именем будет перезаписана.</string>
     <string name="vmNotRunning">ВМ не запущена</string>
     <string name="Running">Работает</string>
     <string name="Stopped">Остановлена</string>
@@ -64,43 +63,43 @@
     <string name="keyboard">Клавиатура</string>
     <string name="mouse">Мышь</string>
     <string name="desktopMode">Режим рабочего стола</string>
-    <string name="highPriorityWarning">Внимание! Высокий приоритет может увеличить скорость эмуляции, но замедлит работу вашего телефона!</string>
+    <string name="highPriorityWarning">Внимание! Высокий приоритет может повысить скорость эмуляции, но вызовет замедление работы всей системы Android!</string>
     <string name="advancedTools">Дополнительные инструменты</string>
     <string name="tapUserId">TAP User Id</string>
-    <string name="tapNotSupportInstructions">\"Ваше устройство не поддерживает TAP, используйте вместо этого сетевой режим \'User\' \"</string>
+    <string name="tapNotSupportInstructions">Ваше устройство не поддерживает режим TAP. Используйте сетевой режим «User».</string>
     <string name="network">Сеть</string>
-    <string name="externalNetworkWarning">Внимание! Не рекомендуется включать внешнюю сеть для образов, которым вы не доверяете, или содержащих старые ОС. Если не используете сеть, выберите \'None\' перед запуском виртуальной машины.\n</string>
+    <string name="externalNetworkWarning">Внимание! Не рекомендуется включать внешнее сетевое подключение для ненадёжных образов или устаревших ОС. Если сеть не требуется, выберите режим «None» перед запуском ВМ.\n</string>
     <string name="faq">FAQ</string>
     <string name="open">Открыть</string>
     <string name="enableMTTCG">Включить MTTCG</string>
-    <string name="enableMTTCGWarning">Для включения MTTCG требуется телефон с многоядерным процессором.\nЕсли вы не знаете, что это такое, нажмите Отмена.\n\nЕсли приложение зависает или вылетает, отключите эту опцию. Продолжить?</string>
-    <string name="mttcgHelp">Помощь</string>
+    <string name="enableMTTCGWarning">Для работы MTTCG требуется многоядерный процессор.\nЕсли вы не уверены в назначении этой функции, нажмите «Отмена».\n\nЕсли приложение работает нестабильно или завершается с ошибкой, отключите эту опцию. Продолжить?</string>
+    <string name="mttcgHelp">Справка</string>
     <string name="tcgBufferLabel">Буфер TCG</string>
-    <string name="failToCreateMachineDirError">Не удалось создать внутренний каталог машины</string>
+    <string name="failToCreateMachineDirError">Не удалось создать внутренний каталог виртуальной машины</string>
     <string name="chooseDirToCreateImage">Выберите каталог для создания образа</string>
     <string name="ImageCreated">Образ создан</string>
     <string name="vncServer">VNC-сервер</string>
     <string name="Enable">Включить</string>
     <string name="ImportMachines">Импорт машин</string>
     <string name="DeleteVM">Удалить ВМ</string>
-    <string name="deleteVMWarning">Удалить ВМ? Будет удалена только конфигурация машины, файлы образов дисков удалены не будут</string>
+    <string name="deleteVMWarning">Удалить виртуальную машину? Будет удалена только её конфигурация, файлы образов дисков останутся нетронутыми.</string>
     <string name="NoMachineSelected">Машина не выбрана</string>
     <string name="multipleVCPU">Несколько vCPU</string>
-    <string name="multipleVCPUWarning">Внимание! Настройка нескольких виртуальных процессоров НЕ приведёт к повышению производительности, если вы не используете KVM или MTTCG. Ваше устройство может замедлиться, либо гостевая ОС может зависнуть, поэтому рекомендуется использовать 1 CPU. \n\n</string>
-    <string name="disableTSCInstructions">Если ваша гостевая ОС не может загрузиться, включите опцию «Отключить TSC» и перезапустите ВМ.</string>
-    <string name="DoYouWantToContinue">Хотите продолжить?</string>
-    <string name="vCPUHelp">Помощь</string>
+    <string name="multipleVCPUWarning">Внимание! Выделение нескольких виртуальных ядер процессора НЕ повысит производительность без активных KVM или MTTCG. Это может привести к зависанию гостевой ОС или замедлению устройства. Рекомендуется использовать 1 vCPU.\n\n</string>
+    <string name="disableTSCInstructions">Если гостевая ОС не загружается, включите опцию «Отключить TSC» и перезапустите ВМ.</string>
+    <string name="DoYouWantToContinue">Продолжить?</string>
+    <string name="vCPUHelp">Справка</string>
     <string name="Auto">Авто</string>
     <string name="Landscape">Альбомная</string>
-    <string name="LandscapeReverse">Альбомная перевёрнутая</string>
+    <string name="LandscapeReverse">Альбомная (перевёрнутая)</string>
     <string name="Portrait">Портретная</string>
-    <string name="PortraitReverse">Портретная перевёрнутая</string>
+    <string name="PortraitReverse">Портретная (перевёрнутая)</string>
     <string name="importMachines">Импорт машин</string>
-    <string name="PleaseWait">Пожалуйста, подождите</string>
-    <string name="InstallingBIOS">Установка BIOS</string>
+    <string name="PleaseWait">Пожалуйста, подождите…</string>
+    <string name="InstallingBIOS">Установка BIOS…</string>
     <string name="CouldNotOpenDocFile">Не удалось открыть DocumentFile</string>
-    <string name="PleaseReassingYourDiskFiles">Пожалуйста, заново откройте файлы дисков через файловый менеджер</string>
-    <string name="RemovableDrives">Съёмные диски</string>
+    <string name="PleaseReassingYourDiskFiles">Пожалуйста, повторно укажите файлы дисков через файловый менеджер.</string>
+    <string name="RemovableDrives">Съёмные носители</string>
     <string name="EjectedDevice">Устройство извлечено</string>
     <string name="ChangedDevice">Устройство изменено</string>
     <string name="Error">Ошибка</string>
@@ -113,109 +112,107 @@
     <string name="Changelog">Список изменений</string>
     <string name="License">Лицензия</string>
     <string name="Exit">Выход</string>
-    <string name="TapDeviceFound">Устройство TAP найдено</string>
-    <string name="tunDeviceWarning">Внимание! Убедитесь, что устройство /dev/net/tun имеет соответствующие права\nUser ID</string>
-    <string name="TAPHelp">Помощь</string>
-    <string name="SomethingWentWrong">Что-то пошло не так</string>
-    <string name="UnknownErrorCause">ВМ неожиданно остановилась, точную причину определить не удалось.</string>
+    <string name="TapDeviceFound">Устройство TAP обнаружено</string>
+    <string name="tunDeviceWarning">Внимание! Убедитесь, что для /dev/net/tun настроены корректные права доступа (User ID).</string>
+    <string name="TAPHelp">Справка</string>
+    <string name="SomethingWentWrong">Произошла ошибка</string>
+    <string name="UnknownErrorCause">Работа ВМ неожиданно завершилась. Точную причину определить не удалось.</string>
     <string name="AllowExternalVNCConnections">Разрешить внешние VNC-подключения</string>
-    <string name="AllowExternalVNCSummary">Разрешить внешним VNC-клиентам подключение. Требуется перезапуск приложения. VNC-подключения не шифруются, используйте только в частной сети, которой доверяете!</string>
-    <string name="EnableQMPServerSummary">Запустить QMP-сервер. Это необходимо для смены съёмных дисков.</string>
+    <string name="AllowExternalVNCSummary">Разрешает подключение внешних VNC-клиентов. Требуется перезапуск приложения. VNC-трафик не шифруется, используйте только в доверенных частных сетях!</string>
+    <string name="EnableQMPServerSummary">Запускает QMP-сервер (необходимо для горячей смены съёмных дисков).</string>
     <string name="EnableQMPServer">Включить QMP-сервер</string>
-    <string name="AllowExternalQMPConnectionsSummary">Разрешить внешним QMP-клиентам подключение. Требуется перезапуск приложения. Подключения не шифруются, используйте только в частной сети, которой доверяете!</string>
+    <string name="AllowExternalQMPConnectionsSummary">Разрешает подключение внешних QMP-клиентов. Требуется перезапуск приложения. QMP-трафик не шифруется, используйте только в доверенных частных сетях!</string>
     <string name="AllowExternalQMPConnections">Разрешить внешние QMP-подключения</string>
     <string name="HighPriority">Высокий приоритет</string>
     <string name="AlwaysShowToolbar">Всегда показывать панель инструментов</string>
-    <string name="AlwaysToolbar">Всегда панель инструментов</string>
+    <string name="AlwaysToolbar">Закрепить панель инструментов</string>
     <string name="CheckSoftwareUpdates">Проверять обновления ПО</string>
-    <string name="CheckSoftwareUpdatesSummary">Проверять обновления ПО при запуске</string>
-    <string name="FailedToSaveLogFile">\"Не удалось сохранить файл журнала: \"</string>
+    <string name="CheckSoftwareUpdatesSummary">Автоматически проверять наличие обновлений при запуске приложения</string>
+    <string name="FailedToSaveLogFile">Не удалось сохранить файл журнала: </string>
     <string name="SharedFolder">Общая папка</string>
-    <string name="SharedFolderNotSupported">Расположение общей папки недоступно на этом устройстве и было пропущено. Пожалуйста, выберите папку в основном внутреннем хранилище устройства.</string>
+    <string name="SharedFolderNotSupported">Указанный путь для общей папки недоступен на этом устройстве. Пожалуйста, выберите папку во внутреннем хранилище.</string>
     <string name="AudioCard">Звуковая карта</string>
     <string name="IAcknowledge">Я подтверждаю</string>
     <string name="NewMachineName">Имя новой машины</string>
     <string name="Create">Создать</string>
     <string name="MachineNameCannotBeEmpty">Имя машины не может быть пустым</string>
     <string name="ShutdownVM">Выключить ВМ</string>
-    <string name="ShutdownVMWarning">Во избежание повреждения данных убедитесь, что вы уже выключили операционную систему внутри ВМ. Продолжить?</string>
-    <string name="ResetVM">Сброс ВМ</string>
-    <string name="ResetVMWarning">Во избежание повреждения данных убедитесь, что вы уже выключили операционную систему внутри ВМ. Продолжить?</string>
-    <string name="VMRunning">ВМ работает</string>
+    <string name="ShutdownVMWarning">Во избежание повреждения файловой системы убедитесь, что операционная система внутри ВМ завершила работу. Продолжить?</string>
+    <string name="ResetVM">Сбросить ВМ</string>
+    <string name="ResetVMWarning">Принудительный сброс может привести к потере данных. Вы уверены, что хотите продолжить?</string>
+    <string name="VMRunning">ВМ выполняется</string>
     <string name="MachineDeleted">Машина удалена</string>
-    <string name="ExternalVNCEnabledWarning">Вы включили внешний VNC. Любой в той же сети может получить доступ и управлять вашей виртуальной машиной! Убедитесь, что доверяете своей сети. Продолжить?</string>
-    <string name="EnableKVMWarning">Внимание! Вам понадобится устройство Android с той же архитектурой, что и эмулируемая гостевая система. Убедитесь, что установлено ядро Android с поддержкой KVM. Если вы не знаете, что это такое, нажмите Отмена.\n\nЕсли возникают сбои, отключите эту опцию. Хотите продолжить?</string>
+    <string name="ExternalVNCEnabledWarning">Включён доступ к VNC из внешней сети! Любое устройство в текущей сети сможет управлять виртуальной машиной. Продолжить?</string>
+    <string name="EnableKVMWarning">Внимание! Требуется совпадение архитектуры процессорного ядра Android и эмулируемой системы, а также поддержка KVM на уровне ядра Android. Если вы не уверены, нажмите «Отмена».\n\nПри возникновении сбоев отключите эту опцию. Продолжить?</string>
     <string name="EnableKVM">Включить KVM</string>
     <string name="server">Сервер</string>
     <string name="ExtraParams">Дополнительные параметры</string>
     <string name="CouldNotCreateBaseDir">Не удалось создать базовый каталог</string>
     <string name="CouldNotCreateMachineDir">Не удалось создать каталог машины</string>
     <string name="CouldNotCreateDirForImage">Не удалось создать каталог для образа</string>
-    <string name="FileExistsChooseAnotherFilename">Файл существует, выберите другое имя файла</string>
+    <string name="FileExistsChooseAnotherFilename">Файл уже существует, укажите другое имя</string>
     <string name="FailedToExportFile">Не удалось экспортировать файл</string>
     <string name="FailedSaveLogFile">Не удалось сохранить файл журнала</string>
     <string name="LogfileSaved">Файл журнала сохранён</string>
     <string name="CouldNotOpenRawFile">Не удалось открыть raw-файл</string>
-    <string name="PressVolumeDownForRightClick">Нажмите Громкость вниз для правого клика</string>
+    <string name="PressVolumeDownForRightClick">Кнопка «Громкость вниз» имитирует правый клик мыши</string>
     <string name="NoRemovableDevicesAttached">Съёмные устройства не подключены</string>
     <string name="ImageFilenameCannotBeEmpty">Имя файла образа не может быть пустым</string>
     <string name="VMNotRunning">ВМ не запущена</string>
     <string name="SelectOrCreateVirtualMachineFirst">Сначала выберите или создайте виртуальную машину</string>
-    <string name="SelectAMachineFirst">Сначала выберите машину</string>
-    <string name="VMNameExistsChooseAnother">Имя ВМ уже существует, выберите другое</string>
+    <string name="SelectAMachineFirst">Сначала выберите виртуальную машину</string>
+    <string name="VMNameExistsChooseAnother">Виртуальная машина с таким именем уже существует</string>
     <string name="ChooseDirToSaveLogFile">Выберите каталог для сохранения файла журнала</string>
     <string name="LimboLog">Журнал Qube</string>
     <string name="CHANGELOG">СПИСОК ИЗМЕНЕНИЙ</string>
     <string name="WriteAccess">Доступ на запись</string>
-    <string name="FilePathNotSupportedWarning">Путь к файлу не поддерживается. Убедитесь, что выбираете файл/каталог из внутреннего хранилища или внешней SD-карты. Корневой каталог и папка Загрузки не поддерживаются.</string>
-    <string name="KVMHelp">Помощь</string>
-    <string name="FullAccessWarning">Пожалуйста, разрешите доступ к хранилищу устройства, без этого приложение будет работать, но с ограниченным набором функций.</string>
+    <string name="FilePathNotSupportedWarning">Путь к файлу не поддерживается. Выберите файл из внутреннего хранилища или внешне SD-карты (корневые папки системного хранилища не поддерживаются).</string>
+    <string name="KVMHelp">Справка</string>
+    <string name="FullAccessWarning">Пожалуйста, предоставите доступ к хранилищу устройства, иначе часть функций приложения будет недоступна.</string>
     <string name="OkIUnderstand">Разрешить</string>
     <string name="SendText">Отправить текст</string>
     <string name="Send">Отправить</string>
-    <string name="GoToWiki">Онлайн Wiki</string>
+    <string name="GoToWiki">Перейти в Wiki</string>
     <string name="DoNotShowAgain">Больше не показывать</string>
-    <string name="GenNewVersion">Получить новую версию</string>
+    <string name="GenNewVersion">Загрузить обновление</string>
     <string name="Cancel">Отмена</string>
     <string name="Delete">Удалить</string>
     <string name="CopyTo">Копировать в</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
-    <string name="NewVersionWarning">Доступна новая версия с исправлениями и новыми функциями. Хотите обновить?</string>
+    <string name="NewVersionWarning">Доступна новая версия с исправлениями и улучшениями. Обновить сейчас?</string>
     <string name="Ok">ОК</string>
     <string name="TrackpadDescr">Трекпад (телефон)</string>
     <string name="TouchScreen">Сенсорный экран (планшет)</string>
-    <string name="ExternalMouseDescr">Внешняя мышь (компьютер)</string>
+    <string name="ExternalMouseDescr">Внешняя мышь (ПК)</string>
     <string name="Mouse">Мышь</string>
     <string name="ImageName">Название образа</string>
-    <string name="Volume">Громкость</string>
     <string name="NewVersion">Новая версия</string>
     <string name="Network">Сеть</string>
-    <string name="NicCard">Сетевая карта</string>
+    <string name="NicCard">Сетевой адаптер (NIC)</string>
     <string name="DNSServer">DNS-сервер</string>
-    <string name="HostForward">Проброс портов хоста</string>
-    <string name="EnableQMPForChangingDrives">Включите QMP в настройках для смены съёмных дисков</string>
+    <string name="HostForward">Проброс портов (Host Forward)</string>
+    <string name="EnableQMPForChangingDrives">Включите QMP в настройках для управления съёмными дисками</string>
     <string name="other">Другое</string>
     <string name="custom">Пользовательский</string>
-    <string name="otherOperatingSystem">Другие операционные системы</string>
-    <string name="DownloadISOAndVirtualHDDImages">Загрузить образы ISO и виртуальных HDD</string>
+    <string name="otherOperatingSystem">Другие ОС</string>
+    <string name="DownloadISOAndVirtualHDDImages">Скачать образы ISO и виртуальных дисков</string>
     <string name="PointerSpeed">Скорость указателя</string>
-    <string name="PointerSpeedSummary">Скорость движения курсора в режиме тачпада/относительном режиме</string>
-    <string name="RefreshRate">Частота обновления ВМ</string>
-    <string name="RefreshRateSummary">Частота обновления дисплея виртуальной машины, более высокие значения обеспечивают более плавную картинку, но используют больше ресурсов</string>
-    <string name="keyPressDelay">Задержка нажатия клавиш</string>
-    <string name="keyPressDelaySummary">Задержка между нажатиями клавиш. Меньшие значения повышают производительность, но эмулятор может не распознавать события клавиш, поэтому используйте большие значения при необходимости.</string>
+    <string name="PointerSpeedSummary">Регулировка чувствительности курсора в режиме трекпада</string>
+    <string name="RefreshRate">Частота обновления экрана</string>
+    <string name="RefreshRateSummary">Частота кадров дисплея ВМ: высокие значения дают плавную картинку, но увеличивают нагрузку на ЦП</string>
+    <string name="keyPressDelay">Задержка ввода клавиш</string>
+    <string name="keyPressDelaySummary">Интервал между нажатиями. Низкие значения ускоряют ввод, но могут пропускать нажатия в некоторых ОС</string>
     <string name="mouseButtonDelay">Задержка клика мыши</string>
-    <string name="mouseButtonDelaySummary">Задержка между кликами кнопок мыши. Меньшие значения повышают производительность, но эмулятор может не распознавать события мыши, поэтому используйте большие значения при необходимости.</string>
+    <string name="mouseButtonDelaySummary">Интервал между кликами. Увеличьте значение, если гостевая система пропускает нажатия мыши</string>
     <string name="machineHeader">Машина:</string>
     <string name="Interface">Интерфейс</string>
-    <string name="diskCache">Кэш диска</string>
-    <string name="diskCacheSummary">Кэш диска может не работать с Legacy Manager! Если возникают проблемы, установите значение по умолчанию</string>
-    <string name="ClearDirHistory">Очистить историю каталогов</string>
-    <string name="ClearDirHistorySummary">Удалить все запомненные пути к файлам из хранилищ и съёмных хранилищ</string>
-    <string name="ClearDirHistoryConfirm">Это очистит все запомненные пути к файлам
-     Продолжить?</string>
-    <string name="DirHistoryCleared">История каталогов очищена</string>
+    <string name="diskCache">Кэширование диска</string>
+    <string name="diskCacheSummary">Режим кэширования может быть несовместим со старым менеджером хранилища. При ошибках сбросьте на значение по умолчанию</string>
+    <string name="ClearDirHistory">Очистить историю путей</string>
+    <string name="ClearDirHistorySummary">Удалить все сохранённые пути к файлам и внешним дискам</string>
+    <string name="ClearDirHistoryConfirm">Это действие удалит всю историю запомненных путей. Продолжить?</string>
+    <string name="DirHistoryCleared">История путей успешно очищена</string>
 
     <!-- Main activity -->
 
@@ -243,39 +240,325 @@
     <string name="hard_disk_c_label">Жёсткий диск C</string>
     <string name="hard_disk_d_label">Жёсткий диск D</string>
     <string-array name="diskSizeOptions">
-        <item>1 ГБ (расширяемый)</item>
-        <item>2 ГБ (расширяемый)</item>
-        <item>4 ГБ (расширяемый)</item>
-        <item>10 ГБ (расширяемый)</item>
-        <item>20 ГБ (расширяемый)</item>
-        <item>48 ГБ (расширяемый)</item>
-        <item>64 ГБ (расширяемый)</item>
+        <item>1 ГБ (динамический)</item>
+        <item>2 ГБ (динамический)</item>
+        <item>4 ГБ (динамический)</item>
+        <item>10 ГБ (динамический)</item>
+        <item>20 ГБ (динамический)</item>
+        <item>48 ГБ (динамический)</item>
+        <item>64 ГБ (динамический)</item>
     </string-array>
 
     <!-- Removable Storage section -->
     <string name="section_removable">Съёмные носители</string>
-    <string name="cdrom_label">CDROM</string>
+    <string name="cdrom_label">CD-ROM</string>
     <string name="floppy_a_label">Дискета A</string>
     <string name="floppy_b_label">Дискета B</string>
 
     <!-- BIOS section -->
     <string name="section_bios">BIOS</string>
     <string name="bios_type_label">Тип BIOS</string>
-    <string name="bios_code_label">Code</string>
-    <string name="bios_vars_label">Vars</string>
+    <string name="bios_code_label">Code (прошивка)</string>
+    <string name="bios_vars_label">Vars (переменные)</string>
     <string name="bios_default_type">По умолчанию</string>
     <string name="bios_uefi_type">UEFI</string>
-    <string name="uefi_required_title">Загрузка UEFI недоступна</string>
-    <string name="uefi_required_message">Загрузка с UEFI невозможна без code, vars</string>
+    <string name="uefi_required_title">UEFI недоступен</string>
+    <string name="uefi_required_message">Загрузка в режиме UEFI невозможна без указания файлов Code и Vars.</string>
 
     <!-- Boot section -->
     <string name="section_boot">Загрузка</string>
-    <string name="boot_from_label">Загрузка с устройства</string>
+    <string name="boot_from_label">Загрузочное устройство</string>
     <string name="bios_label">BIOS</string>
-    <string name="kernel_label">Ядро</string>
+    <string name="kernel_label">Ядро (Kernel)</string>
     <string name="initrd_label">Initrd</string>
-    <string name="append_label">Append</string>
-    <string name="append_hint">например: root=/dev/sda1</string>
+    <string name="append_label">Параметры ядра (Append)</string>
+    <string name="append_hint">Пример: root=/dev/sda1</string>
 
     <!-- Graphics section -->
-    <string na
+    <string name="section_graphics">Графика</string>
+    <string name="vga_display_label">Видеоадаптер (VGA)</string>
+    <string name="ui_display_label">Интерфейс вывода</string>
+
+</resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">QubeVM</string>
+    <string name="app_short_name">Qube</string>
+    <string name="auto">Авто</string>
+    <string name="button_send_text">Отправить текст</string>
+    <string name="center_mouse">Мышь</string>
+    <string name="close">Закрыть</string>
+    <string name="reset">Перезагрузка</string>
+    <string name="shutdown">Выключение</string>
+    <string name="ctrl_alt_del">Ctrl-Alt-Del</string>
+    <string name="ctrl_c">Ctrl-c</string>
+    <string name="disconnect">Отключиться</string>
+    <string name="external_mouse">Внешняя мышь</string>
+    <string name="stretch_to_screen">Растянуть на экран</string>
+    <string name="fit_to_screen">Подогнать под экран</string>
+    <string name="zoom_in">Увеличить</string>
+    <string name="zoom_out">Уменьшить</string>
+    <string name="on">Вкл</string>
+    <string name="one_to_one">Обычный (1:1)</string>
+    <string name="scaling">Масштабирование</string>
+    <string name="showkbd_label">Клавиатура</string>
+    <string name="help">Справка</string>
+    <string name="drives">Диски</string>
+    <string name="share_folder_server">Сервер общей папки</string>
+    <string name="share_folder_stopped_title">Сервер общей папки остановлен</string>
+    <string name="share_folder_stopped_desc">Сервер общей папки запускает HTTP-сервер для доступа ВМ к папке «Загрузки» устройства. Он автоматически обнаруживает новые файлы, в отличие от стандартного режима (vvfat), требующего перезагрузки ВМ для применения изменений.</string>
+    <string name="share_folder_running_title">Сервер общей папки запущен</string>
+    <string name="share_folder_running_desc">Сервер общей папки доступен по адресу:</string>
+    <string name="share_folder_start_error">Не удалось запустить сервер общего доступа. Возможно, порт уже используется.</string>
+    <string name="share_server_start">Запустить сервер</string>
+    <string name="share_server_stop">Остановить общий доступ</string>
+    <string name="copy_link">Копировать ссылку</string>
+    <string name="volume">Громкость</string>
+    <string name="Default" translatable="false">default</string>
+    <string name="hide_toolbar">Скрыть панель инструментов</string>
+    <string name="view_log">Просмотреть журнал</string>
+    <string name="screenshot">Скриншот</string>
+    <string name="screenshot_saved">Скриншот сохранён: </string>
+    <string name="screenshot_failed">Не удалось сделать скриншот</string>
+    <string name="display">Дисплей</string>
+    <string name="displayInfoTitle">Дисплей</string>
+    <string name="displayInfoMessage"><![CDATA[
+        <b>QGE (Qube Graphics Engine)</b> — оптимизированный встроенный движок вывода изображения, отображающий кадры нативно и без задержек.<br/><br/>
+        <b>VNC (Virtual Network Computing)</b> — решение для запуска виртуальной машины в фоновом режиме. Запускает встроенный VNC-сервер QEMU без открытия локального экрана просмотра, позволяя подключаться к ВМ с любого внешнего VNC-клиента.
+    ]]></string>
+    <string name="CopySummary">Копировать</string>
+    <string name="absolutePointerInstructions">Убедитесь, что гостевая ОС поддерживает сенсорный ввод!\n\nУстановите режим Мышь = «usb-tablet» в настройках Qube перед запуском машины.</string>
+    <string name="externalMouseInstructions">Подключите USB или Bluetooth-мышь к устройству Android.</string>
+    <string name="customOperatingSystem">Пользовательская ОС — использование собственных ISO и HDD-образов</string>
+    <string name="toggle_virtual_keys">Переключить виртуальные клавиши</string>
+    <string name="welcomeText">Добро пожаловать в Qube Emulator — порт QEMU для устройств Android. Qube позволяет эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков доступны в Qube Wiki. Загружайте ПО и образы только из проверенных источников!</string>
+    <string name="checkForUpdates">Проверять обновления при запуске</string>
+    <string name="sdcardNotMounted">Ошибка: SD-карта не подключена</string>
+    <string name="machinesImported">Машины успешно импортированы</string>
+    <string name="reassignDiskFilesInstructions">При чистой установке необходимо повторно указать пути к файлам дисков через файловый менеджер.</string>
+    <string name="importInstructions">Выберите файл export.csv для импорта.\n\nВНИМАНИЕ: Конфигурация любой машины с совпадающим именем будет перезаписана.</string>
+    <string name="vmNotRunning">ВМ не запущена</string>
+    <string name="Running">Работает</string>
+    <string name="Stopped">Остановлена</string>
+    <string name="orientation">Ориентация</string>
+    <string name="keyboard">Клавиатура</string>
+    <string name="mouse">Мышь</string>
+    <string name="desktopMode">Режим рабочего стола</string>
+    <string name="highPriorityWarning">Внимание! Высокий приоритет может повысить скорость эмуляции, но вызовет замедление работы всей системы Android!</string>
+    <string name="advancedTools">Дополнительные инструменты</string>
+    <string name="tapUserId">TAP User Id</string>
+    <string name="tapNotSupportInstructions">Ваше устройство не поддерживает режим TAP. Используйте сетевой режим «User».</string>
+    <string name="network">Сеть</string>
+    <string name="externalNetworkWarning">Внимание! Не рекомендуется включать внешнее сетевое подключение для ненадёжных образов или устаревших ОС. Если сеть не требуется, выберите режим «None» перед запуском ВМ.\n</string>
+    <string name="faq">FAQ</string>
+    <string name="open">Открыть</string>
+    <string name="enableMTTCG">Включить MTTCG</string>
+    <string name="enableMTTCGWarning">Для работы MTTCG требуется многоядерный процессор.\nЕсли вы не уверены в назначении этой функции, нажмите «Отмена».\n\nЕсли приложение работает нестабильно или завершается с ошибкой, отключите эту опцию. Продолжить?</string>
+    <string name="mttcgHelp">Справка</string>
+    <string name="tcgBufferLabel">Буфер TCG</string>
+    <string name="failToCreateMachineDirError">Не удалось создать внутренний каталог виртуальной машины</string>
+    <string name="chooseDirToCreateImage">Выберите каталог для создания образа</string>
+    <string name="ImageCreated">Образ создан</string>
+    <string name="vncServer">VNC-сервер</string>
+    <string name="Enable">Включить</string>
+    <string name="ImportMachines">Импорт машин</string>
+    <string name="DeleteVM">Удалить ВМ</string>
+    <string name="deleteVMWarning">Удалить виртуальную машину? Будет удалена только её конфигурация, файлы образов дисков останутся нетронутыми.</string>
+    <string name="NoMachineSelected">Машина не выбрана</string>
+    <string name="multipleVCPU">Несколько vCPU</string>
+    <string name="multipleVCPUWarning">Внимание! Выделение нескольких виртуальных ядер процессора НЕ повысит производительность без активных KVM или MTTCG. Это может привести к зависанию гостевой ОС или замедлению устройства. Рекомендуется использовать 1 vCPU.\n\n</string>
+    <string name="disableTSCInstructions">Если гостевая ОС не загружается, включите опцию «Отключить TSC» и перезапустите ВМ.</string>
+    <string name="DoYouWantToContinue">Продолжить?</string>
+    <string name="vCPUHelp">Справка</string>
+    <string name="Auto">Авто</string>
+    <string name="Landscape">Альбомная</string>
+    <string name="LandscapeReverse">Альбомная (перевёрнутая)</string>
+    <string name="Portrait">Портретная</string>
+    <string name="PortraitReverse">Портретная (перевёрнутая)</string>
+    <string name="importMachines">Импорт машин</string>
+    <string name="PleaseWait">Пожалуйста, подождите…</string>
+    <string name="InstallingBIOS">Установка BIOS…</string>
+    <string name="CouldNotOpenDocFile">Не удалось открыть DocumentFile</string>
+    <string name="PleaseReassingYourDiskFiles">Пожалуйста, повторно укажите файлы дисков через файловый менеджер.</string>
+    <string name="RemovableDrives">Съёмные носители</string>
+    <string name="EjectedDevice">Устройство извлечено</string>
+    <string name="ChangedDevice">Устройство изменено</string>
+    <string name="Error">Ошибка</string>
+    <string name="ChangeDirectory">Изменить каталог</string>
+    <string name="InstallRoms">Установить ROM</string>
+    <string name="CreateMachine">Создать машину</string>
+    <string name="DeleteMachine">Удалить машину</string>
+    <string name="Settings">Настройки</string>
+    <string name="ViewLog">Просмотреть журнал</string>
+    <string name="Changelog">Список изменений</string>
+    <string name="License">Лицензия</string>
+    <string name="Exit">Выход</string>
+    <string name="TapDeviceFound">Устройство TAP обнаружено</string>
+    <string name="tunDeviceWarning">Внимание! Убедитесь, что для /dev/net/tun настроены корректные права доступа (User ID).</string>
+    <string name="TAPHelp">Справка</string>
+    <string name="SomethingWentWrong">Произошла ошибка</string>
+    <string name="UnknownErrorCause">Работа ВМ неожиданно завершилась. Точную причину определить не удалось.</string>
+    <string name="AllowExternalVNCConnections">Разрешить внешние VNC-подключения</string>
+    <string name="AllowExternalVNCSummary">Разрешает подключение внешних VNC-клиентов. Требуется перезапуск приложения. VNC-трафик не шифруется, используйте только в доверенных частных сетях!</string>
+    <string name="EnableQMPServerSummary">Запускает QMP-сервер (необходимо для горячей смены съёмных дисков).</string>
+    <string name="EnableQMPServer">Включить QMP-сервер</string>
+    <string name="AllowExternalQMPConnectionsSummary">Разрешает подключение внешних QMP-клиентов. Требуется перезапуск приложения. QMP-трафик не шифруется, используйте только в доверенных частных сетях!</string>
+    <string name="AllowExternalQMPConnections">Разрешить внешние QMP-подключения</string>
+    <string name="HighPriority">Высокий приоритет</string>
+    <string name="AlwaysShowToolbar">Всегда показывать панель инструментов</string>
+    <string name="AlwaysToolbar">Закрепить панель инструментов</string>
+    <string name="CheckSoftwareUpdates">Проверять обновления ПО</string>
+    <string name="CheckSoftwareUpdatesSummary">Автоматически проверять наличие обновлений при запуске приложения</string>
+    <string name="FailedToSaveLogFile">Не удалось сохранить файл журнала: </string>
+    <string name="SharedFolder">Общая папка</string>
+    <string name="SharedFolderNotSupported">Указанный путь для общей папки недоступен на этом устройстве. Пожалуйста, выберите папку во внутреннем хранилище.</string>
+    <string name="AudioCard">Звуковая карта</string>
+    <string name="IAcknowledge">Я подтверждаю</string>
+    <string name="NewMachineName">Имя новой машины</string>
+    <string name="Create">Создать</string>
+    <string name="MachineNameCannotBeEmpty">Имя машины не может быть пустым</string>
+    <string name="ShutdownVM">Выключить ВМ</string>
+    <string name="ShutdownVMWarning">Во избежание повреждения файловой системы убедитесь, что операционная система внутри ВМ завершила работу. Продолжить?</string>
+    <string name="ResetVM">Сбросить ВМ</string>
+    <string name="ResetVMWarning">Принудительный сброс может привести к потере данных. Вы уверены, что хотите продолжить?</string>
+    <string name="VMRunning">ВМ выполняется</string>
+    <string name="MachineDeleted">Машина удалена</string>
+    <string name="ExternalVNCEnabledWarning">Включён доступ к VNC из внешней сети! Любое устройство в текущей сети сможет управлять виртуальной машиной. Продолжить?</string>
+    <string name="EnableKVMWarning">Внимание! Требуется совпадение архитектуры процессорного ядра Android и эмулируемой системы, а также поддержка KVM на уровне ядра Android. Если вы не уверены, нажмите «Отмена».\n\nПри возникновении сбоев отключите эту опцию. Продолжить?</string>
+    <string name="EnableKVM">Включить KVM</string>
+    <string name="server">Сервер</string>
+    <string name="ExtraParams">Дополнительные параметры</string>
+    <string name="CouldNotCreateBaseDir">Не удалось создать базовый каталог</string>
+    <string name="CouldNotCreateMachineDir">Не удалось создать каталог машины</string>
+    <string name="CouldNotCreateDirForImage">Не удалось создать каталог для образа</string>
+    <string name="FileExistsChooseAnotherFilename">Файл уже существует, укажите другое имя</string>
+    <string name="FailedToExportFile">Не удалось экспортировать файл</string>
+    <string name="FailedSaveLogFile">Не удалось сохранить файл журнала</string>
+    <string name="LogfileSaved">Файл журнала сохранён</string>
+    <string name="CouldNotOpenRawFile">Не удалось открыть raw-файл</string>
+    <string name="PressVolumeDownForRightClick">Кнопка «Громкость вниз» имитирует правый клик мыши</string>
+    <string name="NoRemovableDevicesAttached">Съёмные устройства не подключены</string>
+    <string name="ImageFilenameCannotBeEmpty">Имя файла образа не может быть пустым</string>
+    <string name="VMNotRunning">ВМ не запущена</string>
+    <string name="SelectOrCreateVirtualMachineFirst">Сначала выберите или создайте виртуальную машину</string>
+    <string name="SelectAMachineFirst">Сначала выберите виртуальную машину</string>
+    <string name="VMNameExistsChooseAnother">Виртуальная машина с таким именем уже существует</string>
+    <string name="ChooseDirToSaveLogFile">Выберите каталог для сохранения файла журнала</string>
+    <string name="LimboLog">Журнал Qube</string>
+    <string name="CHANGELOG">СПИСОК ИЗМЕНЕНИЙ</string>
+    <string name="WriteAccess">Доступ на запись</string>
+    <string name="FilePathNotSupportedWarning">Путь к файлу не поддерживается. Выберите файл из внутреннего хранилища или внешне SD-карты (корневые папки системного хранилища не поддерживаются).</string>
+    <string name="KVMHelp">Справка</string>
+    <string name="FullAccessWarning">Пожалуйста, предоставите доступ к хранилищу устройства, иначе часть функций приложения будет недоступна.</string>
+    <string name="OkIUnderstand">Разрешить</string>
+    <string name="SendText">Отправить текст</string>
+    <string name="Send">Отправить</string>
+    <string name="GoToWiki">Перейти в Wiki</string>
+    <string name="DoNotShowAgain">Больше не показывать</string>
+    <string name="GenNewVersion">Загрузить обновление</string>
+    <string name="Cancel">Отмена</string>
+    <string name="Delete">Удалить</string>
+    <string name="CopyTo">Копировать в</string>
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+    <string name="NewVersionWarning">Доступна новая версия с исправлениями и улучшениями. Обновить сейчас?</string>
+    <string name="Ok">ОК</string>
+    <string name="TrackpadDescr">Трекпад (телефон)</string>
+    <string name="TouchScreen">Сенсорный экран (планшет)</string>
+    <string name="ExternalMouseDescr">Внешняя мышь (ПК)</string>
+    <string name="Mouse">Мышь</string>
+    <string name="ImageName">Название образа</string>
+    <string name="NewVersion">Новая версия</string>
+    <string name="Network">Сеть</string>
+    <string name="NicCard">Сетевой адаптер (NIC)</string>
+    <string name="DNSServer">DNS-сервер</string>
+    <string name="HostForward">Проброс портов (Host Forward)</string>
+    <string name="EnableQMPForChangingDrives">Включите QMP в настройках для управления съёмными дисками</string>
+    <string name="other">Другое</string>
+    <string name="custom">Пользовательский</string>
+    <string name="otherOperatingSystem">Другие ОС</string>
+    <string name="DownloadISOAndVirtualHDDImages">Скачать образы ISO и виртуальных дисков</string>
+    <string name="PointerSpeed">Скорость указателя</string>
+    <string name="PointerSpeedSummary">Регулировка чувствительности курсора в режиме трекпада</string>
+    <string name="RefreshRate">Частота обновления экрана</string>
+    <string name="RefreshRateSummary">Частота кадров дисплея ВМ: высокие значения дают плавную картинку, но увеличивают нагрузку на ЦП</string>
+    <string name="keyPressDelay">Задержка ввода клавиш</string>
+    <string name="keyPressDelaySummary">Интервал между нажатиями. Низкие значения ускоряют ввод, но могут пропускать нажатия в некоторых ОС</string>
+    <string name="mouseButtonDelay">Задержка клика мыши</string>
+    <string name="mouseButtonDelaySummary">Интервал между кликами. Увеличьте значение, если гостевая система пропускает нажатия мыши</string>
+    <string name="machineHeader">Машина:</string>
+    <string name="Interface">Интерфейс</string>
+    <string name="diskCache">Кэширование диска</string>
+    <string name="diskCacheSummary">Режим кэширования может быть несовместим со старым менеджером хранилища. При ошибках сбросьте на значение по умолчанию</string>
+    <string name="ClearDirHistory">Очистить историю путей</string>
+    <string name="ClearDirHistorySummary">Удалить все сохранённые пути к файлам и внешним дискам</string>
+    <string name="ClearDirHistoryConfirm">Это действие удалит всю историю запомненных путей. Продолжить?</string>
+    <string name="DirHistoryCleared">История путей успешно очищена</string>
+
+    <!-- Main activity -->
+
+    <!-- Machine -->
+    <string name="select_label">Выбрать</string>
+
+    <!-- User Interface section -->
+    <string name="section_user_interface">Пользовательский интерфейс</string>
+
+    <!-- Board section -->
+    <string name="section_board">Плата</string>
+    <string name="machine_type_label">Тип машины</string>
+    <string name="cpu_model_label">Модель CPU</string>
+    <string name="cpu_cores_label">Ядра CPU</string>
+    <string name="ram_memory_label">Оперативная память (МБ)</string>
+    <string name="disable_hpet_label">Отключить HPET</string>
+    <string name="disable_tsc_label">Отключить TSC</string>
+    <string name="enable_svm_label">Включить SVM</string>
+    <string name="disable_acpi_label">Отключить ACPI</string>
+
+    <!-- Storage section -->
+    <string name="section_disks">Диски</string>
+    <string name="hard_disk_a_label">Жёсткий диск A</string>
+    <string name="hard_disk_b_label">Жёсткий диск B</string>
+    <string name="hard_disk_c_label">Жёсткий диск C</string>
+    <string name="hard_disk_d_label">Жёсткий диск D</string>
+    <string-array name="diskSizeOptions">
+        <item>1 ГБ (динамический)</item>
+        <item>2 ГБ (динамический)</item>
+        <item>4 ГБ (динамический)</item>
+        <item>10 ГБ (динамический)</item>
+        <item>20 ГБ (динамический)</item>
+        <item>48 ГБ (динамический)</item>
+        <item>64 ГБ (динамический)</item>
+    </string-array>
+
+    <!-- Removable Storage section -->
+    <string name="section_removable">Съёмные носители</string>
+    <string name="cdrom_label">CD-ROM</string>
+    <string name="floppy_a_label">Дискета A</string>
+    <string name="floppy_b_label">Дискета B</string>
+
+    <!-- BIOS section -->
+    <string name="section_bios">BIOS</string>
+    <string name="bios_type_label">Тип BIOS</string>
+    <string name="bios_code_label">Code (прошивка)</string>
+    <string name="bios_vars_label">Vars (переменные)</string>
+    <string name="bios_default_type">По умолчанию</string>
+    <string name="bios_uefi_type">UEFI</string>
+    <string name="uefi_required_title">UEFI недоступен</string>
+    <string name="uefi_required_message">Загрузка в режиме UEFI невозможна без указания файлов Code и Vars.</string>
+
+    <!-- Boot section -->
+    <string name="section_boot">Загрузка</string>
+    <string name="boot_from_label">Загрузочное устройство</string>
+    <string name="bios_label">BIOS</string>
+    <string name="kernel_label">Ядро (Kernel)</string>
+    <string name="initrd_label">Initrd</string>
+    <string name="append_label">Параметры ядра (Append)</string>
+    <string name="append_hint">Пример: root=/dev/sda1</string>
+
+    <!-- Graphics section -->
+    <string name="section_graphics">Графика</string>
+    <string name="vga_display_label">Видеоадаптер (VGA)</string>
+    <string name="ui_display_label">Интерфейс вывода</string>
+
+</resources>

@@ -19,6 +19,7 @@ MISC += --disable-install-blobs
 # If the user want or doesn't want VirGL
 ifeq ($(USE_VIRGL),true)
 MISC += --enable-opengl --enable-virglrenderer
+QEMU_EXTRA_CFLAGS += -DCONFIG_QUBE_VIRGL
 QEMU_EXTRA_CFLAGS += -I$(QUBE_JNI_ROOT)/virglrenderer/build-android/install/include/virgl
 QEMU_EXTRA_CFLAGS += -I$(QUBE_JNI_ROOT)/libepoxy/build-android/install/include
 QEMU_EXTRA_LDFLAGS += -L$(QUBE_JNI_ROOT)/virglrenderer/build-android/install/lib

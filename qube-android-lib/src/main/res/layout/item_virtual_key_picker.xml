@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Material3.Button.IconButton.Filled"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:layout_margin="4dp"
+    android:focusable="true"
+    android:minWidth="0dp"
+    android:minHeight="0dp"
+    app:iconGravity="textStart"
+    app:iconSize="32dp"
+    app:cornerRadius="8dp" />

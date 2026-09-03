@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvShareFolderDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp" />
+
+    <!-- Only visible while the server is running -->
+    <LinearLayout
+        android:id="@+id/layoutShareFolderRunningInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/tvShareFolderLink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textIsSelectable="true"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnCopyShareFolderLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/copy_link"
+            android:src="@drawable/content_copy_24px" />
+    </LinearLayout>
+
+</LinearLayout>

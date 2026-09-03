@@ -1,0 +1,48 @@
+--- glib-2.88.2/meson.build	2026-06-25 13:35:18.000000000 +0000
++++ glib-2.88.2/meson.build	2026-06-27 08:44:23.101981140 +0000
+@@ -2157,7 +2157,7 @@
+   if cc.has_header_symbol('pthread.h', 'pthread_condattr_setclock')
+     glib_conf.set('HAVE_PTHREAD_CONDATTR_SETCLOCK', 1)
+   endif
+-  if cc.has_header_symbol('pthread.h', 'pthread_cond_timedwait_relative_np')
++  if false
+     glib_conf.set('HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE_NP', 1)
+   endif
+   if cc.has_header_symbol('pthread.h', 'pthread_getname_np', prefix : pthread_prefix)
+--- glib-2.88.2/gio/meson.build	2026-06-25 13:35:18.000000000 +0000
++++ glib-2.88.2/gio/meson.build	2026-06-27 08:44:49.440269741 +0000
+@@ -420,7 +420,7 @@
+     unix_sources += files('gdesktopappinfo.c')
+     gio_unix_include_headers += files('gdesktopappinfo.h')
+ 
+-    if process_spawn_allowed
++    if process_spawn_allowed and host_system != 'android'
+       launch_desktop_sources = files('gio-launch-desktop.c')
+ 
+       if host_system == 'linux'
+--- glib-2.88.2/glib/meson.build	2026-06-25 13:35:18.000000000 +0000
++++ glib-2.88.2/glib/meson.build	2026-06-27 08:44:59.893302505 +0000
+@@ -418,6 +418,15 @@
+   pcre2_static_args = ['-DPCRE2_STATIC']
+ endif
+ 
++# QUBE: when pcre2 is an internal subproject (built from wrap), absorb its
++# objects into libglib-2.0.a so Android JNI consumers don't need -lpcre2-8
++# Use pcre2_8_lib (the real library object) instead of as_link_whole()
++# which returns InternalDependency rejected by newer meson in link_whole.
++pcre2_link_whole = []
++if pcre2.type_name() == 'internal'
++  pcre2_link_whole = [subproject('pcre2').get_variable('pcre2_8_lib')]
++endif
++
+ glib_c_args = ['-DG_LOG_DOMAIN="GLib"'] + glib_c_args_internal + pcre2_static_args
+ libglib = library('glib-2.0',
+   glib_dtrace_obj, glib_dtrace_hdr,
+@@ -430,6 +439,7 @@
+   link_args : [noseh_link_args, glib_link_flags, win32_ldflags],
+   include_directories : configinc,
+   link_with: [charset_lib, gnulib_lib],
++  link_whole: pcre2_link_whole,
+   dependencies : [
+     atomic_dep,
+     gnulib_libm_dependency,

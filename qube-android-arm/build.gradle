@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace = 'com.qubevm.arm'
+    compileSdk = 37
+
+    defaultConfig {
+        applicationId = "com.qubevm.arm"
+        minSdk = 26
+        targetSdk = 37
+        ndk { abiFilters "armeabi-v7a","arm64-v8a", "x86", "x86_64" }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("${rootProject.projectDir}/keystore/testkey.keystore")
+            storePassword "android"
+            keyAlias "androidtestkey"
+            keyPassword "android"
+            enableV1Signing true
+            enableV2Signing true
+            enableV3Signing true
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    lint {
+        abortOnError = false
+        disable += ['MissingTranslation']
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "qube-arm-q${rootProject.ext.qemuVersion}-android-ARM64-${variant.buildType.name}.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.14.0-rc01'
+
+    implementation project(':qube-android-lib')
+}

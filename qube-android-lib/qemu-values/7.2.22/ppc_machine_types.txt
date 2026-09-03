@@ -1,0 +1,15 @@
+40p
+bamboo
+g3beige
+mac99
+mpc8544ds
+none
+powernv
+powernv10
+powernv8
+powernv9
+ppce500
+pseries
+ref405ep
+sam460ex
+virtex-ml507

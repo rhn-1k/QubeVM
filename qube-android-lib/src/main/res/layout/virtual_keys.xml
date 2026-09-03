@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/virtual_keys_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="4dp"
+    android:background="?colorSurface"
+    android:backgroundTint="#cfff"
+    android:backgroundTintMode="multiply"
+    android:scrollbars="none"
+    android:visibility="gone">
+
+    <GridLayout
+        android:id="@+id/virtual_keys"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:rowCount="2" />
+
+</HorizontalScrollView>

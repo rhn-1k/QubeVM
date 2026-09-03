@@ -1,0 +1,1129 @@
+diff -ru --no-dereference qemu-11.1.1/Makefile qemu-11.1.1-work/Makefile
+--- qemu-11.1.1/Makefile	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/Makefile	2026-08-27 17:58:41.177513983 +0300
+@@ -180,7 +180,8 @@
+ 
+ SUBDIR_MAKEFLAGS=$(if $(V),,--no-print-directory --quiet)
+ 
+-include $(SRC_PATH)/tests/Makefile.include
++#QUBE: ignore
++#include $(SRC_PATH)/tests/Makefile.include
+ 
+ all: recurse-all
+ 
+diff -ru --no-dereference qemu-11.1.1/accel/kvm/kvm-all.c qemu-11.1.1-work/accel/kvm/kvm-all.c
+--- qemu-11.1.1/accel/kvm/kvm-all.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/accel/kvm/kvm-all.c	2026-08-27 17:58:41.181513983 +0300
+@@ -2928,7 +2928,12 @@
+     QLIST_INIT(&s->kvm_parked_vcpus);
+     s->fd = qemu_open_old(s->device ?: "/dev/kvm", O_RDWR);
+     if (s->fd == -1) {
++#ifdef __QUBE__
++        //no m specifier in android
++        error_report("Could not access KVM kernel module: /dev/kvm");
++#else
+         error_report("Could not access KVM kernel module: %m");
++#endif
+         ret = -errno;
+         goto err;
+     }
+Only in qemu-11.1.1-work/accel/kvm: kvm-all.c.orig
+diff -ru --no-dereference qemu-11.1.1/audio/audio.c qemu-11.1.1-work/audio/audio.c
+--- qemu-11.1.1/audio/audio.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/audio/audio.c	2026-08-27 17:58:41.185513983 +0300
+@@ -220,6 +220,8 @@
+         CASE(SPICE, spice, );
+ #endif
+         CASE(WAV, wav, );
++        // QUBE: no wrapper PerDirectionOptions type
++        CASE(QUBE, qube, );
+ 
+     case AUDIODEV_DRIVER__MAX:
+         abort();
+@@ -250,7 +252,11 @@
+ 
+     if (!pdo->has_frequency) {
+         pdo->has_frequency = true;
++#ifdef __QUBE__
++        pdo->frequency = 22050;
++#else
+         pdo->frequency = 44100;
++#endif
+     }
+     if (!pdo->has_channels) {
+         pdo->has_channels = true;
+@@ -318,6 +324,9 @@
+ #endif
+     case AUDIODEV_DRIVER_WAV:
+         return dev->u.wav.out;
++    // QUBE: direct field access like NONE/WAV
++    case AUDIODEV_DRIVER_QUBE:
++        return dev->u.qube.out;
+ 
+     case AUDIODEV_DRIVER__MAX:
+         break;
+@@ -377,6 +386,9 @@
+ #endif
+     case AUDIODEV_DRIVER_WAV:
+         return dev->u.wav.in;
++    // QUBE: direct field access like NONE/WAV
++    case AUDIODEV_DRIVER_QUBE:
++        return dev->u.qube.in;
+ 
+     case AUDIODEV_DRIVER__MAX:
+         break;
+diff -ru --no-dereference qemu-11.1.1/audio/audio_template.h qemu-11.1.1-work/audio/audio_template.h
+--- qemu-11.1.1/audio/audio_template.h	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/audio/audio_template.h	2026-08-27 17:58:41.189513983 +0300
+@@ -388,6 +388,9 @@
+ #endif
+     case AUDIODEV_DRIVER_WAV:
+         return dev->u.wav.TYPE;
++    // QUBE: direct field access like NONE/WAV
++    case AUDIODEV_DRIVER_QUBE:
++        return dev->u.qube.TYPE;
+ 
+     case AUDIODEV_DRIVER__MAX:
+         break;
+diff -ru --no-dereference qemu-11.1.1/audio/meson.build qemu-11.1.1-work/audio/meson.build
+--- qemu-11.1.1/audio/meson.build	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/audio/meson.build	2026-08-27 17:58:41.189513983 +0300
+@@ -4,6 +4,7 @@
+   'audio-be.c',
+   'audio-mixeng-be.c',
+   'mixeng.c',
++  'qube-audio.c',
+   'noaudio.c',
+   'wavaudio.c',
+ ))
+diff -ru --no-dereference qemu-11.1.1/chardev/char-pty.c qemu-11.1.1-work/chardev/char-pty.c
+--- qemu-11.1.1/chardev/char-pty.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/chardev/char-pty.c	2026-08-27 17:58:41.189513983 +0300
+@@ -237,6 +237,31 @@
+ # include <termios.h>
+ #endif
+ 
++#ifdef __ANDROID__
++// QUBE: no openpty() in the Android NDK, implement via /dev/ptmxl
++#include <fcntl.h>
++static int qube_openpty(int *amaster, int *aslave, char *name,
++                   struct termios *termp, struct winsize *winp)
++{
++    int mfd, sfd;
++    char *slave_name;
++    mfd = open("/dev/ptmx", O_RDWR | O_NOCTTY | O_CLOEXEC);
++    if (mfd < 0) { return -1; }
++    if (grantpt(mfd) != 0 || unlockpt(mfd) != 0) { close(mfd); return -1; }
++    slave_name = ptsname(mfd);
++    if (!slave_name) { close(mfd); return -1; }
++    sfd = open(slave_name, O_RDWR | O_NOCTTY | O_CLOEXEC);
++    if (sfd < 0) { close(mfd); return -1; }
++    if (termp) { tcgetattr(sfd, termp); }
++    if (winp)  { ioctl(sfd, TIOCSWINSZ, winp); }
++    if (name)  { strcpy(name, slave_name); }
++    *amaster = mfd;
++    *aslave  = sfd;
++    return 0;
++}
++#define openpty qube_openpty
++#endif /* __ANDROID__ */
++
+ #ifdef __sun__
+ 
+ #if !defined(HAVE_OPENPTY)
+diff -ru --no-dereference qemu-11.1.1/configure qemu-11.1.1-work/configure
+--- qemu-11.1.1/configure	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/configure	2026-08-27 17:58:41.193513983 +0300
+@@ -746,6 +746,12 @@
+   ;;
+   --wasm64-32bit-address-limit)
+   ;;
++  # QUBE: build emulators as .so for Android JNI
++  --enable-qube-android-so) meson_option_add -Dqube_android_so=true
++                             meson_option_add -Db_staticpic=true
++  ;;
++  --disable-qube-android-so) meson_option_add -Dqube_android_so=false
++  ;;
+   # everything else has the same name in configure and meson
+   --*) meson_option_parse "$opt" "$optarg"
+   ;;
+Only in qemu-11.1.1-work/: configure.orig
+diff -ru --no-dereference qemu-11.1.1/hw/arm/fsl-imx8mm.c qemu-11.1.1-work/hw/arm/fsl-imx8mm.c
+--- qemu-11.1.1/hw/arm/fsl-imx8mm.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/hw/arm/fsl-imx8mm.c	2026-08-27 17:58:41.249513983 +0300
+@@ -370,7 +370,8 @@
+ 
+     /* UARTs */
+     for (i = 0; i < FSL_IMX8MM_NUM_UARTS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } serial_table[FSL_IMX8MM_NUM_UARTS] = {
+@@ -448,7 +449,8 @@
+ 
+     /* I2Cs */
+     for (i = 0; i < FSL_IMX8MM_NUM_I2CS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } i2c_table[FSL_IMX8MM_NUM_I2CS] = {
+@@ -469,7 +471,8 @@
+ 
+     /* GPIOs */
+     for (i = 0; i < FSL_IMX8MM_NUM_GPIOS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq_low;
+             unsigned int irq_high;
+@@ -517,7 +520,8 @@
+ 
+     /* USDHCs */
+     for (i = 0; i < FSL_IMX8MM_NUM_USDHCS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } usdhc_table[FSL_IMX8MM_NUM_USDHCS] = {
+@@ -537,7 +541,8 @@
+ 
+     /* USBs */
+     for (i = 0; i < FSL_IMX8MM_NUM_USBS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } usb_table[FSL_IMX8MM_NUM_USBS] = {
+@@ -558,7 +563,8 @@
+ 
+     /* ECSPIs */
+     for (i = 0; i < FSL_IMX8MM_NUM_ECSPIS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } spi_table[FSL_IMX8MM_NUM_ECSPIS] = {
+@@ -600,7 +606,8 @@
+ 
+     /* Watchdogs */
+     for (i = 0; i < FSL_IMX8MM_NUM_WDTS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mm_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } wdog_table[FSL_IMX8MM_NUM_WDTS] = {
+diff -ru --no-dereference qemu-11.1.1/hw/arm/fsl-imx8mp.c qemu-11.1.1-work/hw/arm/fsl-imx8mp.c
+--- qemu-11.1.1/hw/arm/fsl-imx8mp.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/hw/arm/fsl-imx8mp.c	2026-08-27 17:58:41.249513983 +0300
+@@ -676,7 +676,8 @@
+ 
+     /* FlexCANs */
+     for (i = 0; i < FSL_IMX8MP_NUM_CANS; i++) {
+-        static const struct {
++        // QUBE: drop static so this local table can init from fsl_imx8mp_memmap[]
++        const struct {
+             hwaddr addr;
+             unsigned int irq;
+         } flexcan_table[FSL_IMX8MP_NUM_CANS] = {
+diff -ru --no-dereference qemu-11.1.1/hw/display/vga.c qemu-11.1.1-work/hw/display/vga.c
+--- qemu-11.1.1/hw/display/vga.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/hw/display/vga.c	2026-08-27 17:58:41.197513983 +0300
+@@ -1489,6 +1489,11 @@
+ {
+     memory_region_set_log(&s->vram, false, DIRTY_MEMORY_VGA);
+ }
++#ifdef __QUBE__
++// QUBE: we need to do a full screen refresh to align, so we pick the
++// lesser evil and do it within the vga
++int qube_vga_full_update;
++#endif
+ 
+ /*
+  * graphic modes
+@@ -1708,7 +1713,11 @@
+         }
+         page0 = addr & s->vbe_size_mask;
+         page1 = (addr + bwidth - 1) & s->vbe_size_mask;
++#ifdef __QUBE__
++        if (full_update || qube_vga_full_update) {
++#else
+         if (full_update) {
++#endif
+             update = 1;
+         } else if (page1 < page0) {
+             /* scanline wraps from end of video memory to the start */
+@@ -1764,6 +1773,9 @@
+         /* flush to display */
+         qemu_console_update(s->con, 0, y_start, disp_width, y - y_start);
+     }
++#ifdef __QUBE__
++    qube_vga_full_update = 0;
++#endif
+     g_free(snap);
+     memset(s->invalidated_y_table, 0, sizeof(s->invalidated_y_table));
+ }
+Only in qemu-11.1.1-work/hw/display: vga.c.orig
+diff -ru --no-dereference qemu-11.1.1/hw/display/virtio-gpu-gl.c qemu-11.1.1-work/hw/display/virtio-gpu-gl.c
+--- qemu-11.1.1/hw/display/virtio-gpu-gl.c	2026-08-11 19:40:25.000000000 +0300
++++ qemu-11.1.1-work/hw/display/virtio-gpu-gl.c	2026-08-27 17:58:41.249513983 +0300
+@@ -144,6 +144,11 @@
+ 
+ #if !defined(CONFIG_WIN32)
+     if (virtio_gpu_hostmem_enabled(b->conf)) {
++        // QUBE: initialize hostmem when transport did not do it
++        if (!b->hostmem.owner) {
++            memory_region_init(&b->hostmem, OBJECT(g),
++                               "virtio-gpu-hostmem", b->conf.hostmem);
++        }
+         map = qemu_ram_mmap(-1, b->conf.hostmem, qemu_real_host_page_size(),
+                             0, 0);
+         if (map == MAP_FAILED) {
+diff -ru --no-dereference qemu-11.1.1/include/qemu/osdep.h qemu-11.1.1-work/include/qemu/osdep.h
+--- qemu-11.1.1/include/qemu/osdep.h	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/include/qemu/osdep.h	2026-08-27 17:58:41.201513983 +0300
+@@ -109,6 +109,12 @@
+ #include <stddef.h>
+ #include <stdbool.h>
+ #include <stdint.h>
++#ifdef __ANDROID__
++/* QUBE: Android NDK sys/types.h does not expose major()/minor();
++ * They live in sys/sysmacros.h - include it explicitly here so all
++ * translation units get the macros without individual guards. */
++#include <sys/sysmacros.h>
++#endif
+ #include <sys/types.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+@@ -668,10 +674,12 @@
+ int qemu_kill_thread(int tid, int sig);
+ 
+ #ifndef CONFIG_IOVEC
++#ifndef __ANDROID__
+ struct iovec {
+     void *iov_base;
+     size_t iov_len;
+ };
++#endif /* __ANDROID__ */
+ 
+ ssize_t readv(int fd, const struct iovec *iov, int iov_cnt);
+ ssize_t writev(int fd, const struct iovec *iov, int iov_cnt);
+Only in qemu-11.1.1-work/include/qemu: osdep.h.orig
+diff -ru --no-dereference qemu-11.1.1/meson.build qemu-11.1.1-work/meson.build
+--- qemu-11.1.1/meson.build	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/meson.build	2026-08-27 17:58:41.213513983 +0300
+@@ -1051,17 +1051,27 @@
+ # You should also check if any of the glib.version() checks
+ # below can also be removed.
+ glib_req_ver = '>=2.66.0'
+-glib_pc = dependency('glib-2.0', version: glib_req_ver, required: true,
+-                    method: 'pkg-config')
+-glib_cflags = []
+-if enable_modules
+-  gmodule = dependency('gmodule-export-2.0', version: glib_req_ver, required: true,
+-                       method: 'pkg-config')
+-elif get_option('plugins')
+-  gmodule = dependency('gmodule-no-export-2.0', version: glib_req_ver, required: true,
+-                       method: 'pkg-config')
+-else
++if get_option('qube_android_so')
++  # QUBE: glib headers/libs supplied via extra-cflags/ldflags
++  glib_pc = declare_dependency(
++    compile_args: [],
++    link_args: ['-lglib-2.0'],
++    version: '2.88.2')
++  glib_cflags = []
+   gmodule = not_found
++else
++  glib_pc = dependency('glib-2.0', version: glib_req_ver, required: true,
++                      method: 'pkg-config')
++  glib_cflags = []
++  if enable_modules
++    gmodule = dependency('gmodule-export-2.0', version: glib_req_ver, required: true,
++                         method: 'pkg-config')
++  elif get_option('plugins')
++    gmodule = dependency('gmodule-no-export-2.0', version: glib_req_ver, required: true,
++                         method: 'pkg-config')
++  else
++    gmodule = not_found
++  endif
+ endif
+ 
+ # This workaround is required due to a bug in pkg-config file for glib as it
+@@ -1075,6 +1085,7 @@
+ # problems on multi-arch where people try to build
+ # 32-bit QEMU while pointing at 64-bit glib headers
+ 
++if not get_option('qube_android_so')
+ if not cc.compiles('''
+   #include <glib.h>
+   #include <stddef.h>
+@@ -1090,6 +1101,7 @@
+         You probably need to set PKG_CONFIG_LIBDIR" to point
+         to the right pkg-config files for your build target.''')
+ endif
++endif
+ 
+ glib = declare_dependency(dependencies: [glib_pc, gmodule],
+                           compile_args: glib_cflags,
+@@ -1148,8 +1160,16 @@
+ endif
+ pixman = not_found
+ if not get_option('pixman').auto() or have_system or have_tools
+-  pixman = dependency('pixman-1', required: get_option('pixman'), version:'>=0.21.8',
+-                      method: 'pkg-config')
++  if get_option('qube_android_so')
++    # QUBE: pixman headers/libs supplied via extra-cflags/ldflags, declare manually
++    pixman = declare_dependency(
++      compile_args: [],
++      link_args: ['-lpixman-1'],
++      version: '0.40.0')
++  else
++    pixman = dependency('pixman-1', required: get_option('pixman'), version:'>=0.21.8',
++                        method: 'pkg-config')
++  endif
+ endif
+ 
+ zlib = dependency('zlib', required: true)
+@@ -1273,20 +1293,26 @@
+ 
+ slirp = not_found
+ if not get_option('slirp').auto() or have_system
+-  slirp = dependency('slirp', required: get_option('slirp'),
+-                     method: 'pkg-config')
+-  # slirp < 4.7 is incompatible with CFI support in QEMU.  This is because
+-  # it passes function pointers within libslirp as callbacks for timers.
+-  # When using a system-wide shared libslirp, the type information for the
+-  # callback is missing and the timer call produces a false positive with CFI.
+-  # Do not use the "version" keyword argument to produce a better error.
+-  # with control-flow integrity.
+-  if get_option('cfi') and slirp.found() and slirp.version().version_compare('<4.7')
+-    if get_option('slirp').enabled()
+-      error('Control-Flow Integrity requires libslirp 4.7.')
+-    else
+-      warning('Cannot use libslirp since Control-Flow Integrity requires libslirp >= 4.7.')
+-      slirp = not_found
++  if get_option('qube_android_so')
++    # QUBE: no pkg-config binary for Android host, build libslirp as subproject
++    slirp = dependency('slirp', required: get_option('slirp'),
++                       fallback: ['libslirp', 'slirp_dep'])
++  else
++    slirp = dependency('slirp', required: get_option('slirp'),
++                       method: 'pkg-config')
++    # slirp < 4.7 is incompatible with CFI support in QEMU.  This is because
++    # it passes function pointers within libslirp as callbacks for timers.
++    # When using a system-wide shared libslirp, the type information for the
++    # callback is missing and the timer call produces a false positive with CFI.
++    # Do not use the "version" keyword argument to produce a better error.
++    # with control-flow integrity.
++    if get_option('cfi') and slirp.found() and slirp.version().version_compare('<4.7')
++      if get_option('slirp').enabled()
++        error('Control-Flow Integrity requires libslirp 4.7.')
++      else
++        warning('Cannot use libslirp since Control-Flow Integrity requires libslirp >= 4.7.')
++        slirp = not_found
++      endif
+     endif
+   endif
+ endif
+@@ -1413,9 +1439,17 @@
+ 
+ have_vhost_user_gpu = have_tools and host_os == 'linux' and pixman.found()
+ if not get_option('virglrenderer').auto() or have_system or have_vhost_user_gpu
+-  virgl = dependency('virglrenderer',
+-                     method: 'pkg-config',
+-                     required: get_option('virglrenderer'))
++  if get_option('qube_android_so')
++    # QUBE: virglrenderer via extra-cflags/ldflags, no pkg-config in NDK
++    virgl = declare_dependency(
++      compile_args: [],
++      link_args: ['-lvirglrenderer', '-lepoxy', '-lEGL', '-lGLESv2'],
++      version: '1.3.0')
++  else
++    virgl = dependency('virglrenderer',
++                       method: 'pkg-config',
++                       required: get_option('virglrenderer'))
++  endif
+ endif
+ rutabaga = not_found
+ if not get_option('rutabaga_gfx').auto() or have_system or have_vhost_user_gpu
+@@ -1765,16 +1799,29 @@
+ 
+ opengl = not_found
+ if not get_option('opengl').auto() or have_system or have_vhost_user_gpu
+-  epoxy = dependency('epoxy', method: 'pkg-config',
+-                      required: get_option('opengl'))
+-  if cc.has_header('epoxy/egl.h', dependencies: epoxy)
++  if get_option('qube_android_so')
++    # QUBE: epoxy via extra-cflags/ldflags, no pkg-config in NDK
++    epoxy = declare_dependency(
++      compile_args: [],
++      link_args: ['-lepoxy', '-lEGL', '-lGLESv2'],
++      version: '1.5.10')
+     opengl = epoxy
+-  elif get_option('opengl').enabled()
+-    error('epoxy/egl.h not found')
++  else
++    epoxy = dependency('epoxy', method: 'pkg-config',
++                        required: get_option('opengl'))
++    if cc.has_header('epoxy/egl.h', dependencies: epoxy)
++      opengl = epoxy
++    elif get_option('opengl').enabled()
++      error('epoxy/egl.h not found')
++    endif
+   endif
+ endif
+ gbm = not_found
+-if (have_system or have_tools) and (virgl.found() or opengl.found())
++if (have_system or have_tools) and (virgl.found() or opengl.found()) and not get_option('qube_android_so')
++  # QUBE: Android has no GBM/DRM render nodes reachable by an unprivileged
++  # app; virtio-gpu-gl only uses gbm for the vhost-user-gpu helper and the
++  # egl-headless render-node path, neither of which our display goes
++  # through, so skip the pkg-config lookup entirely.
+   gbm = dependency('gbm', method: 'pkg-config', required: false)
+ endif
+ have_vhost_user_gpu = have_vhost_user_gpu and virgl.found() and opengl.found() and gbm.found()
+@@ -2473,6 +2520,8 @@
+                                        dependencies: numa))
+ endif
+ config_host_data.set('CONFIG_OPENGL', opengl.found())
++# QUBE: our own -display type, needs GL but not GBM/DRM render nodes
++config_host_data.set('CONFIG_QUBE_QGE', get_option('qube_android_so') and opengl.found())
+ config_host_data.set('CONFIG_PLUGIN', get_option('plugins'))
+ config_host_data.set('CONFIG_RBD', rbd.found())
+ config_host_data.set('CONFIG_RDMA', rdma.found())
+@@ -2624,6 +2673,10 @@
+ config_host_data.set('CONFIG_MEMALIGN', cc.has_function('memalign'))
+ config_host_data.set('CONFIG_PPOLL', cc.has_function('ppoll'))
+ config_host_data.set('CONFIG_PREADV', cc.has_function('preadv', prefix: '#include <sys/uio.h>'))
++# QUBE: no preadv for Android
++if get_option('qube_android_so')
++  config_host_data.set('CONFIG_PREADV', false)
++endif
+ config_host_data.set('CONFIG_PTHREAD_FCHDIR_NP', cc.has_function('pthread_fchdir_np'))
+ config_host_data.set('CONFIG_SENDFILE', cc.has_function('sendfile'))
+ config_host_data.set('CONFIG_SETNS', cc.has_function('setns') and cc.has_function('unshare'))
+@@ -2633,10 +2686,22 @@
+ config_host_data.set('CONFIG_GETLOADAVG', cc.has_function('getloadavg'))
+ config_host_data.set('CONFIG_ARPA_INET_64', cc.has_function('htonll'))
+ config_host_data.set('HAVE_COPY_FILE_RANGE', cc.has_function('copy_file_range'))
++# QUBE: no copy_file_range for Android
++if get_option('qube_android_so')
++  config_host_data.set('HAVE_COPY_FILE_RANGE', false)
++endif
+ config_host_data.set('HAVE_GETIFADDRS', cc.has_function('getifaddrs'))
+ config_host_data.set('HAVE_GLIB_WITH_SLICE_ALLOCATOR', glib_has_gslice)
+ config_host_data.set('HAVE_OPENPTY', cc.has_function('openpty', dependencies: util))
++# QUBE: openpty is not available on Android NDK
++if get_option('qube_android_so')
++  config_host_data.set('HAVE_OPENPTY', false)
++endif
+ config_host_data.set('HAVE_STRCHRNUL', cc.has_function('strchrnul', prefix: osdep_prefix))
++# QUBE: disable strchrnul for Android
++if get_option('qube_android_so')
++  config_host_data.set('HAVE_STRCHRNUL', false)
++endif
+ config_host_data.set('HAVE_SYSTEM_FUNCTION', cc.has_function('system', prefix: '#include <stdlib.h>'))
+ if rbd.found()
+   config_host_data.set('HAVE_RBD_NAMESPACE_EXISTS',
+@@ -2689,6 +2754,10 @@
+ config_host_data.set('CONFIG_GETRANDOM',
+                      cc.has_function('getrandom') and
+                      cc.has_header_symbol('sys/random.h', 'GRND_NONBLOCK'))
++# QUBE: getrandom is not present with clang on Android
++if get_option('qube_android_so')
++  config_host_data.set('CONFIG_GETRANDOM', false)
++endif
+ config_host_data.set('CONFIG_PRCTL_PR_SET_TIMERSLACK',
+                      cc.has_header_symbol('sys/prctl.h', 'PR_SET_TIMERSLACK'))
+ config_host_data.set('CONFIG_RTNETLINK',
+@@ -2893,6 +2962,12 @@
+ config_host_data.set('CONFIG_SIGNALFD', cc.links(osdep_prefix + '''
+   #include <sys/signalfd.h>
+   int main(void) { return signalfd(-1, NULL, SFD_CLOEXEC); }'''))
++# QUBE: Android x86_64 devices have headers but don't support SYS_signalfd
++if get_option('qube_android_so')
++  config_host_data.set('CONFIG_SIGNALFD', false)
++  # QUBE: close_range is not available in Android NDK < API 34
++  config_host_data.set('CONFIG_CLOSE_RANGE', false)
++endif
+ 
+ config_host_data.set('HAVE_MLOCKALL', cc.links(osdep_prefix + '''
+   #include <sys/mman.h>
+@@ -3876,8 +3951,10 @@
+ subdir('linux-user')
+ 
+ # needed for fuzzing binaries
+-subdir('tests/qtest/libqos')
+-subdir('tests/qtest/fuzz')
++if not get_option('qube_android_so')
++  subdir('tests/qtest/libqos')
++  subdir('tests/qtest/fuzz')
++endif
+ 
+ ##############################################
+ # Internal static_libraries and dependencies #
+@@ -4442,7 +4519,19 @@
+       exe_name += '-unsigned'
+     endif
+ 
+-    emulator = executable(exe_name, exe['sources'],
++    # QUBE: build as shared library for Android JNI instead of executable
++    if get_option('qube_android_so')
++      emulator = shared_library(exe_name, exe['sources'],
++               install: true,
++               c_args: c_args,
++               dependencies: arch_deps + exe['dependencies'],
++               objects: lib.extract_all_objects(recursive: true),
++               link_depends: [block_syms, qemu_syms],
++               link_args: link_args,
++               name_prefix: 'lib',
++               name_suffix: 'so')
++    else
++      emulator = executable(exe_name, exe['sources'],
+                install: true,
+                c_args: c_args,
+                dependencies: arch_deps + exe['dependencies'],
+@@ -4450,6 +4539,7 @@
+                link_depends: [block_syms, qemu_syms],
+                link_args: link_args,
+                win_subsystem: exe['win_subsystem'])
++    endif
+ 
+     if host_os == 'darwin'
+       icon = 'pc-bios/qemu.rsrc'
+@@ -4605,7 +4695,7 @@
+ subdir('pyvenv')
+ # Tests are disabled on emscripten because they rely on host features that aren't
+ # supported by emscripten (e.g. fork and unix socket).
+-if host_os != 'emscripten'
++if host_os != 'emscripten' and not get_option('qube_android_so')
+   subdir('tests')
+ endif
+ if gtk.found()
+Only in qemu-11.1.1-work/: meson.build.orig
+diff -ru --no-dereference qemu-11.1.1/meson_options.txt qemu-11.1.1-work/meson_options.txt
+--- qemu-11.1.1/meson_options.txt	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/meson_options.txt	2026-08-27 17:58:41.217513983 +0300
+@@ -385,3 +385,7 @@
+        description: 'Rust support')
+ option('strict_rust_lints', type: 'boolean', value: false,
+        description: 'Enable stricter set of Rust warnings')
++
++# QUBE: build qemu-system-* as shared library (.so) for Android JNI
++option('qube_android_so', type: 'boolean', value: false,
++       description: 'Build emulator targets as shared libraries for Android (Qube)')
+Only in qemu-11.1.1-work/: meson_options.txt.orig
+diff -ru --no-dereference qemu-11.1.1/monitor/hmp.c qemu-11.1.1-work/monitor/hmp.c
+--- qemu-11.1.1/monitor/hmp.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/monitor/hmp.c	2026-08-27 17:58:41.241513983 +0300
+@@ -84,7 +84,8 @@
+                                    monitor_hmp_get_readline,
+                                    monitor_hmp_set_readline);
+ 
+-    moncls->vprintf = monitor_hmp_vprintf;
++    // QUBE: change vprintf name so it doesn't conflict with our qube_logutils.h
++    moncls->mon_vprintf = monitor_hmp_vprintf;
+     moncls->accept_input = monitor_hmp_accept_input;
+ 
+     ucc->complete = monitor_hmp_complete;
+diff -ru --no-dereference qemu-11.1.1/monitor/monitor-internal.h qemu-11.1.1-work/monitor/monitor-internal.h
+--- qemu-11.1.1/monitor/monitor-internal.h	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/monitor/monitor-internal.h	2026-08-27 17:58:41.245513983 +0300
+@@ -110,7 +110,8 @@
+      * If non-NULL, the monitor is able to print messages
+      * for attention of the client user
+      */
+-    int (*vprintf)(Monitor *mon, const char *fmt, va_list ap)
++    // QUBE: change vprintf name so it doesn't conflict with our qube_logutils.h
++    int (*mon_vprintf)(Monitor *mon, const char *fmt, va_list ap)
+         G_GNUC_PRINTF(2, 0);
+     /*
+      * If non-NULL, the monitor is able to send event
+diff -ru --no-dereference qemu-11.1.1/monitor/monitor.c qemu-11.1.1-work/monitor/monitor.c
+--- qemu-11.1.1/monitor/monitor.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/monitor/monitor.c	2026-08-27 17:58:41.245513983 +0300
+@@ -280,11 +280,13 @@
+     }
+ 
+     moncls = MONITOR_GET_CLASS(mon);
+-    if (!moncls->vprintf) {
++    // QUBE: change vprintf name so it doesn't conflict with our qube_logutils.h
++    if (!moncls->mon_vprintf) {
+         return -1;
+     }
+ 
+-    return moncls->vprintf(mon, fmt, ap);
++    // QUBE: change vprintf name so it doesn't conflict with our qube_logutils.h
++    return moncls->mon_vprintf(mon, fmt, ap);
+ }
+ 
+ int monitor_printf(Monitor *mon, const char *fmt, ...)
+diff -ru --no-dereference qemu-11.1.1/qapi/audio.json qemu-11.1.1-work/qapi/audio.json
+--- qemu-11.1.1/qapi/audio.json	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/qapi/audio.json	2026-08-27 17:58:41.221513983 +0300
+@@ -484,7 +484,8 @@
+             { 'name': 'sdl', 'if': 'CONFIG_AUDIO_SDL' },
+             { 'name': 'sndio', 'if': 'CONFIG_AUDIO_SNDIO' },
+             { 'name': 'spice', 'if': 'CONFIG_SPICE' },
+-            'wav' ] }
++            'wav',
++            'qube' ] }
+ 
+ ##
+ # @Audiodev:
+@@ -530,7 +531,8 @@
+                    'if': 'CONFIG_AUDIO_SNDIO' },
+     'spice':     { 'type': 'AudiodevGenericOptions',
+                    'if': 'CONFIG_SPICE' },
+-    'wav':       'AudiodevWavOptions' } }
++    'wav':       'AudiodevWavOptions',
++    'qube':     'AudiodevGenericOptions' } }
+ 
+ ##
+ # @query-audiodevs:
+diff -ru --no-dereference qemu-11.1.1/qapi/ui.json qemu-11.1.1-work/qapi/ui.json
+--- qemu-11.1.1/qapi/ui.json	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/qapi/ui.json	2026-08-27 17:58:41.221513983 +0300
+@@ -1517,6 +1517,8 @@
+ #
+ # @dbus: Start a D-Bus service for the display.  (Since 7.0)
+ #
++# @qube-qge: Our own gfx wrapper, reads pixels via Android EGL
++#
+ # Since: 2.12
+ ##
+ { 'enum'    : 'DisplayType',
+@@ -1526,6 +1528,9 @@
+     { 'name': 'gtk', 'if': 'CONFIG_GTK' },
+     { 'name': 'sdl', 'if': 'CONFIG_SDL' },
+     { 'name': 'egl-headless', 'if': 'CONFIG_OPENGL' },
++    # QUBE: our own gfx wrapper, like others but reads pixels
++    # by Android system EGL instead of a window or DRM node
++    { 'name': 'qube-qge', 'if': 'CONFIG_QUBE_QGE' },
+     { 'name': 'curses', 'if': 'CONFIG_CURSES' },
+     { 'name': 'cocoa', 'if': 'CONFIG_COCOA' },
+     { 'name': 'spice-app', 'if': 'CONFIG_SPICE' },
+diff -ru --no-dereference qemu-11.1.1/system/vl.c qemu-11.1.1-work/system/vl.c
+--- qemu-11.1.1/system/vl.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/system/vl.c	2026-08-27 17:58:41.225513983 +0300
+@@ -3862,6 +3862,13 @@
+         qmp_x_exit_preconfig(&error_fatal);
+     }
+     qemu_init_displays();
++
++#ifdef __QUBE__
++    // QUBE: defining our wrappers here
++    qube_gfx_init(NULL);
++    qube_input_init(NULL);
++#endif
++
+     accel_setup_post(current_machine);
+     if (migrate_mode() != MIG_MODE_CPR_EXEC) {
+         os_setup_post();
+diff -ru --no-dereference qemu-11.1.1/tests/qtest/meson.build qemu-11.1.1-work/tests/qtest/meson.build
+--- qemu-11.1.1/tests/qtest/meson.build	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/tests/qtest/meson.build	2026-08-27 17:58:41.233513983 +0300
+@@ -37,7 +37,7 @@
+ 
+ qtests_pci = \
+   (config_all_devices.has_key('CONFIG_VGA') ? ['display-vga-test'] : []) +                  \
+-  (config_all_devices.has_key('CONFIG_IVSHMEM_DEVICE') ? ['ivshmem-test'] : [])
++  (config_all_devices.has_key('CONFIG_IVSHMEM_DEVICE') and not get_option('qube_android_so') ? ['ivshmem-test'] : [])
+ 
+ qtests_cxl = \
+   (config_all_devices.has_key('CONFIG_CXL') ? ['cxl-test'] : [])
+diff -ru --no-dereference qemu-11.1.1/ui/meson.build qemu-11.1.1-work/ui/meson.build
+--- qemu-11.1.1/ui/meson.build	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/ui/meson.build	2026-08-27 17:58:41.233513983 +0300
+@@ -59,6 +59,8 @@
+   'ui-hmp-cmds.c',
+   'ui-qmp-cmds.c',
+   'util.c',
++  'qge.c',
++  'qge-input.c',
+ ))
+ system_ss.add(ui)
+ system_ss.add(when: pixman, if_true: files('console-vc.c'), if_false: files('console-vc-stubs.c'))
+diff -ru --no-dereference qemu-11.1.1/ui/vnc.c qemu-11.1.1-work/ui/vnc.c
+--- qemu-11.1.1/ui/vnc.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/ui/vnc.c	2026-08-27 17:58:41.237513983 +0300
+@@ -2012,6 +2012,40 @@
+     return QKeyCode_str(qemu_input_key_number_to_qcode(keycode));
+ }
+ 
++// QUBE: some keys from android keyboards need SHIFT for vnc
++#ifdef __ANDROID__
++static bool keyNeedsShift(VncState *vs, int down,
++                          uint32_t sym, uint16_t keycode) {
++	int meta_sym = 0;	
++	int meta_keycode = 0;	
++	
++	if ((sym >= 123 && sym <= 126)
++	|| (sym >= 33 && sym <= 38)
++	|| (sym >= 40 && sym < 44)
++	|| (sym >= 62 && sym <= 64)
++	|| (sym >= 94 && sym <= 95)
++	|| sym == 58 || sym == 60) {
++		meta_sym = 65505;
++		meta_keycode = 42;
++		if(sym == 60) {
++			sym = 44;
++			keycode = 51;
++		}
++	} else {
++		return false;
++	}
++	
++	if(down)
++		do_key_event(vs, down, meta_keycode, meta_sym);		
++	do_key_event(vs, down, keycode, sym);
++	if(!down)
++		do_key_event(vs, down, meta_keycode, meta_sym);
++			
++	return true;
++}
++#endif
++//QUBE
++
+ static void key_event(VncState *vs, bool down, uint32_t sym)
+ {
+     int keycode;
+@@ -2024,6 +2058,10 @@
+     keycode = keysym2scancode(vs->vd->kbd_layout, lsym & 0xFFFF,
+                               vs->vd->kbd, down) & SCANCODE_KEYMASK;
+     trace_vnc_key_event_map(down, sym, keycode, code2name(keycode));
++#ifdef __ANDROID__
++	if(keyNeedsShift(vs, down, sym, keycode))
++		return;
++#endif
+     do_key_event(vs, down, keycode, sym);
+ }
+ 
+diff -ru --no-dereference qemu-11.1.1/util/coroutine-sigaltstack.c qemu-11.1.1-work/util/coroutine-sigaltstack.c
+--- qemu-11.1.1/util/coroutine-sigaltstack.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/util/coroutine-sigaltstack.c	2026-08-27 18:05:55.825514008 +0300
+@@ -21,9 +21,8 @@
+  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-/* XXX Is there a nicer way to disable glibc's stack check for longjmp? */
+-#undef _FORTIFY_SOURCE
+-#define _FORTIFY_SOURCE 0
++// QUBE: signals, sigsetjmp has been removed, now we don't use libc
++// to avoid a crash happens for snapdragon users due to PAC
+ 
+ #include "qemu/osdep.h"
+ #include <pthread.h>
+@@ -33,11 +32,16 @@
+ #error "SafeStack is not compatible with code run in alternate signal stacks"
+ #endif
+ 
++extern void coro_swap(void **save_sp, void *new_sp);
++extern void *coro_bootstrap_init(void *stack_top, void (*entry)(void *),
++                                  void *arg);
++
+ typedef struct {
+     Coroutine base;
+     void *stack;
+     size_t stack_size;
+-    sigjmp_buf env;
++    void *sp; // QUBE: saved stack pointer for coro_swap()
++    int switch_ret;
+ } CoroutineSigAltStack;
+ 
+ /**
+@@ -49,11 +53,6 @@
+ 
+     /** The default coroutine */
+     CoroutineSigAltStack leader;
+-
+-    /** Information for the signal handler (trampoline) */
+-    sigjmp_buf tr_reenter;
+-    volatile sig_atomic_t tr_called;
+-    void *tr_handler;
+ } CoroutineThreadState;
+ 
+ static pthread_key_t thread_state_key;
+@@ -88,17 +87,13 @@
+     }
+ }
+ 
+-/* "boot" function
+- * This is what starts the coroutine, is called from the trampoline
+- * (from the signal handler when it is not signal handling, read ahead
+- * for more information).
+- */
+-static void coroutine_bootstrap(CoroutineSigAltStack *self, Coroutine *co)
++static void coroutine_trampoline(void *opaque)
+ {
+-    /* Initialize longjmp environment and switch back the caller */
+-    if (!sigsetjmp(self->env, 0)) {
+-        siglongjmp(*(sigjmp_buf *)co->entry_arg, 1);
+-    }
++    Coroutine *co = opaque;
++    CoroutineSigAltStack *self = DO_UPCAST(CoroutineSigAltStack, base, co);
++
++    // QUBE: save resume point, switch back to creator via entry_arg
++    coro_swap(&self->sp, *(void **)co->entry_arg);
+ 
+     while (true) {
+         co->entry(co->entry_arg);
+@@ -106,158 +101,24 @@
+     }
+ }
+ 
+-/*
+- * This is used as the signal handler. This is called with the brand new stack
+- * (thanks to sigaltstack). We have to return, given that this is a signal
+- * handler and the sigmask and some other things are changed.
+- */
+-static void coroutine_trampoline(int signal)
+-{
+-    CoroutineSigAltStack *self;
+-    Coroutine *co;
+-    CoroutineThreadState *coTS;
+-
+-    /* Get the thread specific information */
+-    coTS = coroutine_get_thread_state();
+-    self = coTS->tr_handler;
+-    coTS->tr_called = 1;
+-    co = &self->base;
+-
+-    /*
+-     * Here we have to do a bit of a ping pong between the caller, given that
+-     * this is a signal handler and we have to do a return "soon". Then the
+-     * caller can reestablish everything and do a siglongjmp here again.
+-     */
+-    if (!sigsetjmp(coTS->tr_reenter, 0)) {
+-        return;
+-    }
+-
+-    /*
+-     * Ok, the caller has siglongjmp'ed back to us, so now prepare
+-     * us for the real machine state switching. We have to jump
+-     * into another function here to get a new stack context for
+-     * the auto variables (which have to be auto-variables
+-     * because the start of the thread happens later). Else with
+-     * PIC (i.e. Position Independent Code which is used when PTH
+-     * is built as a shared library) most platforms would
+-     * horrible core dump as experience showed.
+-     */
+-    coroutine_bootstrap(self, co);
+-}
+-
+ Coroutine *qemu_coroutine_new(void)
+ {
+     CoroutineSigAltStack *co;
+-    CoroutineThreadState *coTS;
+-    struct sigaction sa;
+-    struct sigaction osa;
+-    stack_t ss;
+-    stack_t oss;
+-    sigset_t sigs;
+-    sigset_t osigs;
+-    sigjmp_buf old_env;
+-    static pthread_mutex_t sigusr2_mutex = PTHREAD_MUTEX_INITIALIZER;
+-
+-    /* The way to manipulate stack is with the sigaltstack function. We
+-     * prepare a stack, with it delivering a signal to ourselves and then
+-     * put sigsetjmp/siglongjmp where needed.
+-     * This has been done keeping coroutine-ucontext as a model and with the
+-     * pth ideas (GNU Portable Threads). See coroutine-ucontext for the basics
+-     * of the coroutines and see pth_mctx.c (from the pth project) for the
+-     * sigaltstack way of manipulating stacks.
+-     */
++    void *creator_sp = NULL;
+ 
+     co = g_malloc0(sizeof(*co));
+     co->stack_size = COROUTINE_STACK_SIZE;
+     co->stack = qemu_alloc_stack(&co->stack_size);
+-    co->base.entry_arg = &old_env; /* stash away our jmp_buf */
+-
+-    coTS = coroutine_get_thread_state();
+-    coTS->tr_handler = co;
+-
+-    /*
+-     * Preserve the SIGUSR2 signal state, block SIGUSR2,
+-     * and establish our signal handler. The signal will
+-     * later transfer control onto the signal stack.
+-     */
+-    sigemptyset(&sigs);
+-    sigaddset(&sigs, SIGUSR2);
+-    pthread_sigmask(SIG_BLOCK, &sigs, &osigs);
+-    sa.sa_handler = coroutine_trampoline;
+-    sigfillset(&sa.sa_mask);
+-    sa.sa_flags = SA_ONSTACK;
+-
+-    /*
+-     * sigaction() is a process-global operation.  We must not run
+-     * this code in multiple threads at once.
+-     */
+-    pthread_mutex_lock(&sigusr2_mutex);
+-    if (sigaction(SIGUSR2, &sa, &osa) != 0) {
+-        abort();
+-    }
+-
+-    /*
+-     * Set the new stack.
+-     */
+-    ss.ss_sp = co->stack;
+-    ss.ss_size = co->stack_size;
+-    ss.ss_flags = 0;
+-    if (sigaltstack(&ss, &oss) < 0) {
+-        abort();
+-    }
+-
+-    /*
+-     * Now transfer control onto the signal stack and set it up.
+-     * It will return immediately via "return" after the sigsetjmp()
+-     * was performed. Be careful here with race conditions.  The
+-     * signal can be delivered the first time sigsuspend() is
+-     * called.
+-     */
+-    coTS->tr_called = 0;
+-    pthread_kill(pthread_self(), SIGUSR2);
+-    sigfillset(&sigs);
+-    sigdelset(&sigs, SIGUSR2);
+-    while (!coTS->tr_called) {
+-        sigsuspend(&sigs);
+-    }
+-
+-    /*
+-     * Inform the system that we are back off the signal stack by
+-     * removing the alternative signal stack. Be careful here: It
+-     * first has to be disabled, before it can be removed.
+-     */
+-    sigaltstack(NULL, &ss);
+-    ss.ss_flags = SS_DISABLE;
+-    if (sigaltstack(&ss, NULL) < 0) {
+-        abort();
+-    }
+-    sigaltstack(NULL, &ss);
+-    if (!(oss.ss_flags & SS_DISABLE)) {
+-        sigaltstack(&oss, NULL);
+-    }
++    co->base.entry_arg = &creator_sp; // QUBE: stash away our sp slot
+ 
+-    /*
+-     * Restore the old SIGUSR2 signal handler and mask
+-     */
+-    sigaction(SIGUSR2, &osa, NULL);
+-    pthread_mutex_unlock(&sigusr2_mutex);
+-
+-    pthread_sigmask(SIG_SETMASK, &osigs, NULL);
+-
+-    /*
+-     * Now enter the trampoline again, but this time not as a signal
+-     * handler. Instead we jump into it directly. The functionally
+-     * redundant ping-pong pointer arithmetic is necessary to avoid
+-     * type-conversion warnings related to the `volatile' qualifier and
+-     * the fact that `jmp_buf' usually is an array type.
+-     */
+-    if (!sigsetjmp(old_env, 0)) {
+-        siglongjmp(coTS->tr_reenter, 1);
++    {
++        void *stack_top = (void *)(((uintptr_t)co->stack + co->stack_size)
++                                    & ~(uintptr_t)0xF);
++        co->sp = coro_bootstrap_init(stack_top,
++                                      coroutine_trampoline, co);
+     }
+ 
+-    /*
+-     * Ok, we returned again, so now we're finished
+-     */
++    coro_swap(&creator_sp, co->sp);
+ 
+     return &co->base;
+ }
+@@ -276,15 +137,13 @@
+     CoroutineSigAltStack *from = DO_UPCAST(CoroutineSigAltStack, base, from_);
+     CoroutineSigAltStack *to = DO_UPCAST(CoroutineSigAltStack, base, to_);
+     CoroutineThreadState *s = coroutine_get_thread_state();
+-    int ret;
+ 
+     s->current = to_;
++    to->switch_ret = action;
+ 
+-    ret = sigsetjmp(from->env, 0);
+-    if (ret == 0) {
+-        siglongjmp(to->env, action);
+-    }
+-    return ret;
++    coro_swap(&from->sp, to->sp);
++
++    return from->switch_ret;
+ }
+ 
+ Coroutine *qemu_coroutine_self(void)
+@@ -300,4 +159,3 @@
+ 
+     return s && s->current->caller;
+ }
+-
+diff -ru --no-dereference qemu-11.1.1/util/meson.build qemu-11.1.1-work/util/meson.build
+--- qemu-11.1.1/util/meson.build	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/util/meson.build	2026-08-27 17:58:48.329513983 +0300
+@@ -82,6 +82,9 @@
+   util_ss.add(files('main-loop.c'))
+   util_ss.add(files('qemu-coroutine.c', 'qemu-coroutine-lock.c', 'qemu-coroutine-io.c'))
+   util_ss.add(files(f'coroutine-@coroutine_backend@.c'))
++  if (coroutine_backend == 'ucontext' or coroutine_backend == 'sigaltstack') and host_machine.cpu_family() == 'aarch64'
++    util_ss.add(files('coroutine-swap-arm64.S'))
++  endif
+   util_ss.add(files('thread-pool.c', 'qemu-timer.c'))
+   util_ss.add(files('qemu-sockets.c'))
+ endif
+diff -ru --no-dereference qemu-11.1.1/util/mmap-alloc.c qemu-11.1.1-work/util/mmap-alloc.c
+--- qemu-11.1.1/util/mmap-alloc.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/util/mmap-alloc.c	2026-08-27 18:12:15.813514031 +0300
+@@ -10,9 +10,11 @@
+  * later.  See the COPYING file in the top-level directory.
+  */
+ 
+-#ifdef CONFIG_LINUX
++// QUBE: On Android cross-builds the build host is Linux so CONFIG_LINUX=y,
++// but linux/mman.h conflicts with sys/uio.h, so guard instead of including it
++#if defined(CONFIG_LINUX) && !defined(__ANDROID__)
+ #include <linux/mman.h>
+-#else  /* !CONFIG_LINUX */
++#else  /* !CONFIG_LINUX || __ANDROID__ */
+ #define MAP_SYNC              0x0
+ #define MAP_SHARED_VALIDATE   0x0
+ #endif /* CONFIG_LINUX */
+diff -ru --no-dereference qemu-11.1.1/util/oslib-posix.c qemu-11.1.1-work/util/oslib-posix.c
+--- qemu-11.1.1/util/oslib-posix.c	2026-08-11 19:40:26.000000000 +0300
++++ qemu-11.1.1-work/util/oslib-posix.c	2026-08-27 17:58:41.241513983 +0300
+@@ -989,6 +989,24 @@
+     static int sequence;
+     mode_t mode;
+ 
++#ifdef __ANDROID__
++    // QUBE: Android API < 26 lacks shm_open; use memfd_create (API 23+) instead
++    {
++        int fd = memfd_create("qemu-shm", MFD_CLOEXEC);
++        if (fd < 0) {
++            error_setg_errno(errp, errno, "memfd_create failed");
++            return -1;
++        }
++        if (ftruncate(fd, size) == -1) {
++            error_setg_errno(errp, errno,
++                             "failed to resize POSIX shared memory to %zu", size);
++            close(fd);
++            return -1;
++        }
++        return fd;
++    }
++#endif /* __ANDROID__ */
++
+     cur_sequence = qatomic_fetch_inc(&sequence);
+ 
+     /*

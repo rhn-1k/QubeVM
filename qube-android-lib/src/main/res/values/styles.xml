@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme, used by all qube-android-* modules -->
+
+    <style name="AppTheme" parent="Theme.Material3Expressive.Dark">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
+        <item name="alertDialogTheme">@style/AppMaterialAlertDialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/AppMaterialAlertDialogTheme</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
+        <item name="alertDialogTheme">@style/AppMaterialAlertDialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/AppMaterialAlertDialogTheme</item>
+    </style>
+
+    <style name="AppMaterialAlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog" />
+    <style name="AppPreferenceTheme" parent="PreferenceThemeOverlay">
+        <item name="preferenceCategoryStyle">@style/AppPreferenceCategory</item>
+        <item name="preferenceStyle">@style/AppPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/AppSwitchPreference</item>
+        <item name="switchPreferenceStyle">@style/AppSwitchPreference</item>
+        <item name="dialogPreferenceStyle">@style/AppPreference</item>
+        <item name="dropdownPreferenceStyle">@style/AppPreference</item>
+        <item name="editTextPreferenceStyle">@style/AppPreference</item>
+    </style>
+
+    <style name="AppPreferenceCategory" parent="Preference.Category.Material">
+        <item name="android:layout">@layout/settings_preference_category</item>
+        <item name="iconSpaceReserved">false</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+    </style>
+
+    <style name="AppPreference" parent="Preference.Material">
+        <item name="android:layout">@layout/settings_preference_row</item>
+        <item name="iconSpaceReserved">false</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+    </style>
+
+    <style name="AppSwitchPreference" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="android:layout">@layout/settings_preference_row</item>
+        <item name="iconSpaceReserved">false</item>
+        <item name="allowDividerAbove">false</item>
+        <item name="allowDividerBelow">false</item>
+        <item name="widgetLayout">@layout/preference_widget_material_switch</item>
+    </style>
+
+    <style name="Transparent" parent="@android:style/Theme.Dialog" />
+
+    <style name="leftEllipsisSpinnerDropDownItem" parent="@android:style/Widget.DropDownItem.Spinner">
+        <item name="android:ellipsize">start</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="leftEllipsisSimpleSpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+        <item name="android:ellipsize">start</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="VirtualKey">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">34dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+    </style>
+
+    <style name="VirtualKey.Compact">
+        <item name="android:minWidth">36dp</item>
+    </style>
+
+    <style name="VirtualKey.Special">
+    </style>
+
+    <style name="VirtualKey.Toggle">
+        <item name="android:background">@drawable/bg_toggle_button</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+    </style>
+
+    <style name="VirtualKey.Toggle.Image">
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:textOff" />
+        <item name="android:textOn" />
+    </style>
+
+</resources>

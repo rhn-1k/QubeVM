@@ -1,0 +1,115 @@
+apply plugin: 'com.android.library'
+
+// Reads the USE_VENUS default straight from android-qube-config.mak, the
+// single source of truth also used by the native Make build
+def resolveUseVenusDefault() {
+    def configMak = file("${projectDir}/src/main/jni/android-config/android-qube-config.mak")
+    if (configMak.exists()) {
+        def match = configMak.text =~ /(?m)^\s*USE_VENUS\s*\?=\s*(true|false)\s*$/
+        if (match.find()) {
+            return match.group(1)
+        }
+    }
+    return 'false' // fallback
+}
+
+// Reads the USE_QEMU_VERSION default straight from android-qube-config.mak, same
+// source of truth as resolveUseVenusDefault above
+def resolveQemuVersionDefault() {
+    def configMak = file("${projectDir}/src/main/jni/android-config/android-qube-config.mak")
+    if (configMak.exists()) {
+        def match = configMak.text =~ /(?m)^\s*USE_QEMU_VERSION\s*\?=\s*(\S+)\s*$/
+        if (match.find()) {
+            return match.group(1)
+        }
+    }
+    return '7.2.22' // fallback
+}
+
+def qemuVersion = project.hasProperty('qemuVersion') ? project.property('qemuVersion') : resolveQemuVersionDefault()
+
+// This is for giving the specific qemu version it's values, copies to raw directory
+tasks.register('syncQemuValues') {
+    doLast {
+        def srcDir = file("${projectDir}/qemu-values/${qemuVersion}")
+        def destDir = file("${projectDir}/src/main/res/raw")
+        destDir.mkdirs()
+        copy {
+            from(srcDir) {
+                include '*.txt'
+            }
+            into destDir
+        }
+    }
+}
+
+// Ensure the qemu values copied before resources are compiled
+tasks.named('preBuild') {
+    dependsOn syncQemuValues
+}
+
+android {
+    namespace = 'com.qube.emu.lib'
+    compileSdk = 37
+
+    defaultConfig{
+        minSdk = 26
+        targetSdk = 37
+        // Controls whether Venus (Vulkan passthrough) acceleration is
+        // compiled into the app. Override with -PuseVenus=true, otherwise
+        // falls back to USE_VENUS from android-qube-config.mak if the user didn't specific the USE_VENUS state
+        buildConfigField "boolean", "USE_VENUS", "${project.hasProperty('useVenus') ? project.property('useVenus') : resolveUseVenusDefault()}"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            jniDebuggable true
+        }
+    }
+
+//    externalNativeBuild {
+//        ndkBuild {
+//            path 'src/main/jni/Android.mk'
+//        }
+//    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'com.google.android.material:material:1.14.0-rc01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'androidx.window:window:1.5.1'
+    implementation 'androidx.window:window-java:1.5.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "androidx.lifecycle:lifecycle-runtime:2.2.0"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.2.0"
+
+
+}
+
+tasks.all { task ->
+    if (task.name.startsWith('compile') && task.name.endsWith('Ndk')) {
+        task.enabled = false
+    }
+}
+

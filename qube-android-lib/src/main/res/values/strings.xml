@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">QubeVM</string>
+    <string name="app_short_name">Qube</string>
+    <string name="auto">Auto</string>
+    <string name="button_send_text">Send Text</string>
+    <string name="center_mouse">Mouse</string>
+    <string name="close">Close</string>
+    <string name="reset">Reset</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="ctrl_alt_del">Ctrl-Alt-Del</string>
+    <string name="ctrl_c">Ctrl-c</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="external_mouse">External Mouse</string>
+    <string name="stretch_to_screen">Stretch to Screen</string>
+    <string name="fit_to_screen">Fit to Screen</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="on">On</string>
+    <string name="one_to_one">Normal (1:1)</string>
+    <string name="scaling">Scaling</string>
+    <string name="showkbd_label">Keyboard</string>
+    <string name="help">Help</string>
+    <string name="drives">Drives</string>
+    <string name="share_folder_server">Shared Folder Server</string>
+    <string name="share_folder_stopped_title">Shared Folder Server isn\'t running</string>
+    <string name="share_folder_stopped_desc">Shared Folder Server is a feature that allows you to share your files by opening an HTTP server, allows VM to access device\'s Download folder, it detects the new files directly, unlike normal Shared Folder (vvfat), vvfat needs to reboot the VM to take affect and see the new files</string>
+    <string name="share_folder_running_title">Shared Folder Server is running</string>
+    <string name="share_folder_running_desc">Shared Folder Server is hosted at:</string>
+    <string name="share_folder_start_error">Could not start the sharing server. The port may already be in use</string>
+    <string name="share_server_start">Share Server</string>
+    <string name="share_server_stop">Stop Sharing</string>
+    <string name="copy_link">Copy link</string>
+    <string name="volume">Volume</string>
+    <string name="Default" translatable="false">default</string>
+    <string name="hide_toolbar">Hide Toolbar</string>
+    <string name="view_log">View Log</string>
+    <string name="screenshot">Screenshot</string>
+    <string name="screenshot_saved">Screenshot saved: </string>
+    <string name="screenshot_failed">Screenshot failed</string>
+    <string name="display">Display</string>
+    <string name="displayInfoTitle">Display</string>
+    <string name="displayInfoMessage"><![CDATA[
+        <b>QGE (Qube Graphics Engine)</b> is the optimized built-in display wrapper, it receives and displays the frames in native way, without latency<br/><br/>
+        <b>VNC (Virtual Network Computing)</b> is the balanced choice for those who want to run the app as a host, it starts QEMU\'s VNC server without opening a viewer inside the app, so you can connect to the VM from any external VNC client instead.
+    ]]></string>
+    <string name="absolutePointerInstructions">Make sure the guest os supports touch screen devices!\n\n \
+        Choose Mouse = \"usb-tablet\" from Qube before you boot the machine.</string>
+    <string name="externalMouseInstructions">Plug in your USB/Bluetooth Mouse in your Android device.</string>
+    <string name="toggle_virtual_keys">Toggle Virtual Keys</string>
+    <string name="welcomeText">Welcome to Qube Emulator, a port of QEMU for Android devices. Qube can emulate several operating systems. For links to downloads, guides, and virtual disk images visit the Qube Wiki. Download software and images only from trusted websites!</string>
+    <string name="checkForUpdates">Check for Updates on Startup</string>
+    <string name="sdcardNotMounted">Error: SD card is not mounted</string>
+    <string name="vmNotRunning">VM not running</string>
+    <string name="Running">Running</string>
+    <string name="Stopped">Stopped</string>
+    <string name="orientation">Orientation</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="mouse">Mouse</string>
+    <string name="desktopMode">Desktop Mode</string>
+    <string name="highPriorityWarning">Warning! High Priority might increase emulation speed but will slow your phone down!</string>
+    <string name="advancedTools">Advanced Tools</string>
+    <string name="tapUserId">TAP User Id</string>
+    <string name="tapNotSupportInstructions">\"Your device doesn\'t support TAP, use \'User\' network mode instead \"</string>
+    <string name="network">Network</string>
+    <string name="externalNetworkWarning">Warning! Enabling external network for images you don\'t trust or containing old OSes is not recommended. If not use network \'None\' before running the virtual machine.\n</string>
+    <string name="faq">FAQ</string>
+    <string name="open">Open</string>
+    <string name="enableMTTCG">Enable MTTCG</string>
+    <string name="enableMTTCGWarning">Enabling MTTCG requires a phone with multi cores cpu.\nIf you don\'t know what this is press Cancel.\n\nIf you experience app crashing or freezing disable this option. Do you want to continue?</string>
+    <string name="mttcgHelp">Help</string>
+    <string name="tcgBufferLabel">TCG Buffer</string>
+    <string name="failToCreateMachineDirError">Could not create internal machine directory</string>
+    <string name="chooseDirToCreateImage">Choose a directory to create your image</string>
+    <string name="ImageCreated">Image Created</string>
+    <string name="vncServer">VNC Server</string>
+    <string name="Enable">Enable</string>
+    <string name="DeleteVM">Delete VM</string>
+    <string name="deleteVMWarning">Delete VM? you will lose the machine configuration only, disk images files will not be deleted</string>
+    <string name="NoMachineSelected">No Machine selected</string>
+    <string name="multipleVCPU">Multiple vCPUs</string>
+    <string name="multipleVCPUWarning">Warning! Setting Multiple Virtual CPUs will NOT result in additional performance unless you use KVM or MTTCG. Your device might even be slow or the Guest OS might hang so it is advised to use 1 CPU. \n\n</string>
+    <string name="disableTSCInstructions">If your guest OS is not able to boot check option \'Disable TSC\' and restart the VM.</string>
+    <string name="DoYouWantToContinue">Do you want to continue?</string>
+    <string name="vCPUHelp">Help</string>
+    <string name="Auto">Auto</string>
+    <string name="Landscape">Landscape</string>
+    <string name="LandscapeReverse">Landscape Reverse</string>
+    <string name="Portrait">Portrait</string>
+    <string name="PortraitReverse">Portrait Reverse</string>
+    <string name="PleaseWait">Please Wait</string>
+    <string name="InstallingBIOS">Installing BIOS</string>
+    <string name="CouldNotOpenDocFile">Could not open DocumentFile</string>
+    <string name="PleaseReassingYourDiskFiles">Please re-open your disk files from the file manager</string>
+    <string name="RemovableDrives">Removable Drives</string>
+    <string name="EjectedDevice">Ejected device</string>
+    <string name="ChangedDevice">Changed device</string>
+    <string name="Error">Error</string>
+    <string name="ChangeDirectory">Change Directory</string>
+    <string name="InstallRoms">Install Roms</string>
+    <string name="CreateMachine">Create Machine</string>
+    <string name="DeleteMachine">Delete Machine</string>
+    <string name="Settings">Settings</string>
+    <string name="ViewLog">View Log</string>
+    <string name="Changelog">Changelog</string>
+    <string name="License">License</string>
+    <string name="Exit">Exit</string>
+    <string name="TapDeviceFound">TAP Device found</string>
+    <string name="tunDeviceWarning">Warning! Make sure device /dev/net/tun has appropriate permissions\nUser ID</string>
+    <string name="TAPHelp">Help</string>
+    <!-- Summary for log errors -->
+    <string name="SomethingWentWrong">Something went wrong</string>
+    <string name="CopySummary">Copy</string>
+    <string name="UnknownErrorCause">The VM stopped unexpectedly and the exact cause could not be determined.</string>
+    <string name="AllowExternalVNCConnections">Allow External VNC Connections</string>
+    <string name="AllowExternalVNCSummary">Allow external VNC Clients. Needs app restart. VNC Connections are not encrypted so only use in a private network that you trust!</string>
+    <string name="EnableQMPServerSummary">Run QMP Server. This is needed to changing removable drives.</string>
+    <string name="EnableQMPServer">Enable QMP Server</string>
+    <string name="AllowExternalQMPConnectionsSummary">Allow external QMP CLients. Needs app restart. Connections are not encrypted so only use in a private network that you trust!</string>
+    <string name="AllowExternalQMPConnections">Allow External QMP Connections</string>
+    <string name="HighPriority">High Priority</string>
+    <string name="AlwaysShowToolbar">Always show the Toolbar</string>
+    <string name="AlwaysToolbar">Always Toolbar</string>
+    <string name="CheckSoftwareUpdates">Check for Software Updates</string>
+    <string name="CheckSoftwareUpdatesSummary">Check for software updates on startup</string>
+    <string name="FailedToSaveLogFile">\"Failed to save log file: \"</string>
+    <string name="SharedFolder">Shared Folder</string>
+    <string name="SharedFolderNotSupported">Shared Folder location is not accessible on this device and was skipped. Please choose a folder on the device\'s main internal storage.</string>
+    <string name="AudioCard">Audio Card</string>
+    <string name="IAcknowledge">I Acknowledge</string>
+    <string name="NewMachineName">New Machine Name</string>
+    <string name="Create">Create</string>
+    <string name="MachineNameCannotBeEmpty">Machine name cannot be empty</string>
+    <string name="ShutdownVM">Shutdown VM</string>
+    <string name="ShutdownVMWarning">To avoid any corrupt data make sure you have already shutdown the Operating system from within the VM. Continue?</string>
+    <string name="ResetVM">Reset VM</string>
+    <string name="ResetVMWarning">To avoid any corrupt data make sure you have already shutdown the Operating system from within the VM. Continue?</string>
+    <string name="VMRunning">VM Running</string>
+    <string name="MachineDeleted">Machine deleted</string>
+    <string name="ExternalVNCEnabledWarning">You have enabled External VNC. Anyone on the same network could access and control your virtual machine! Make sure you trust your network. Continue?</string>
+    <string name="EnableKVMWarning">Warning! You will need an Android Device with the same architecture as the emulated Guest. Make sure you have installed an Android kernel with KVM support. If you do not know what this is press Cancel now.\n\nIf you experience crashes disable this option. Do you want to continue?</string>
+    <string name="EnableKVM">Enable KVM</string>
+    <string name="server">Server</string>
+    <string name="ExtraParams">Extra Params</string>
+    <string name="CouldNotCreateBaseDir">Could not create base directory</string>
+    <string name="CouldNotCreateMachineDir">Could not create machine directory</string>
+    <string name="CouldNotCreateDirForImage">Could not create directory for image</string>
+    <string name="FileExistsChooseAnotherFilename">File exists, choose another filename</string>
+    <string name="FailedSaveLogFile">Failed to save log file</string>
+    <string name="LogfileSaved">Log file saved</string>
+    <string name="CouldNotOpenRawFile">Could not open raw file</string>
+    <string name="PressVolumeDownForRightClick">Press Volume Down for Right Click</string>
+    <string name="NoRemovableDevicesAttached">No removable devices attached</string>
+    <string name="ImageFilenameCannotBeEmpty">Image filename cannot be empty</string>
+    <string name="VMNotRunning">VM not running</string>
+    <string name="SelectOrCreateVirtualMachineFirst">Select or Create a Virtual Machine first</string>
+    <string name="SelectAMachineFirst">Select a machine first</string>
+    <string name="VMNameExistsChooseAnother">VM Name exists please choose another name</string>
+    <string name="ChooseDirToSaveLogFile">Choose a Directory to save the log file</string>
+    <string name="QubeLog">Qube Log</string>
+    <string name="CHANGELOG">CHANGELOG</string>
+    <string name="WriteAccess">Write Access</string>
+    <string name="FilePathNotSupportedWarning">File path is not supported. Make sure you choose a file/directory from your internal storage or external sd card. Root and Download Directories are not supported.</string>
+    <string name="KVMHelp">Help</string>
+    <string name="FullAccessWarning">Please allow access to your device\'s storage, without it, the app will work but limited to some features.</string>
+    <string name="OkIUnderstand">Allow</string>
+    <string name="SendText">Send Text</string>
+    <string name="Send">Send</string>
+    <string name="GoToWiki">Online Wiki</string>
+    <string name="DoNotShowAgain">Do not Show Again</string>
+    <string name="GenNewVersion">Get New Version</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Delete">Delete</string>
+    <string name="CopyTo">Copy To</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="NewVersionWarning">There is a new version available with fixes and new features. Do you want to update?</string>
+    <string name="Ok">OK</string>
+    <string name="TrackpadDescr">Trackpad (Phone)</string>
+    <string name="TouchScreen">Touchscreen (Tablet)</string>
+    <string name="ExternalMouseDescr">External Mouse (Desktop)</string>
+    <string name="Mouse">Mouse</string>
+    <string name="ImageName">Image Name</string>
+    <string name="Volume">Volume</string>
+    <string name="NewVersion">New Version</string>
+    <string name="Network">Network</string>
+    <string name="NicCard">NIC Card</string>
+    <string name="DNSServer">DNS Server</string>
+    <string name="HostForward">Host Forward</string>
+    <string name="EnableQMPForChangingDrives">Enable QMP in settings to change removable drives</string>
+    <string name="PointerSpeed">Pointer Speed</string>
+    <string name="PointerSpeedSummary">Cursor movement speed in trackpad/relative mode</string>
+    <string name="RefreshRate">VM Refresh Rate</string>
+    <string name="RefreshRateSummary">Virtual Machine display refresh rate, Higher values are smoother but use more resources</string>
+    <string name="keyPressDelay">Key Pressed Delay</string>
+    <string name="keyPressDelaySummary">Delay between keyboard keys pressed. Lower values have better performance but key events might not be understood by the emulator so use higher values.</string>
+    <string name="mouseButtonDelay">Mouse Button Click Delay</string>
+    <string name="mouseButtonDelaySummary">Delay between mouse button clicks. Lower values have better performance but mouse events might be not be understood by the emulator so use higher values.</string>
+    <string name="machineHeader">Machine:</string>
+    <string name="Interface">Interface</string>
+    <string name="diskCache">Disk Cache</string>
+    <string name="diskCacheSummary">Disk Cache might not work with Legacy Manager! If you encounter issues set to Default</string>
+    <string name="ClearDirHistory">Clear Directory History</string>
+    <string name="ClearDirHistorySummary">Remove all remembered file paths from storages, removable storages</string>
+    <string name="ClearDirHistoryConfirm">This will clear all remembered file paths
+     Continue?</string>
+    <string name="DirHistoryCleared">Directory history cleared</string>
+
+    <!-- Main activity -->
+
+    <!-- Machine -->
+    <string name="select_label">Select</string>
+
+    <!-- User Interface section -->
+    <string name="section_user_interface">User Interface</string>
+
+    <!-- Board section -->
+    <string name="section_board">Board</string>
+    <string name="machine_type_label">Machine Type</string>
+    <string name="cpu_model_label">CPU Model</string>
+    <string name="cpu_cores_label">CPU Cores</string>
+    <string name="ram_memory_label">RAM Memory (MB)</string>
+    <string name="disable_hpet_label">Disable HPET</string>
+    <string name="disable_tsc_label">Disable TSC</string>
+    <string name="enable_svm_label">Enable SVM</string>
+    <string name="disable_acpi_label">Disable ACPI</string>
+
+    <!-- Storage section -->
+    <string name="section_disks">Disks</string>
+    <string name="hard_disk_a_label">Hard Disk A</string>
+    <string name="hard_disk_b_label">Hard Disk B</string>
+    <string name="hard_disk_c_label">Hard Disk C</string>
+    <string name="hard_disk_d_label">Hard Disk D</string>
+    <string-array name="diskSizeOptions">
+        <item>1GB (Growable)</item>
+        <item>2GB (Growable)</item>
+        <item>4GB (Growable)</item>
+        <item>10 GB (Growable)</item>
+        <item>16 GB (Growable)</item>
+        <item>32 GB (Growable)</item>
+        <item>48 GB (Growable)</item>
+        <item>64 GB (Growable)</item>
+        <item>128 GB (Growable)</item>
+        <item>256 GB (Growable)</item>
+    </string-array>
+
+    <!-- Removable Storage section -->
+    <string name="section_removable">Removable</string>
+    <string name="cdrom_label">CDROM</string>
+    <string name="floppy_a_label">Floppy A</string>
+    <string name="floppy_b_label">Floppy B</string>
+
+    <!-- BIOS section -->
+    <string name="section_bios">BIOS</string>
+    <string name="bios_type_label">BIOS type</string>
+    <string name="bios_code_label">Code</string>
+    <string name="bios_vars_label">Vars</string>
+    <string name="bios_default_type">Default</string>
+    <string name="bios_uefi_type">UEFI</string>
+
+    <!-- Boot section -->
+    <string name="section_boot">Boot</string>
+    <string name="boot_from_label">Boot from Device</string>
+    <string name="bios_label">BIOS</string>
+    <string name="kernel_label">Kernel</string>
+    <string name="initrd_label">Initrd</string>
+    <string name="append_label">Append</string>
+    <string name="append_hint">ie: root=/dev/sda1</string>
+
+    <!-- Graphics section -->
+    <string name="section_graphics">Graphics</string>
+    <string name="video_display_label">Video Display</string>
+    <string name="use_venus_accelerator_label">Venus Accelerator</string>
+    <string name="virgl_requires_qge">3D acceleration uses QGE display. Qube switched to it</string>
+    <string name="videoDisplayInfoTitle">Video Display</string>
+    <string name="videoDisplayInfoMessage"><![CDATA[
+        <b>std</b> is the standard and stable option that comes with QEMU.<br/><br/>
+        <b>cirrus</b> is suitable for older operating systems from the 90s.<br/><br/>
+        <b>vmware</b> emulates VMware SVGA, good for Windows.<br/><br/>
+        <b>virtio</b> is the paravirtualized GPU without 3D acceleration.<br/><br/>
+        <b>virtio-gpu-pci</b> same as virtio but with PCI emulation<br/><br/>
+        <b>virtio-gpu-gl-pci</b> enables 3D acceleration via VirGL but with PCI emulation, may not work well with unsupported OSes, but helps reduce screen tearing.<br/><br/>
+        <b>virtio-vga-gl (x86)</b> enables 3D acceleration via VirGL, may not work well with unsupported OSes, but helps reduce screen tearing.<br/><br/>
+        <b>virtio-gpu-gl-device (Arm)</b> enables 3D acceleration via VirGL, pretty optimized for Arm guests, may not work well with unsupported OSes, but helps reduce screen tearing.<br/><br/>
+        <b>nographic</b> disables display output entirely, uses serial console only, useful for headless runs.
+    ]]></string>
+
+    <string name="venusInfoTitle">Venus Accelerator</string>
+    <string name="venusInfoMessage"><![CDATA[
+        <b>Venus</b> is the new VirGL Vulkan accelerator. It improves graphics performance, but may be unstable on some devices or VM OSes.
+    ]]></string>
+
+    <!-- Audio section -->
+    <string name="section_audio">Audio</string>
+    <string name="sound_card_label">Sound Card</string>
+
+    <!-- Network section -->
+    <string name="network_label">Network</string>
+    <string name="network_card_label">Network Card</string>
+    <string name="dns_server_label">DNS Server</string>
+    <string name="host_forward_label">Host Forward</string>
+    <string name="host_forward_hint">tcp:hostport1:guestport1,udp:hostport2:questport2,...</string>
+
+    <!-- Advanced section -->
+    <string name="section_advanced">Advanced</string>
+    <string name="extra_params_label">Extra Params</string>
+    <string name="extra_params_hint">-device sb16,-cpu max,...</string>
+
+    <!-- Log view -->
+    <string name="clear_label">Clear</string>
+
+    <!-- Virtual Keys editor -->
+    <string name="Save">Save</string>
+    <string name="pref_customize_virtual_keys">Customize Virtual Keys</string>
+    <string name="msg_tap_to_select_a_key">Tap a key to select it</string>
+    <string name="msg_saved">Saved</string>
+    <string name="title_add_key">Add key</string>
+    <string name="title_move_up">Move up</string>
+    <string name="title_move_down">Move down</string>
+    <string name="title_delete_key">Delete key</string>
+    <string name="title_load_defaults">Load defaults</string>
+    <string name="customizeVirtualKeysSummary">Add, remove or reorder virtual keys</string>
+    <string name="ShowAllVirtualKeys">Show all keys by default</string>
+    <string name="ShowAllVirtualKeysSummary">Adds F1-F12, Insert and Delete to the default layout</string>
+    <string name="OpenVirtualKeysWithKeyboard">Open with keyboard</string>
+    <string name="OpenVirtualKeysWithKeyboardSummary">Show virtual keys automatically when the soft keyboard opens</string>
+    <string name="UseSuperWithSingleTap">Single tap for Super key</string>
+    <string name="UseSuperWithSingleTapSummary">Send Super key on a single tap instead of toggling it</string>
+    <string name="VirtualKeysRowCount">Row count</string>
+    <string name="VirtualKeysRowCountSummary">Number of rows used to arrange virtual keys</string>
+
+    <!-- Summaries -->
+    <string name="summary_none">None</string>
+    <string name="summary_machine_type">Machine Type</string>
+    <string name="summary_cpu">CPU</string>
+    <string name="summary_cpu_plural">CPUs</string>
+    <string name="summary_mb">MB</string>
+    <string name="summary_hda">HDA</string>
+    <string name="summary_hdb">HDB</string>
+    <string name="summary_hdc">HDC</string>
+    <string name="summary_hdd">HDD</string>
+    <string name="summary_cdrom">CDROM</string>
+    <string name="summary_fda">FDA</string>
+    <string name="summary_fdb">FDB</string>
+    <string name="summary_boot_from">Boot from</string>
+    <string name="summary_bios">bios</string>
+    <string name="summary_kernel">kernel</string>
+    <string name="summary_initrd">initrd</string>
+    <string name="summary_append">append</string>
+    <string name="summary_video_card">Video Card</string>
+
+    <!-- Compatibility strings retained for the original Qube Java dialog flow. -->
+    <string name="ShowLog">Show Log</string>
+    <string name="LogWarning">The VM stopped unexpectedly. Would you like to view the log?</string>
+    <string name="fixesMouseParen">(fixes mouse movement)</string>
+</resources>

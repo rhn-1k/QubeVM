@@ -1,0 +1,355 @@
+QubeVM Emulator (QEMU) for Android
+
+================================================================================
+
+1. What is QubeVM?
+
+QubeVM is a QEMU-based emulator for Android. It currently supports PC emulation
+for multiple architectures.
+For more information, instructions, guides, known issues, and downloads visit:
+https://github.com/rhn-1k/QubeVM
+
+===============================================================================
+
+2. Requirements:
+
+    Android SDK (platform 37.0.0 / build-tools 37.0.0)
+    Android NDK r23b (clang)
+    JDK 17
+    Meson and Ninja (for QEMU's build system)
+    Linux Desktop pc (Debian-based distro preferred)
+    Make sure you have the following packages installed, if not run:
+    sudo apt-get install make autoconf automake git python3 python3-pip binutils
+    sudo apt-get install libtool-bin flex bison gettext texinfo rsync gtk-doc-tools ninja-build
+    sudo pip3 install --upgrade meson mako
+    For development you can use your own editors, Geany is highly
+	recommended for editing the native code
+
+===============================================================================
+
+3. Known Issues:
+    https://github.com/rhn-1k/QubeVM/issues
+
+===============================================================================
+
+4. Update Configuration
+
+    If you build the supported QEMU version then the only thing you need to do is edit file:
+    qube-android-lib/src/main/jni/android-qube-config.mak
+    In all other cases you have to look at the config files under:
+    qube-android-lib/src/main/jni/android-config/
+    
+    For more information see the Building section.
+    	
+
+5. Get and Compile external libraries
+
+    # Make sure you're under the jni directory
+    cd ./qube-android-lib/src/main/jni
+    
+    # Now download the source code for the external libraries and unzip them under the jni directory
+    # Note: if some of these file links don't download with wget use your browser to download them
+
+    ##### Get QEMU
+    # Current version supported by qube: 11.1.1 and 7.222
+    # We will take 11.1.1 as an example in this guide
+    wget https://download.qemu.org/qemu-11.1.1.tar.xz
+    tar -xJf qemu-11.1.1.tar.xz
+    mv qemu-11.1.1 qemu
+
+    ##### GET glib
+    wget https://download.gnome.org/sources/glib/2.88/glib-2.88.2.tar.xz
+    tar -xJf glib-2.88.2.tar.xz
+    mv glib-2.88.2 glib
+
+    ##### GET libffi
+    wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz
+    tar -xzf libffi-3.3.tar.gz
+    mv libffi-3.3 libffi
+
+    ##### GET pixman
+    wget https://gitlab.freedesktop.org/pixman/pixman/-/archive/pixman-0.40.0/pixman-pixman-0.40.0.tar.gz
+    tar -xzf pixman-pixman-0.40.0.tar.gz
+    mv pixman-pixman-0.40.0 pixman
+    cd pixman && bash autogen.sh && cd ..
+
+    ##### GET libslirp (new QEMU versions need to build it separately, built as a subproject)
+    wget https://gitlab.freedesktop.org/slirp/libslirp/-/archive/v4.9.3/libslirp-v4.9.3.zip
+    mkdir -p qemu/subprojects
+    unzip libslirp-v4.9.3.zip -d qemu/subprojects/
+    mv qemu/subprojects/libslirp-v4.9.3 qemu/subprojects/libslirp
+
+    ##### GET libepoxy (required for virgl/OpenGL)
+    wget https://github.com/anholt/libepoxy/archive/refs/tags/1.5.10.zip -O libepoxy-1.5.10.zip
+    unzip libepoxy-1.5.10.zip
+    mv libepoxy-1.5.10 libepoxy
+
+    ##### GET virglrenderer (required for Hardware Acceleration, tracks upstream master)
+    git clone https://gitlab.freedesktop.org/virgl/virglrenderer.git virglrenderer
+
+    Now you should have this directory structure:
+    jni/
+        android-config/
+        compat/
+        glib/
+        libepoxy/
+        libffi/
+        qube/
+        patches/
+        pixman/
+        qemu/
+        virglrenderer/
+
+===============================================================================
+
+6. Apply patches
+
+    ### Apply patch for QEMU 11.1.1:
+    cd ./qube-android-lib/src/main/jni/qemu/
+    patch -p1 < ../patches/qemu-11.1.1.patch
+
+    ### Apply glib patch for QubeVM:
+    cd ./qube-android-lib/src/main/jni/glib/
+    patch -p1 < ../patches/glib-2.88.2.patch
+    # note: if you're planning to build QEMU 7.2.22 use this instead:
+    patch -p1 < ../patches/glib-2.88.2-qemu7.patch
+
+    ### Apply libslirp patches for QubeVM:
+    cd ./qube-android-lib/src/main/jni/qemu/subprojects/libslirp/
+    patch -p1 < ../../../patches/libslirp-4.9.3.patch
+    patch -p1 < ../../../patches/libslirp-4.9.3-dns.patch
+
+    ### Apply virglrenderer patch for QubeVM (Hardware Acceleration):
+    cd ./qube-android-lib/src/main/jni/virglrenderer/
+    patch -p1 < ../patches/virglrenderer-1.3.0-android-egl.patch
+
+    ### Other QEMU versions:
+    # If you want to build QubeVM build with other QEMU versions, create your own patch like this:
+    cd /qube-android-lib/src/main/jni/qemu/
+    diff -ru --no-dereference /tmp/qemu-x.x.x . > ../patches/qemu-x.x.x.patch
+    Don't forget to create your android-qemu-config-x.x.x.mak file
+      and include it in android-qemu-config.mak
+
+===============================================================================
+
+7. Build
+
+    a. To build the native part of the app make sure you're under the jni directory:
+        cd qube-android-lib/src/main/jni
+        
+    Make sure you update file android-qube-config.mak with the NDK folder to your installation folder.
+    QEMU 11.1.1 requires clang, built with NDK r23b:
+    NDK_ROOT = /home/dev/tools/ndk/android-ndk-r23b
+
+    The rest of the configuration is for specifying the right QEMU version: USE_QEMU_VERSION=11.1.1
+    the host architecture (android device): BUILD_HOST
+    and the emulator guest architecture: BUILD_GUEST
+    
+    b. From Android Studio import BOTH the Android library qube-android-lib AND the module for the guest
+        architecture you need (x86,arm,ppc) ie qube-android-x86.
+        
+    c. Build the native libraries:
+        # Make sure you're still under the jni directory:
+        cd qube-android-lib/src/main/jni
+
+        # Instead of editing android-qube-config.mak you can also supply the variables on the command line.
+        # For example:
+            export USE_QEMU_VERSION=11.1.1
+            export BUILD_HOST=<EABI>
+            export BUILD_GUEST=<GUEST_ARCH>
+            export NDK_TOOLCHAIN_VERSION=clang
+            export NDK_DEBUG=<ENABLE_DEBUG>
+
+        where:
+            EABI is the Android device type (host arch): armeabi-v7a, arm64-v8a, x86, x86_64
+            GUEST_ARCH is the Emulator type: x86_64-softmmu,aarch64-softmmu,ppc64-softmmu,sparc-softmmu,m68k-softmmu
+            ENABLE_DEBUG is 1 (optional)
+
+        # Note: QEMU 11.1.1 dropped 32-bit host support. For ARM hosts, use arm64-v8a.
+
+        # To start the build type on your terminal:
+            make qube
+            
+        Notes:
+        If you want to remove ALL previously compiled native objects and libraries:
+        make clean
+
+        If you're building apk for multiple host architectures you need to do in between builds:
+        make distclean
+
+        If you're building apk for multiple guest architectures you can specify them with commas:
+        BUILD_GUEST=x86_64-softmmu,aarch64-softmmu
+
+        Examples:
+        1) To build QubeVM x86 Emulator for ARM64 phones type:
+            export USE_QEMU_VERSION=11.1.1
+            export BUILD_HOST=arm64-v8a
+            export BUILD_GUEST=x86_64-softmmu
+            make qube
+
+        2) To build QubeVM ARM Emulator for ARM64 phones type:
+            export USE_QEMU_VERSION=11.1.1
+            export BUILD_HOST=arm64-v8a
+            export BUILD_GUEST=aarch64-softmmu
+            make qube
+
+        3) To build QubeVM ARM Emulator for ARM64 phones for debugging type:
+            export NDK_DEBUG=1
+            export USE_QEMU_VERSION=11.1.1
+            export BUILD_HOST=arm64-v8a
+            export BUILD_GUEST=aarch64-softmmu
+            make qube
+
+        4) To build multiple QubeVM emulators for ARM64 phones type:
+            export USE_QEMU_VERSION=11.1.1
+            export BUILD_HOST=arm64-v8a
+            export BUILD_GUEST=x86_64-softmmu,aarch64-softmmu
+            make qube
+
+		For more options see android-qube-config.mak
+
+        3D/virgl support is controlled by USE_VIRGL=true/false in the native build:
+            export USE_QEMU_VERSION=11.1.1
+            export BUILD_HOST=arm64-v8a
+            export BUILD_GUEST=x86_64-softmmu
+            export USE_VIRGL=true
+            make qube
+
+        Venus (Vulkan passthrough) needs USE_VENUS=true on top of virgl, on both
+        the native build and the apk:
+            export USE_VENUS=true
+            make qube
+            ./gradlew assembleRelease -PuseVenus=true
+
+        VirGL/OpenGL is unnecessary for the ppc64-softmmu, sparc-softmmu, and
+        m68k-softmmu guests, build those with USE_VIRGL=false.
+
+        Important:
+        -PuseVenus only toggles the Venus option in the app's UI. It doesn't
+        compile Venus itself, so it does nothing unless the native libs were
+        also built with USE_VENUS=true.
+        The Venus feature has been introduced in QEMU 9.2.2
+        So you should disable Venus if you're planning to build QEMU 7.2.22
+	
+       You should now have the following libraries in these 2 folders:
+
+       qube-android-lib/src/main/jniLibs/<EABI>/
+         libqube.so
+         libcompat-musl.so
+         libcompat-qube.so
+         libglib-2.0.so
+         libpixman-1.so
+         libepoxy.so (when USE_VIRGL=true)
+         libvirglrenderer.so (when USE_VIRGL=true)
+      qube-android-<GUEST_ARCH>/src/main/jniLibs/<EABI>/
+         libqemu-system-xxx.so
+
+        Note:
+            When you build the apk in Android Studio it will contain the libraries from both
+            folders so you don't need to copy files manually.
+
+    d. Build the Android apk for the corresponding guest using Android Studio.
+        Make sure the *.so libraries are zipped in the final .apk
+        
+    e. To build from the command line instead of Android Studio:
+        export ANDROID_SDK_ROOT=~/Android/Sdk
+    	gradle wrapper
+        ./gradlew assembleRelease -PuseVenus=true/false
+
+    f. If you want to build the debugging version:
+        Set variables in Config.java:
+          debug = true;
+        Modify android-config/android-qube-config.mak and point to a configuration
+          with no optimization:
+        USE_OPTIMIZATION=false
+
+        Follow the steps to build the native libraries as described above
+        export NDK_DEBUG=1
+
+        Important:
+           From Android studio click Build> Rebuild Project and Run > Debug
+
+===============================================================================
+
+8. Debugging
+        To debug the native code for a particular guest:
+
+        # for x86 guest and ARM64 phone:
+        export BUILD_HOST=arm64-v8a
+        export BUILD_GUEST=x86_64-softmmu
+        make ndk-gdb PKG_NAME=com.qubevm.main
+
+        # for other guests use respectively:
+        make ndk-gdb PKG_NAME=com.qubevm.arm
+		make ndk-gdb PKG_NAME=com.qubevm.ppc
+
+        Note: you might want to disable signal handling in gdb:
+        handle all nostop noprint
+
+        To catch a SIGSEGV:
+        handle 11 stop print
+
+        Useful commands:
+        To set breakpoints:       b <file.c>:<code_line>
+        To step statement:        s
+        To go to next statement:  n
+        To continue:              c
+        To halt(interrupt):       ctrl-c
+        To see stack (backtrace): bt
+
+===============================================================================
+
+9. Development Notes
+
+    a. Codes Changes for Android compatibility are in patch files marked with __ANDROID__
+
+    b. Similarly for QUBE functionality code changes are tagged with __QUBE__
+
+    c. Important Configuration files (You'll need to update this with the NDK path before compiling):
+        qube-android-lib/src/main/jni/android-config/android-qube-config.mak
+
+    d. Advanced QEMU config files:
+        qube-android-lib/src/main/jni/android-config/android-qemu-config.mak
+
+    d. Advanced Device Configuration files:
+        qube-android-lib/src/main/jni/android-config/android-config/*.mak
+
+    e. Important Makefiles:
+        qube-android-lib/src/main/jni/Makefile
+        qube-android-lib/src/main/jni/Android.mk
+        qube-android-lib/src/main/jni/Application.mk
+        qube-android-lib/src/main/jni/android-qube-build.mak
+        qube-android-lib/src/main/jni/android-qemu-build.mak
+
+    f. Frontend UI options configuration see: Config.java
+    
+    g. When using git apply the following setting to your config file if you want to use 
+        return new lines for windows:
+    [core]
+        eol = true
+        autocrlf = input
+        fileMode = false
+        
+===============================================================================
+10. Run
+
+    a. Start the QubeVM app and choose CPU, Memory (~8-512MB),etc..
+    b. Choose a bootable disk image(s) for CDRom, Floppy, and a HDD image
+    c. Start the virtual machine.
+    d. For more instructions and guides visit:
+        https://github.com/rhn-1k/QubeVM
+    f. Have fun!
+
+===============================================================================
+10. Changelog
+See qube-android-lib/src/main/assets/CHANGELOG for release notes
+
+===============================================================================
+11. License
+
+QubeVM Emulator is released under GPL v2 License.
+All icons under /res are from the Material 3 Project
+See file COPYING under root directory
+and LICENSE under qube-android-lib/src/main/assets
+
+Other source included are released under their own license please view Licenses under each subdirectory

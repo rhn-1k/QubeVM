@@ -4,7 +4,7 @@
 
 <h1 align="center">QubeVM</h1>
 
-QEMU-based virtual machine emulator for Android
+QubeVM is a QEMU-based virtual machine emulator for Android
 
 <p align="center">
   <a href="https://t.me/QubeVM">
@@ -16,7 +16,7 @@ QEMU-based virtual machine emulator for Android
 
 Emulates a full virtual machine (CPU, RAM, disk, display, sound, network) on Android, allowing installation and execution of guest operating systems (Windows, Linux, BSD, legacy OSes) inside the app
 
-QubeVM currently supports **QEMU 11.1.1**, compiled natively for Android as a `.so` library without relying on third-party wrappers
+QubeVM currently supports **QEMU 11.1.1 and 7.2.22**, compiled natively for Android as a `.so` library without relying on third-party wrappers
 
 ## Supported CPU Architecture
 
@@ -53,14 +53,26 @@ Not available by default, stock Android does not expose `/dev/kvm` to apps, so T
 
 Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures.
 
-## Translations
-
-Contributions from translators are welcome. Feel free to open a pull request to add or improve a language
-[Translation Files](translation/)
-
 ## Docs
-For a detailed information check the [Docs](docs/index.md)
+For a detailed information, check the [Docs](docs/index.md)
+
+## Contributions
+Contributions from people are always welcome,
+But please make sure of how practical is the code before the pull request
+
+## License
+The QubeVM project is licensed under the **GPL-3.0**
+See [LICENSE](qube-android-lib/src/main/assets/LICENSE) for more info
 
 ## Credits
 
-QubeVM is a forked and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo)
+QubeVM is a forked and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo), however it depends on these projects:
+
+- [QEMU](https://github.com/qemu/qemu)
+- [Virglrenderer](https://gitlab.freedesktop.org/virgl/virglrenderer)
+- [libepoxy](https://github.com/anholt/libepoxy)
+- [pixman](https://gitlab.freedesktop.org/pixman/pixman)
+- [libffi](https://github.com/libffi/libffi)
+
+QubeVM also uses some code from:
+- [avnc](https://github.com/gujjwal00/avnc) Virtual keys, ported to QubeVM

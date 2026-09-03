@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/virtual_keys_screen"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/virtual_keys_top_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/toolbarBackgroundTint"
+        android:backgroundTintMode="multiply">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/editor_root"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+    <TextView
+        android:id="@+id/key_grid_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/msg_tap_to_select_a_key"
+        app:layout_constraintBottom_toTopOf="@id/scroll_view"
+        app:layout_constraintStart_toStartOf="@id/scroll_view" />
+
+    <TextView
+        android:id="@+id/focused_key_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/scroll_view"
+        app:layout_constraintTop_toTopOf="@id/key_grid_label" />
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2777"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".3">
+
+        <GridLayout
+            android:id="@+id/key_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true" />
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/key_actions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@id/scroll_view"
+        app:layout_constraintStart_toStartOf="@id/scroll_view"
+        app:layout_constraintTop_toBottomOf="@id/scroll_view">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_key_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:contentDescription="@string/title_add_key"
+            app:icon="@drawable/ic_plus"
+            app:iconGravity="textStart"
+            app:iconSize="32dp"
+            app:cornerRadius="8dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/move_up_btn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:contentDescription="@string/title_move_up"
+                app:icon="@drawable/keyboard_arrow_up_24px"
+                app:iconGravity="textStart"
+                app:iconSize="32dp"
+                app:cornerRadius="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/move_down_btn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:contentDescription="@string/title_move_down"
+                app:icon="@drawable/keyboard_arrow_down_24px"
+                app:iconGravity="textStart"
+                app:iconSize="32dp"
+                app:cornerRadius="8dp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:contentDescription="@string/title_delete_key"
+            app:icon="@drawable/delete_24px"
+            app:iconGravity="textStart"
+            app:iconSize="32dp"
+            app:cornerRadius="8dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/global_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/cancel_btn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/Save" />
+    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

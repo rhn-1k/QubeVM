@@ -1,0 +1,155 @@
+diff -ru pristine/meson.build final/meson.build
+--- a/meson.build	2026-08-29 21:45:17.682600564 +0000
++++ b/meson.build	2026-08-29 21:45:35.367611705 +0000
+@@ -56,6 +56,9 @@
+ 
+ with_host_windows = host_machine.system() == 'windows'
+ with_host_darwin = host_machine.system() == 'darwin'
++# QUBE: no libdrm/GBM on Android, but real system EGL/GLES exists,
++# treat it like Windows/Darwin below so EGL doesn't require GBM.
++with_host_android = host_machine.system() == 'android'
+ 
+ warnings = [
+    '-Werror=enum-int-mismatch',
+@@ -85,7 +88,16 @@
+ not_found = dependency('', required: false)
+ gbm_dep = not_found
+ thread_dep = dependency('threads')
+-epoxy_dep = dependency('epoxy', version: '>= 1.5.4')
++if with_host_android
++  # QUBE: pkg-config is unreliable in the NDK sysroot, epoxy is
++  # supplied directly via -I/-L (see Makefile config-virgl target).
++  epoxy_dep = declare_dependency(
++    compile_args: [],
++    link_args: ['-lepoxy'],
++    version: '1.5.10')
++else
++  epoxy_dep = dependency('epoxy', version: '>= 1.5.4')
++endif
+ m_dep = cc.find_library('m', required : false)
+ dl_dep = not_found
+ if not with_host_windows and not with_host_darwin
+@@ -294,8 +306,10 @@
+ have_glx = false
+ 
+ if with_egl
+-   if cc.has_header('epoxy/egl.h', dependencies: epoxy_dep) and epoxy_dep.get_variable(pkgconfig: 'epoxy_has_egl') == '1'
+-      if with_host_windows or with_host_darwin
++   # QUBE: get_variable(pkgconfig:) needs a pkg-config dep, Android's
++   # epoxy_dep isn't one, but we know it was built with -Degl=yes.
++   if cc.has_header('epoxy/egl.h', dependencies: epoxy_dep) and (with_host_android or epoxy_dep.get_variable(pkgconfig: 'epoxy_has_egl') == '1')
++      if with_host_windows or with_host_darwin or with_host_android
+          have_egl = true
+       else
+          if libdrm_dep.found()
+@@ -316,7 +330,9 @@
+ endif
+ 
+ if with_glx
+-   if cc.has_header('epoxy/glx.h', dependencies: epoxy_dep) and epoxy_dep.get_variable(pkgconfig: 'epoxy_has_glx') == '1'
++   # QUBE: epoxy/glx.h exists regardless of build config, so skip GLX
++   # outright on Android instead of trusting the header check alone.
++   if not with_host_android and cc.has_header('epoxy/glx.h', dependencies: epoxy_dep) and epoxy_dep.get_variable(pkgconfig: 'epoxy_has_glx') == '1'
+       glx_dep = dependency('x11', required: require_glx)
+       have_glx = glx_dep.found()
+       conf_data.set('HAVE_EPOXY_GLX_H', 1)
+@@ -470,7 +486,9 @@
+ endif
+ 
+ subdir('src')
+-if not with_host_windows
++if not with_host_windows and not with_host_android
++   # QUBE: vtest isn't needed for QEMU, and it links against a
++   # legacy GCC toolchain path that doesn't exist in NDK r23+.
+    subdir('vtest')
+ endif
+ 
+diff -ru pristine/src/mesa/util/os_misc.c final/src/mesa/util/os_misc.c
+--- a/src/mesa/util/os_misc.c	2026-08-29 21:45:17.691956418 +0000
++++ b/src/mesa/util/os_misc.c	2026-08-29 21:45:17.737220489 +0000
+@@ -55,8 +55,8 @@
+ #if DETECT_OS_ANDROID
+ #  define LOG_TAG "MESA"
+ #  include <unistd.h>
+-#  include <log/log.h>
+-#  include <cutils/properties.h>
++#  include <android/log.h>
++#  include <sys/system_properties.h>
+ #elif DETECT_OS_LINUX || DETECT_OS_CYGWIN || DETECT_OS_SOLARIS || DETECT_OS_HURD
+ #  include <unistd.h>
+ #elif DETECT_OS_OPENBSD || DETECT_OS_FREEBSD
+@@ -117,7 +117,7 @@
+    fputs(message, fout);
+    fflush(fout);
+ #  if DETECT_OS_ANDROID
+-   LOG_PRI(ANDROID_LOG_ERROR, LOG_TAG, "%s", message);
++   __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "%s", message);
+ #  endif
+ #endif
+ }
+@@ -172,9 +172,9 @@
+       return entry->data;
+    }
+ 
+-   char value[PROPERTY_VALUE_MAX];
+-   char key[PROPERTY_KEY_MAX];
+-   char *p = key, *end = key + PROPERTY_KEY_MAX;
++   char value[PROP_VALUE_MAX];
++   char key[PROP_NAME_MAX];
++   char *p = key, *end = key + PROP_NAME_MAX;
+    /* add "mesa." prefix if necessary: */
+    if (strstr(name, "MESA_") != name)
+       p += strlcpy(p, "mesa.", end - p);
+@@ -188,7 +188,7 @@
+    }
+ 
+    const char *opt = NULL;
+-   int len = property_get(key, value, NULL);
++   int len = __system_property_get(key, value);
+    if (len > 1) {
+       opt = ralloc_strdup(options_tbl, value);
+    }
+diff -ru pristine/src/mesa/util/u_thread.h final/src/mesa/util/u_thread.h
+--- a/src/mesa/util/u_thread.h	2026-08-29 21:45:17.692928820 +0000
++++ b/src/mesa/util/u_thread.h	2026-08-29 21:45:17.737432449 +0000
+@@ -289,7 +289,7 @@
+  * util_barrier
+  */
+ 
+-#if defined(HAVE_PTHREAD) && !defined(__APPLE__) && !defined(__HAIKU__)
++#if defined(HAVE_PTHREAD) && !defined(__APPLE__) && !defined(__HAIKU__) && !defined(__ANDROID__)
+ 
+ typedef pthread_barrier_t util_barrier;
+ 
+diff -ru pristine/src/virgl_util.c final/src/virgl_util.c
+--- a/src/virgl_util.c	2026-08-29 21:45:17.696781827 +0000
++++ b/src/virgl_util.c	2026-08-29 21:45:38.413668137 +0000
+@@ -43,6 +43,10 @@
+ #include <stdio.h>
+ 
+ #ifdef HAVE_DMABUF_H
++// QUBE: NDK's linux/dma-buf.h wants kernel-internal `u64`, but
++// userspace headers only provide `__u64` - define it ourselves.
++#include <stdint.h>
++typedef uint64_t u64;
+ #include <linux/dma-buf.h>
+ #include <sys/ioctl.h>
+ #endif
+diff -ru pristine/src/vrend/vrend_renderer.c final/src/vrend/vrend_renderer.c
+--- a/src/vrend/vrend_renderer.c	2026-08-29 21:45:17.698902765 +0000
++++ b/src/vrend/vrend_renderer.c	2026-08-29 21:45:17.738022288 +0000
+@@ -7663,6 +7663,14 @@
+    init_features(gles ? 0 : gl_ver,
+                  gles ? gl_ver : 0);
+ 
++   // QUBE: Adreno's compiler rejects the fsout_c1 output we generate
++   // for GL_EXT_blend_func_extended, force dual_src_blend off.
++   if (gles && has_feature(feat_dual_src_blend)) {
++      const char *dsb_renderer = (const char *)glGetString(GL_RENDERER);
++      if (dsb_renderer && strstr(dsb_renderer, "Adreno") != NULL)
++         clear_feature(feat_dual_src_blend);
++   }
++
+    if (!vrend_winsys_has_gl_colorspace())
+       clear_feature(feat_srgb_write_control) ;
+ 

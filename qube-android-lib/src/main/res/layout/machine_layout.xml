@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/machinel"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="horizontal"
+    tools:showIn="@layout/qube_main">
+
+    <TextView
+        android:id="@+id/machineStr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/machineHeader"
+        android:textSize="15sp" />
+
+    <Spinner
+        android:id="@+id/machineval"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/bg_machine_spinner"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="right"
+        android:singleLine="true"
+        android:text=""
+        android:textSize="15sp" />
+</LinearLayout>

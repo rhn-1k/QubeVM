@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/controls_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    tools:showIn="@layout/qube_main">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/startvm"
+        style="@style/Widget.Material3Expressive.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:icon="@drawable/play_arrow_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/stopvm"
+        style="@style/Widget.Material3Expressive.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:icon="@drawable/stop_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/restartvm"
+        style="@style/Widget.Material3Expressive.Button.TonalButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:icon="@drawable/refresh_24px"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp" />
+</LinearLayout>

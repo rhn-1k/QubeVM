@@ -1,0 +1,4 @@
+include ':qube-android-lib'
+include ':qube-android-x86'
+include ':qube-android-arm'
+include ':qube-android-ppc'

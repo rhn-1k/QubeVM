@@ -54,8 +54,7 @@ public class Config {
 
     public static final String defaultDNSServer = "1.1.1.1";
     // App Config
-    // UpdateChecker.java handles the version tag value, we just give it the link
-    public static final String downloadLink = "https://github.com/rhn-1k/QubeVM/releases/tag";
+    public static final String downloadLink = "https://github.com/rhn-1k/QubeVM/releases";
     public static final String guidesLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/tutorials.md";
     public static final String CpuLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/board.md#cpu-features";
     public static final String toolsLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/advanced.md";
@@ -78,6 +77,7 @@ public class Config {
     public static boolean enableQGESound = true;
 
     // size of the host visible blob resource for memory in Venus accelerator
+    // TODO: Add a slider like TCG Buffer in app
     public static String venusHostMem = "256M";
 
     // if you don't want to enable software updates set to false

@@ -110,6 +110,9 @@ public class QubeQGEActivity extends AppCompatActivity
     // Qube: frame pull is straight from qemu, see startGfxLoop()
     private int lastGfxGeneration = -1;
     private boolean gfxLoopRunning = false;
+    // nativeSetRefreshRate() becomes no-op if called before QEMU loads
+    // Handle is guaranteed set once pullGfxFrame() returns real dimensions
+    private boolean nativeRefreshRatePushed = false;
     private final Choreographer.FrameCallback gfxFrameCallback = new Choreographer.FrameCallback() {
         @Override
         public void doFrame(long frameTimeNanos) {
@@ -593,6 +596,7 @@ public class QubeQGEActivity extends AppCompatActivity
     }
 
     private void onGfxReady(final int width, final int height) {
+        Log.d(TAG, "onGfxReady: width=" + width + " height=" + height);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -613,8 +617,12 @@ public class QubeQGEActivity extends AppCompatActivity
     // Starts pulling frames directly from qemu's DisplaySurface, in step with
     // this display's vsync, via QubeGfx, see native source files
     private void startGfxLoop() {
-        if (gfxLoopRunning)
+        if (gfxLoopRunning) {
+            Log.d(TAG, "startGfxLoop: already running, skipped");
             return;
+        }
+        nativeRefreshRatePushed = false;
+        Log.d(TAG, "startGfxLoop: starting, requesting " + QubeSettingsManager.getRefreshRate(this) + "hz");
         applyRefreshRate(QubeSettingsManager.getRefreshRate(this));
         if (Config.enableQGESound && MachineController.getInstance().getMachine().getSoundCard() != null
                 && !MachineController.getInstance().getMachine().getSoundCard().toLowerCase().equals("none")) {
@@ -636,6 +644,7 @@ public class QubeQGEActivity extends AppCompatActivity
             display = getWindowManager().getDefaultDisplay();
         }
         if (display == null) {
+            Log.e(TAG, "applyRefreshRate: no display available, bailing");
             return;
         }
 
@@ -666,6 +675,9 @@ public class QubeQGEActivity extends AppCompatActivity
         WindowManager.LayoutParams params = window.getAttributes();
         params.preferredDisplayModeId = best.getModeId();
         window.setAttributes(params);
+        Log.d(TAG, "applyRefreshRate: requested=" + hz + "hz current=" + current.getRefreshRate()
+                + "hz chosen=" + best.getRefreshRate() + "hz modeId=" + best.getModeId()
+                + " hasFocus=" + window.getDecorView().hasWindowFocus());
     }
 
     private void stopGfxLoop() {
@@ -681,6 +693,15 @@ public class QubeQGEActivity extends AppCompatActivity
         int h = QubeGfx.nativeGetHeight();
         if (w <= 0 || h <= 0)
             return;
+
+        if (!nativeRefreshRatePushed) {
+            // real dimensions mean QEMU's .so is loaded now, safe to retry the push
+            // that likely became no-op earlier if it ran before the lib finished loading
+            int hz = QubeSettingsManager.getRefreshRate(this);
+            QubeGfx.nativeSetRefreshRate(hz);
+            nativeRefreshRatePushed = true;
+            Log.d(TAG, "pullGfxFrame: retried nativeSetRefreshRate(" + hz + ") now that guest is alive");
+        }
 
         if (frameBitmap == null || w != frameBitmap.getWidth() || h != frameBitmap.getHeight()) {
             frameBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
@@ -986,17 +1007,6 @@ public class QubeQGEActivity extends AppCompatActivity
             mGap.setVisibility(View.GONE);
     }
 
-    /**
-     * Called from jni/compat/qube_compat_qemu.c when the guest resolution changes.
-     */
-    public void resolutionChanged(int width, int height) {
-        if (mSurface == null || QubeQGEActivity.isResizing) {
-            return;
-        }
-        Log.d(TAG, "VM resolution changed to " + width + "x" + height);
-        mSurface.refreshSurfaceView();
-    }
-
     protected void setupAudio() {
         if (am == null) {
             am = (AudioManager) mSingleton.getSystemService(Context.AUDIO_SERVICE);
@@ -1019,8 +1029,8 @@ public class QubeQGEActivity extends AppCompatActivity
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        // On first VM run, applyRefreshRate() can run before window focus, WindowManager drops early requests, mode switch never lands
-        // Re-assert on focus, first point request will be honored
+        Log.d(TAG, "onWindowFocusChanged: hasFocus=" + hasFocus + " gfxLoopRunning=" + gfxLoopRunning);
+        // re-assert: mode switch is dropped if requested before the window has focus
         if (hasFocus && gfxLoopRunning) {
             applyRefreshRate(QubeSettingsManager.getRefreshRate(this));
         }
@@ -1232,10 +1242,6 @@ public class QubeQGEActivity extends AppCompatActivity
     @Override
     public void onEvent(Machine machine, MachineController.Event event, Object o) {
         switch (event) {
-            case MachineResolutionChanged:
-                Object[] params = (Object[]) o;
-                resolutionChanged((int) params[0], (int) params[1]);
-                break;
         }
     }
 

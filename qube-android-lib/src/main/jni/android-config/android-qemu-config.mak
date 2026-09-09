@@ -27,7 +27,7 @@ COROUTINE_POOL = --enable-coroutine-pool
 #Enable Internal profiler
 #CONFIG_PROFILER = --enable-gprof
 
-# SDL removed - display is VNC (-vnc), not SDL
+# SDL removed
 SDL = --disable-sdl
 
 # no SDL audio driver either
@@ -207,11 +207,10 @@ QEMU_EXTRA_LDFLAGS ?=
 
 config:
 	echo NM = $(QEMU_NM)
-	echo TOOLCHAIN DIR: $(TOOLCHAIN_DIR)
+	echo TOOLCHAIN DIR: $(TOOLCHAIN_CLANG_DIR)
 	echo NDK ROOT: $(NDK_ROOT) 
 	echo NDK PLATFORM: $(NDK_PLATFORM) 
 	echo USR INCLUDE: $(NDK_INCLUDE)
-	echo USE_VIRGL: $(USE_VIRGL)
 	echo USE_VENUS: $(USE_VENUS)
 	cd ./qemu	; \
 	$(QEMU_NM) ./configure \
@@ -260,6 +259,8 @@ config:
 	-I$(QUBE_JNI_ROOT)/glib/gmodule \
 	-I$(QUBE_JNI_ROOT)/pixman \
 	-I$(QUBE_JNI_ROOT)/pixman/pixman \
+	-I$(QUBE_JNI_ROOT)/pixman/build \
+	-I$(QUBE_JNI_ROOT)/pixman/build/pixman \
 	-I$(QUBE_JNI_ROOT)/scsi \
 	-I$(QUBE_JNI_ROOT)/compat  \
 	$(SPICE_INC) \

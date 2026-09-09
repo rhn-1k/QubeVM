@@ -200,7 +200,7 @@
     <string name="machineHeader">Machine:</string>
     <string name="Interface">Interface</string>
     <string name="diskCache">Disk Cache</string>
-    <string name="diskCacheSummary">Disk Cache might not work with Legacy Manager! If you encounter issues set to Default</string>
+    <string name="diskCacheSummary">If you encounter issues set to Default</string>
     <string name="ClearDirHistory">Clear Directory History</string>
     <string name="ClearDirHistorySummary">Remove all remembered file paths from storages, removable storages</string>
     <string name="ClearDirHistoryConfirm">This will clear all remembered file paths
@@ -350,8 +350,4 @@
     <string name="summary_append">append</string>
     <string name="summary_video_card">Video Card</string>
 
-    <!-- Compatibility strings retained for the original Qube Java dialog flow. -->
-    <string name="ShowLog">Show Log</string>
-    <string name="LogWarning">The VM stopped unexpectedly. Would you like to view the log?</string>
-    <string name="fixesMouseParen">(fixes mouse movement)</string>
 </resources>

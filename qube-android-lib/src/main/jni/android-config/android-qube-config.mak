@@ -2,12 +2,8 @@
 # if the  makefile doesn't recognize the project path you can override it here:
 #QUBE_JNI_ROOT := /home/dev/qube/workspace_qube/qube-android-lib/src/main/jni
 
-# Last version with gcc support is 14b 
-#NDK_ROOT = /home/dev/tools/ndk/android-ndk-r14b
-#USE_GCC?=true
-# Or use r23 with clang 
+# Qube: Clang-only toolchain (GCC support removed, NDK r23+ required)
 NDK_ROOT ?= /home/dev/tools/ndk/android-ndk-r23b
-USE_GCC?=false
 
 ### the ndk api should be the same as the minSdkVersion in your AndroidManifest.xml 
 NDK_PLATFORM_API=26
@@ -52,12 +48,8 @@ BUILD_GUEST?=x86_64-softmmu
 # values: 7.2.22, 11.1.1
 USE_QEMU_VERSION ?= 11.1.1
 
-# Enable VirGL Acceleration
-# need dependencies to be available in the JNI tree
-USE_VIRGL ?= true
-
 # Enable Venus (Vulkan passthrough) acceleration
-# controls both app UI and native side, needs VirGL enabled
+# controls both app UI and native side
 USE_VENUS ?= false
 
 # Enable KVM

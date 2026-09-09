@@ -3,7 +3,7 @@ Copyright (C) Max Kastanas 2012
 Copyright (C) Rhn 2026
  */
 #ifndef _QUBE_LOGUTILS_H
-#define	_QUBE_LOGUTILS_H
+#define _QUBE_LOGUTILS_H
 
 #ifndef __ASSEMBLER__
 
@@ -21,7 +21,7 @@ Copyright (C) Rhn 2026
 //Optional: Define ENABLE_OVERRIDE_QEMU_LOG to provide extra information on stdout stderr like the file and line number
 // that the errors are coming from otherwise you're only getting the messages/logs in logcat.
 // To enable this you need to comment out the macros and implementations in
-//  qemu/error-report.h, util/qemu-error.c, qemu/audio/sdlaudio.c, stubs/error-printf.c
+//  qemu/error-report.h, util/qemu-error.c, stubs/error-printf.c
 //#define ENABLE_OVERRIDE_QEMU_LOG 1
 
 #ifdef DEBUG_SHOW_BASENAME
@@ -72,7 +72,6 @@ static inline int qube_vfprintf(FILE *stream, const char *format, va_list ap){
 
 //QEMU Logging rerouting
 #ifdef ENABLE_OVERRIDE_QEMU_LOG
-#define sdl_logerr(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 #define error_report(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 #define error_printf(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 #define error_vprintf(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
@@ -93,7 +92,6 @@ static inline int qube_vfprintf(FILE *stream, const char *format, va_list ap){
 #define LOGI(...) ((void)0)
 
 #ifdef ENABLE_OVERRIDE_QEMU_LOG
-#define sdl_logerr(...) ((void)0)
 #define error_report(...) ((void)0)
 #define error_printf(...) ((void)0)
 #define error_vprintf(...) ((void)0)

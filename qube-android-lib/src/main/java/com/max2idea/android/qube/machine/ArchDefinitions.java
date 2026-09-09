@@ -34,15 +34,18 @@ public class ArchDefinitions {
         switch (QubeApplication.arch) {
             case x86:
             case x86_64:
+                networkCards.add("Default");
                 networkCards.addAll(commonNetworkCards);
                 break;
             case arm:
             case arm64:
+                networkCards.add("Default");
                 networkCards.addAll(commonNetworkCards);
                 networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.arm_nic_cards)));
                 break;
             case ppc:
             case ppc64:
+                networkCards.add("Default");
                 networkCards.addAll(commonNetworkCards);
                 break;
         }
@@ -63,6 +66,7 @@ public class ArchDefinitions {
             vgaValues.add("virtio-gpu-pci");
             vgaValues.add(GraphicsCapabilities.VIRTIO);
             vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_PCI);
+            vgaValues.add(GraphicsCapabilities.VIRTIO_VGA);
             vgaValues.add(GraphicsCapabilities.VIRTIO_VGA_GL);
         }
 
@@ -72,11 +76,18 @@ public class ArchDefinitions {
             vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_PCI);
         }
 
+        if (QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64) {
+            vgaValues.add("ati-vga");
+            vgaValues.add("cirrus-vga");
+            vgaValues.add("bochs-display");
+            vgaValues.add("virtio-gpu-pci");
+            vgaValues.add(GraphicsCapabilities.VIRTIO_VGA);
+            vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_PCI);
+            vgaValues.add(GraphicsCapabilities.VIRTIO_VGA_GL);
+        }
+
         //XXX: some archs don't support vga on QEMU
         vgaValues.add("nographic");
-
-        //TODO: Add XEN???
-        // "xenfb"
         return vgaValues;
     }
 
@@ -90,7 +101,7 @@ public class ArchDefinitions {
         ArrayList<String> arrList = new ArrayList<>();
         arrList.add("ps2");
         arrList.add("usb-mouse");
-        arrList.add("usb-tablet" + " " + context.getString(R.string.fixesMouseParen));
+        arrList.add("usb-tablet");
         return arrList;
     }
 

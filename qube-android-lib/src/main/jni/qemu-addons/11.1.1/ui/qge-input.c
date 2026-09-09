@@ -52,7 +52,6 @@ static bool qube_input_needs_shift(uint32_t sym)
 }
 
 // sym is an X11 keysym from Java KeySymMap, translated to QKeyCode via the shared keyboard layout
-// Same lookup used by QEMU's VNC, GTK, and SDL.
 void qube_input_send_key(uint32_t sym, int down)
 {
     uint32_t lsym = sym;

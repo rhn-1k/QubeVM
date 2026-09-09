@@ -51,33 +51,33 @@ https://github.com/rhn-1k/QubeVM
     # Note: if some of these file links don't download with wget use your browser to download them
 
     ##### Get QEMU
-    # Current version supported by qube: 11.1.1 and 7.222
-    # We will take 11.1.1 as an example in this guide
+    # Current versions supported by qube is 11.1.1 and 7.2.22
+    # We will use 11.1.1 as an example in this guide
     wget https://download.qemu.org/qemu-11.1.1.tar.xz
     tar -xJf qemu-11.1.1.tar.xz
     mv qemu-11.1.1 qemu
 
     ##### GET glib
-    wget https://download.gnome.org/sources/glib/2.88/glib-2.88.2.tar.xz
-    tar -xJf glib-2.88.2.tar.xz
-    mv glib-2.88.2 glib
+    wget https://download.gnome.org/sources/glib/2.88/glib-2.88.3.tar.xz
+    tar -xJf glib-2.88.3.tar.xz
+    mv glib-2.88.3 glib
 
     ##### GET libffi
-    wget https://sourceware.org/pub/libffi/libffi-3.3.tar.gz
-    tar -xzf libffi-3.3.tar.gz
-    mv libffi-3.3 libffi
+    wget https://github.com/libffi/libffi/releases/download/v3.8.0/libffi-3.8.0.tar.gz
+    tar -xzf libffi-3.8.0.tar.gz
+    mv libffi-3.8.0 libffi
 
     ##### GET pixman
-    wget https://gitlab.freedesktop.org/pixman/pixman/-/archive/pixman-0.40.0/pixman-pixman-0.40.0.tar.gz
-    tar -xzf pixman-pixman-0.40.0.tar.gz
-    mv pixman-pixman-0.40.0 pixman
+    wget https://gitlab.freedesktop.org/pixman/pixman/-/archive/pixman-0.46.4/pixman-pixman-0.46.4.tar.gz
+    tar -xzf pixman-pixman-0.46.4.tar.gz
+    mv pixman-pixman-0.46.4 pixman
     cd pixman && bash autogen.sh && cd ..
 
-    ##### GET libslirp (new QEMU versions need to build it separately, built as a subproject)
-    wget https://gitlab.freedesktop.org/slirp/libslirp/-/archive/v4.9.3/libslirp-v4.9.3.zip
+    ##### GET libslirp (QEMU 7.2+ need to build it separately, built as a subproject)
+    wget https://gitlab.freedesktop.org/slirp/libslirp/-/archive/v4.9.4/libslirp-v4.9.4.zip
     mkdir -p qemu/subprojects
-    unzip libslirp-v4.9.3.zip -d qemu/subprojects/
-    mv qemu/subprojects/libslirp-v4.9.3 qemu/subprojects/libslirp
+    unzip libslirp-v4.9.4.zip -d qemu/subprojects/
+    mv qemu/subprojects/libslirp-v4.9.4 qemu/subprojects/libslirp
 
     ##### GET libepoxy (required for virgl/OpenGL)
     wget https://github.com/anholt/libepoxy/archive/refs/tags/1.5.10.zip -O libepoxy-1.5.10.zip
@@ -110,14 +110,13 @@ https://github.com/rhn-1k/QubeVM
 
     ### Apply glib patch for QubeVM:
     cd ./qube-android-lib/src/main/jni/glib/
-    patch -p1 < ../patches/glib-2.88.2.patch
+    patch -p1 < ../patches/glib-2.88.3.patch
     # note: if you're planning to build QEMU 7.2.22 use this instead:
-    patch -p1 < ../patches/glib-2.88.2-qemu7.patch
+    patch -p1 < ../patches/glib-2.88.3-qemu7.patch
 
     ### Apply libslirp patches for QubeVM:
     cd ./qube-android-lib/src/main/jni/qemu/subprojects/libslirp/
-    patch -p1 < ../../../patches/libslirp-4.9.3.patch
-    patch -p1 < ../../../patches/libslirp-4.9.3-dns.patch
+    patch -p1 < ../../../patches/libslirp-4.9.4.patch
 
     ### Apply virglrenderer patch for QubeVM (Hardware Acceleration):
     cd ./qube-android-lib/src/main/jni/virglrenderer/
@@ -162,7 +161,7 @@ https://github.com/rhn-1k/QubeVM
 
         where:
             EABI is the Android device type (host arch): armeabi-v7a, arm64-v8a, x86, x86_64
-            GUEST_ARCH is the Emulator type: x86_64-softmmu,aarch64-softmmu,ppc64-softmmu,sparc-softmmu,m68k-softmmu
+            GUEST_ARCH is the Emulator type: x86_64-softmmu,aarch64-softmmu,ppc64-softmmu
             ENABLE_DEBUG is 1 (optional)
 
         # Note: QEMU 11.1.1 dropped 32-bit host support. For ARM hosts, use arm64-v8a.
@@ -208,21 +207,11 @@ https://github.com/rhn-1k/QubeVM
 
 		For more options see android-qube-config.mak
 
-        3D/virgl support is controlled by USE_VIRGL=true/false in the native build:
-            export USE_QEMU_VERSION=11.1.1
-            export BUILD_HOST=arm64-v8a
-            export BUILD_GUEST=x86_64-softmmu
-            export USE_VIRGL=true
-            make qube
-
         Venus (Vulkan passthrough) needs USE_VENUS=true on top of virgl, on both
         the native build and the apk:
             export USE_VENUS=true
             make qube
             ./gradlew assembleRelease -PuseVenus=true
-
-        VirGL/OpenGL is unnecessary for the ppc64-softmmu, sparc-softmmu, and
-        m68k-softmmu guests, build those with USE_VIRGL=false.
 
         Important:
         -PuseVenus only toggles the Venus option in the app's UI. It doesn't
@@ -239,8 +228,8 @@ https://github.com/rhn-1k/QubeVM
          libcompat-qube.so
          libglib-2.0.so
          libpixman-1.so
-         libepoxy.so (when USE_VIRGL=true)
-         libvirglrenderer.so (when USE_VIRGL=true)
+         libepoxy.so
+         libvirglrenderer.so
       qube-android-<GUEST_ARCH>/src/main/jniLibs/<EABI>/
          libqemu-system-xxx.so
 
@@ -347,7 +336,7 @@ See qube-android-lib/src/main/assets/CHANGELOG for release notes
 ===============================================================================
 11. License
 
-QubeVM Emulator is released under GPL v2 License.
+QubeVM Emulator is released under GPL v3 License.
 All icons under /res are from the Material 3 Project
 See file COPYING under root directory
 and LICENSE under qube-android-lib/src/main/assets

@@ -508,7 +508,7 @@ diff -ru --no-dereference qemu-7.2.22/qapi/ui.json qemu-7.2.22-work/qapi/ui.json
      { 'name': 'sdl', 'if': 'CONFIG_SDL' },
      { 'name': 'egl-headless',
                'if': { 'all': ['CONFIG_OPENGL', 'CONFIG_GBM'] } },
-+    # QUBE: our own gfx wrapper, like sdl/egl-headless but reads pixels
++    # QUBE: our own gfx wrapper, like otherd but reads pixels
 +    # back through Android's system EGL instead of a window or DRM node
 +    { 'name': 'qube-qge', 'if': 'CONFIG_QUBE_QGE' },
      { 'name': 'curses', 'if': 'CONFIG_CURSES' },

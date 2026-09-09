@@ -7,6 +7,7 @@ public final class GraphicsCapabilities {
     // Some variants gets -device instead of -vga, see VMExecutor.java
     // x86
     public static final String VIRTIO = "virtio";
+    public static final String VIRTIO_VGA = "virtio-vga";
     public static final String VIRTIO_VGA_GL = "virtio-vga-gl";
     // Arm
     public static final String VIRTIO_GPU_GL_DEVICE = "virtio-gpu-gl-device";
@@ -16,12 +17,9 @@ public final class GraphicsCapabilities {
         return vga != null && (
                 vga.startsWith("virtio-gpu") ||
                 vga.startsWith("virtio-vga") ||
-                vga.startsWith("VGA") ||
-                vga.startsWith("isa-vga") ||
-                vga.startsWith("secondary-vga") ||
-                vga.startsWith("macfb") ||
-                vga.startsWith("next-fb")
-                
+                vga.equals("ati-vga") ||
+                vga.equals("cirrus-vga") ||
+                vga.equals("bochs-display")
         );
     }
 

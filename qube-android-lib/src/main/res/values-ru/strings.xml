@@ -199,7 +199,7 @@
     <string name="machineHeader">Машина:</string>
     <string name="Interface">Интерфейс</string>
     <string name="diskCache">Кэш диска</string>
-    <string name="diskCacheSummary">Кэш диска может не работать с Legacy Manager! Если возникают проблемы, установите значение по умолчанию</string>
+    <string name="diskCacheSummary">При возникновении проблем установите значение По умолчанию</string>
     <string name="ClearDirHistory">Очистить историю каталогов</string>
     <string name="ClearDirHistorySummary">Удалить все запомненные пути к файлам из хранилищ и съёмных хранилищ</string>
     <string name="ClearDirHistoryConfirm">Это очистит все запомненные пути к файлам

@@ -68,7 +68,7 @@ public class Machine extends Observable {
     private String append;
     // net
     private String network = null;
-    private String networkCard = "ne2k_pci";
+    private String networkCard = "e1000";
     private String guestFwd;
     private String hostFwd;
     //display
@@ -673,16 +673,13 @@ public class Machine extends Observable {
             arch = "x86";
             cpu = "Default";
             machineType = "Default";
-            networkCard = "rtl8139";
         } else if (QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64) {
             arch = "ARM";
             machineType = "virt";
             cpu = "Default";
-            networkCard = "virtio-net";
         } else if (QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64) {
             arch = "PPC";
             machineType = "Default";
-            networkCard = "sungem";
         }
     }
 

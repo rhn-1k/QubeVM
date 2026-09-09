@@ -76,11 +76,6 @@ qemu-static: $(all-obj-y) $(COMMON_LDADDS)
 	$(RELINK_LIBSLIRP)
 	$(RELINK_LIBSLIRP_2)
 
-ifneq ($(NDK_TOOLCHAIN_VERSION),clang)
-	EXTRA_LIBS=-lgcc
-else
-endif
-
 # Create our dynamic lib for use with Android
 $(QEMU_PROG): $(all-obj-y) $(COMMON_LDADDS) qemu-static
 	$(LNK)     \

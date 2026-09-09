@@ -43,7 +43,10 @@ INSTALL_GLIB_LIBS=cp -Lf \
 INSTALL_FFI_LIBS=cp -f libffi/$(GNU_HOST)/.libs/*.a \
     $(NDK_PROJECT_PATH)/obj/local/$(APP_ABI)/
 
-INSTALL_PIXMAN_LIBS=cp -f pixman/pixman/.libs/*.so \
+PIXMAN_BUILD_DIR=$(QUBE_JNI_ROOT)/pixman/build
+PIXMAN_CROSS_FILE=$(QUBE_JNI_ROOT)/pixman-android-cross.ini
+
+INSTALL_PIXMAN_LIBS=cp -Lf $(PIXMAN_BUILD_DIR)/pixman/*.so \
     $(NDK_PROJECT_PATH)/obj/local/$(APP_ABI)/
 
 
@@ -163,21 +166,13 @@ ifneq ($(NDK_DEBUG),1)
 	STRIP_LIBS=$(STRIP) $(NDK_PROJECT_PATH)/libs/$(APP_ABI_DIR)/*.so
 endif
 
-# we disable for now some options so armv7 host can compile with gcc
-PIXMAN_DISABLE_OPTIONS=--disable-mmx --disable-arm-iwmmxt --disable-arm-iwmmxt2  \
-	--disable-openmp  --disable-loongson-mmi  --disable-mmx    --disable-sse2   --disable-ssse3 \
-	--disable-vmx --disable-arm-simd   --disable-arm-neon   --disable-arm-iwmmxt   \
-	--disable-arm-iwmmxt2  --disable-mips-dspr2  --disable-gcc-inline-asm
-
 DEBUG =
 ifeq ($(NDK_DEBUG), 1)
 	LIBFFI_DEBUG = --enable-debug
 	LIBGLIB_DEBUG = --enable-debug
-	LIBPIXMAN_DEBUG =
 else
 	LIBFFI_DEBUG = --disable-debug
     LIBGLIB_DEBUG = --disable-debug
-    LIBPIXMAN_DEBUG =
 endif
 
 export
@@ -279,37 +274,55 @@ clean-glib:
 	-rm -f $(GLIB_CROSS_FILE)
 	-rm -rf $(GLIB_FAKE_PC_DIR)
 
+gen-pixman-cross:
+	@echo '[binaries]' > $(PIXMAN_CROSS_FILE)
+	@echo "c = '$(CC)'" >> $(PIXMAN_CROSS_FILE)
+	@echo "ar = '$(AR)'" >> $(PIXMAN_CROSS_FILE)
+	@echo "strip = '$(STRIP)'" >> $(PIXMAN_CROSS_FILE)
+	@echo '' >> $(PIXMAN_CROSS_FILE)
+	@echo '[host_machine]' >> $(PIXMAN_CROSS_FILE)
+	@echo "system = 'android'" >> $(PIXMAN_CROSS_FILE)
+	@echo "cpu_family = 'aarch64'" >> $(PIXMAN_CROSS_FILE)
+	@echo "cpu = 'aarch64'" >> $(PIXMAN_CROSS_FILE)
+	@echo "endian = 'little'" >> $(PIXMAN_CROSS_FILE)
 
-config-pixman: ndk
-	cd $(QUBE_JNI_ROOT)/pixman && ./configure --host=$(GNU_HOST) --with-sysroot=$(SYSROOT) \
-	--disable-libtool-lock \
-	$(PIXMAN_DISABLE_OPTIONS) \
-	$(LIBPIXMAN_DEBUG) \
-	CFLAGS="$(ARCH_CFLAGS) -I$(NDK_INCLUDE) \
-	$(NDK_SYSROOT_INC) \
-	$(NDK_SYSROOT_ARCH_INC) \
-	-I${SYSROOT}/usr/include $(SYS_ROOT) -I${NDK_ROOT}/sources/android/support/include \
-	-I${NDK_ROOT}/sources/android/cpufeatures -I${QUBE_JNI_ROOT}/compat " \
-	LDFLAGS="$(ARCH_LD_FLAGS) $(SYS_ROOT) \
-	-L${QUBE_JNI_ROOT}/../obj/local/$(APP_ABI) -lc -llog \
-	-lcompat-qube "
+config-pixman: ndk gen-pixman-cross
+	cd $(QUBE_JNI_ROOT)/pixman && \
+	meson setup $(PIXMAN_BUILD_DIR) \
+		--cross-file $(PIXMAN_CROSS_FILE) \
+		--default-library=shared \
+		--prefix=/ \
+		-Dmmx=disabled \
+		-Dsse2=disabled \
+		-Dssse3=disabled \
+		-Dvmx=disabled \
+		-Darm-simd=disabled \
+		-Dneon=disabled \
+		-Da64-neon=disabled \
+		-Dloongson-mmi=disabled \
+		-Dmips-dspr2=disabled \
+		-Drvv=disabled \
+		-Dgnu-inline-asm=disabled \
+		-Dopenmp=disabled \
+		-Dgtk=disabled \
+		-Dlibpng=disabled \
+		-Dtests=disabled \
+		-Ddemos=disabled \
+		-Dc_args="$(ARCH_CFLAGS) -I$(NDK_INCLUDE) \
+		$(NDK_SYSROOT_INC) \
+		$(NDK_SYSROOT_ARCH_INC) \
+		-I$(SYSROOT)/usr/include $(SYS_ROOT) -I$(NDK_ROOT)/sources/android/support/include \
+		-I$(NDK_ROOT)/sources/android/cpufeatures -I$(QUBE_JNI_ROOT)/compat" \
+		-Dc_link_args="$(ARCH_CLANG_FLAGS) $(ARCH_LD_CLANG_FLAGS) $(ARCH_LD_FLAGS) $(SYS_ROOT) \
+		-L$(QUBE_JNI_ROOT)/../obj/local/$(APP_ABI) -lc -llog -lcompat-qube"
 
 pixman: ndk
-	cd $(QUBE_JNI_ROOT)/pixman/pixman && $(MAKE) -j $(BUILD_THREADS) \
-	CFLAGS="$(ARCH_CFLAGS) -I$(NDK_INCLUDE)  -I${SYSROOT}/usr/include \
-	$(SYS_ROOT) -I${NDK_ROOT}/sources/android/support/include \
-	$(NDK_SYSROOT_INC) \
-	$(NDK_SYSROOT_ARCH_INC) \
-	-I${NDK_ROOT}/sources/android/cpufeatures -I${QUBE_JNI_ROOT}/compat " \
-	LDFLAGS="$(ARCH_LD_FLAGS) $(SYS_ROOT) \
-	-L${QUBE_JNI_ROOT}/../obj/local/$(APP_ABI) -lc -llog \
-	-lcompat-qube "
+	ninja -C $(PIXMAN_BUILD_DIR) -j $(BUILD_THREADS)
 	$(INSTALL_PIXMAN_LIBS)
 
 clean-pixman:
-	-find $(QUBE_JNI_ROOT)/pixman -name "*.lo" -exec rm -rf {} \;
-	-cd $(QUBE_JNI_ROOT)/pixman && $(MAKE) distclean
-	-cd $(QUBE_JNI_ROOT)/pixman && $(MAKE) clean
+	-rm -rf $(PIXMAN_BUILD_DIR)
+	-rm -f $(PIXMAN_CROSS_FILE)
 
 # libepoxy
 gen-epoxy-cross:
@@ -415,14 +428,9 @@ clean-qemu:
 	-rm -rf $(QUBE_APP_ARM)/assets/roms/*
 	-rm -rf $(QUBE_APP_PPC)/assets/roms/*
 
-ifeq ($(USE_VIRGL),true)
 config-deps: ndk config-ffi config-glib config-pixman config-epoxy epoxy config-virgl
 deps: ndk ffi glib pixman epoxy virglrenderer
 	$(INSTALL_VIRGL_LIBS)
-else
-config-deps: ndk config-ffi config-glib config-pixman
-deps: ndk ffi glib pixman
-endif
 
 _build-qemu: ndk 
 	make _qemu

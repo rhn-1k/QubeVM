@@ -15,7 +15,7 @@
 #define QUBE_AUDIO_RATE 48000
 #define QUBE_AUDIO_CHANNELS 2
 #define QUBE_AUDIO_BYTES_PER_FRAME (QUBE_AUDIO_CHANNELS * sizeof(int16_t))
-#define QUBE_AUDIO_CALLBACK_FRAMES (QUBE_AUDIO_RATE / 50) /* SDL default: 20 ms */
+#define QUBE_AUDIO_CALLBACK_FRAMES (QUBE_AUDIO_RATE / 50) // 20 ms
 
 // QEMU exports these from the version-specific qube-audio.c driver.
 typedef int (*qube_audio_read_t)(void *dst, int max_bytes);
@@ -23,9 +23,8 @@ typedef void (*qube_audio_flush_t)(void);
 typedef void (*qube_audio_get_format_t)(int *rate, int *channels, int *bits);
 extern void *handle;
 
-// SDL loads AAudio dynamically so the backend remains safe on Android releases
-// where AAudio is unavailable. Keep required and optional functions separate,
-// just as SDL does in SDL_aaudiofuncs.h.
+// QGE loads AAudio dynamically so the backend remains safe on Android releases
+// where AAudio is unavailable. Keep required and optional functions separate
 typedef struct QubeAAudioApi {
     void *library;
     const char *(*convertResultToText)(aaudio_result_t returnCode);
@@ -85,9 +84,9 @@ static int load_aaudio(void)
     if (aa.library) {
         return 1;
     }
-    // SDL avoids AAudio on Android 8.0 because of reference-counting crashes.
-    if (android_get_device_api_level() < 27) {
-        LOGI("AAudio disabled below Android API 27");
+    // Avoid AAudio on Android 7.0 because of reference-counting crashes
+    if (android_get_device_api_level() < 26) {
+        LOGI("AAudio disabled, Android API 26 needed");
         return 0;
     }
 
@@ -173,8 +172,8 @@ static aaudio_data_callback_result_t aaudio_data_callback(AAudioStream *audio_st
     const int callback_bytes = num_frames * QUBE_AUDIO_BYTES_PER_FRAME;
     int bytes_read = 0;
 
-    // The callback must never wait for QEMU. This matches SDL’s callback path:
-    // copy what is ready and clear the rest with the device silence value.
+    // The callback must never wait for QEMU
+    // copy what is ready and clear the rest with the device silence value
     if (atomic_load_explicit(&audio_enabled, memory_order_acquire) && qube_audio_read_fn) {
         bytes_read = qube_audio_read_fn(audio_data, callback_bytes);
         if (bytes_read < 0 || bytes_read > callback_bytes) {
@@ -214,14 +213,13 @@ static int open_stream_locked(void)
     aa.builderSetFormat(builder, AAUDIO_FORMAT_PCM_I16);
     aa.builderSetSampleRate(builder, QUBE_AUDIO_RATE);
     aa.builderSetChannelCount(builder, QUBE_AUDIO_CHANNELS);
-    // AAudio requires capacity >= 2 * callback size. SDL uses this exact rule.
+    // AAudio requires capacity >= 2 *
     aa.builderSetBufferCapacityInFrames(builder, 2 * QUBE_AUDIO_CALLBACK_FRAMES);
     aa.builderSetFramesPerDataCallback(builder, QUBE_AUDIO_CALLBACK_FRAMES);
     aa.builderSetDataCallback(builder, aaudio_data_callback, NULL);
     aa.builderSetErrorCallback(builder, aaudio_error_callback, NULL);
     aa.builderSetPerformanceMode(builder, AAUDIO_PERFORMANCE_MODE_LOW_LATENCY);
     if (aa.builderSetUsage) {
-        // SDL defaults to media when no stream-role hint is supplied.
         aa.builderSetUsage(builder, AAUDIO_USAGE_MEDIA);
     }
 

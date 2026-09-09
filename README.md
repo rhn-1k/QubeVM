@@ -14,7 +14,7 @@ QubeVM is a QEMU-based virtual machine emulator for Android
 
 ## What it does
 
-Emulates a full virtual machine (CPU, RAM, disk, display, sound, network) on Android, allowing installation and execution of guest operating systems (Windows, Linux, BSD, legacy OSes) inside the app
+Emulates a full virtual machine on Android, allowing installation and execution of guest operating systems inside the app
 
 QubeVM currently supports **QEMU 11.1.1 and 7.2.22**, compiled natively for Android as a `.so` library without relying on third-party wrappers
 
@@ -30,7 +30,7 @@ QubeVM offers different ways to run your virtual machine depending on your devic
 | KVM | Supported for users with a custom kernel exposing /dev/kvm, hardware accelerated and significantly faster than TCG. Not available on stock Android by default, read below for more info |
 | TCG (software emulation, single-threaded) | Default, works on all devices |
 | MTTCG (Multi-Threaded TCG) | Supported, runs guest vCPUs on separate host threads for better SMP performance |
-| High Priority Mode | Supported, runs the VM emulation thread at its greatest speed for improved performance |
+| High Priority Mode | Runs the VM emulation thread at its greatest speed for improved performance |
 
 > [!CAUTION]
 > **High Priority Mode** may cause device overheating. Ensure your device has adequate cooling during extended sessions
@@ -39,8 +39,8 @@ QubeVM offers different ways to run your virtual machine depending on your devic
 
 Qube supports two display modes:
 
-- **QGE (Qube Graphics Engine)**, the default mode, smooth and native, also supports native audio output using AAudio, good for reducing resources usage
-- **VNC (Virtual Network Computing)**, requires an external VNC client, runs at 60Hz refresh rate, good for reducing screen tearing
+- **QGE (Qube Graphics Engine)**, the default mode, displays frames natively, also supports native audio output using AAudio, The default and recommended option
+- **VNC (Virtual Network Computing)**, requires an external VNC client, uses more resources
 
 ## Network Support
 
@@ -62,14 +62,15 @@ But please make sure of how practical is the code before the pull request
 
 ## License
 The QubeVM project is licensed under the **GPL-3.0**
-See [LICENSE](qube-android-lib/src/main/assets/LICENSE) for more info
+See [COPYING](COPYING) for more info
 
 ## Credits
 
 QubeVM is a forked and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo), however it depends on these projects:
 
-- [QEMU](https://github.com/qemu/qemu)
-- [Virglrenderer](https://gitlab.freedesktop.org/virgl/virglrenderer)
+- [qemu](https://github.com/qemu/qemu)
+- [glib](https://gitlab.gnome.org/GNOME/glib.git)
+- [virglrenderer](https://gitlab.freedesktop.org/virgl/virglrenderer)
 - [libepoxy](https://github.com/anholt/libepoxy)
 - [pixman](https://gitlab.freedesktop.org/pixman/pixman)
 - [libffi](https://github.com/libffi/libffi)

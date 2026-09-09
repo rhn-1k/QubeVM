@@ -1,0 +1,57 @@
+diff -ru --no-dereference libslirp-v4.9.4/meson.build libslirp-v4.9.4-work/meson.build
+--- libslirp-v4.9.4/meson.build	2026-08-25 02:13:44.000000000 +0300
++++ libslirp-v4.9.4-work/meson.build	2026-09-08 19:21:23.061212044 +0300
+@@ -80,7 +80,9 @@
+ 
+ # libslirp_deps collects both the libslirp dependenc(y|ies) and the
+ # platform dependencies.
+-libslirp_deps = [ dependency('glib-2.0', static : glib_static) ]
++# QUBE: we pass dependencies directly for glib, Android NDK doesn't support pkg-config
++_glib_dep = declare_dependency(compile_args : [], link_args : ['-lglib-2.0'])
++libslirp_deps = [ _glib_dep ]
+ 
+ if host_system == 'windows'
+   # Windows: pkg-config fails us here because the static version of glib-2.0
+@@ -200,7 +202,8 @@
+   configuration : conf
+ )
+ 
+-if glib_static or fuzzer_build or fuzz_reproduce
++# QUBE: always build as static library for Android embedding
++if true
+   lib = static_library('slirp', sources,
+     c_args : cargs,
+     link_args : libvflag + vflag,
+@@ -274,6 +277,8 @@
+   link_with : lib,
+   include_directories : [include_directories('src'), include_directories('.')],
+ )
++# QUBE: QEMU fallback expects the variable name 'slirp_dep'
++slirp_dep = libslirp_libdep
+ meson.override_dependency('slirp', libslirp_libdep)
+ 
+ subdir('fuzzing')
+diff -ru --no-dereference libslirp-v4.9.4/src/slirp.c libslirp-v4.9.4-work/src/slirp.c
+--- libslirp-v4.9.4/src/slirp.c	2026-08-25 02:13:44.000000000 +0300
++++ libslirp-v4.9.4-work/src/slirp.c	2026-09-08 19:15:03.469212021 +0300
+@@ -387,6 +387,20 @@
+ 
+ #if defined(__HAIKU__)
+ #define RESOLV_CONF_PATH "/boot/system/settings/network/resolv.conf"
++// QUBE: Android lacks /etc/resolv.conf. Resolve a fixed path under
++// the app base directory and read it with the real
++// fopen/stat, so get_dns_addr() works.
++#elif defined(__ANDROID__)
++#include <stdio.h>
++extern const char *qube_base_dir;
++
++static const char *android_resolv_conf_path(void)
++{
++    static char path[512];
++    snprintf(path, sizeof(path), "%s/etc/resolv.conf", qube_base_dir);
++    return path;
++}
++#define RESOLV_CONF_PATH android_resolv_conf_path()
+ #else
+ #define RESOLV_CONF_PATH "/etc/resolv.conf"
+ #endif

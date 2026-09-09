@@ -1,12 +1,6 @@
 /*
- *
- * * Original Qube and current QubeVM comments retained during Java migration.
- * * A simple QMP Client that is needed for communicating with QEMU. You can use it for
- * * changing VNC password, checking VM status, and changing removable drives.
- * * Deliberately no "format" argument: older QEMU (<7.1) doesn't understand it at all, and even on
- * * newer QEMU, asking for PPM (the universal default) means this works identically regardless of
- * * the QEMU version in use. We convert PPM -> PNG ourselves right after the dump.
- * 
+Copyright (C) Max Kastanas 2012
+Copyright (C) Rhn 2026
  */
 package com.max2idea.android.qube.qmp;
 
@@ -165,9 +159,7 @@ public final class QmpClient {
                 + filename + "\" } }";
     }
 
-    /**
-     * Asks QEMU to dump the current display contents and converts the result to PNG.
-     */
+     // Asks QEMU to dump the current display contents and converts the result to PNG
     public static String screendump(String pngFilename) {
         File ppmFile = new File(pngFilename + ".tmp.ppm");
         String response = sendCommand(getScreendumpCommand(ppmFile.getAbsolutePath()));

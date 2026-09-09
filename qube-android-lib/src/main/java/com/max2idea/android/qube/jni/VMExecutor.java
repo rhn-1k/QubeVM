@@ -46,27 +46,12 @@ class VMExecutor extends MachineExecutor {
     private static final String fdbDeviceName = "floppy1";
     private static final String sdDeviceName = "sd0";
     private static final String DEFAULT_UEFI = "Default";
-    private static int vm_width;
-    private static int vm_height;
     //TODO: make this a proper singleton but the views should not be able to access it
     private static VMExecutor mInstance;
 
     VMExecutor(MachineController machineController) {
         super(machineController);
         mInstance = this;
-    }
-
-    /**
-     * This function is called when the machine resolution changes, from native code,
-     * see jni/compat/qube_compat_qemu.c
-     *
-     * @param width  Width
-     * @param height Height
-     */
-    public static void onVMResolutionChanged(int width, int height) {
-        vm_width = width;
-        vm_height = height;
-        mInstance.onResolutionChanged(vm_width, vm_height);
     }
 
     //JNI Methods
@@ -98,7 +83,7 @@ class VMExecutor extends MachineExecutor {
         return null;
     }
 
-private String getQemuLibrary() {
+    private String getQemuLibrary() {
         switch (QubeApplication.arch) {
             case x86:
                 return "libqemu-system-i386.so";
@@ -155,6 +140,7 @@ private String getQemuLibrary() {
         }
 
         if (getMachine().getMouse() != null && !getMachine().getMouse().equals("ps2")) {
+            // Arm needs specific usb type to allow usb-tablet
             if (QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64) {
                 paramsList.add("-device");
                 paramsList.add("qemu-xhci");
@@ -175,7 +161,7 @@ private String getQemuLibrary() {
     }
 
     private void addAudioOptions(ArrayList<String> paramsList) {
-        // Native AAudio path via qube-audio (ring buffer pull model, fixed 48kHz/stereo/S16).
+        // Native AAudio path via qube-audio
         String soundCard = getSoundCard();
         if (soundCard == null) {
             return;
@@ -263,6 +249,18 @@ private String getQemuLibrary() {
 
         String cpu = getMachine().getCpu();
 
+        //XXX: we disable tsc feature for x86 since some guests are kernel panicking
+        // if the cpu has not specified by user we use the internal qemu32/64
+        if (getMachine().getDisableTSC() == 1 && (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64)) {
+            if (cpu == null || cpu.equals("Default")) {
+                if (QubeApplication.arch == Config.Arch.x86)
+                    cpu = "qemu32";
+                else if (QubeApplication.arch == Config.Arch.x86_64)
+                    cpu = "qemu64";
+            }
+            cpu += ",-tsc";
+        }
+
         //+svm exposes AMD-V nested virtualization to the guest, useful for running
         //hypervisors/VMs inside the emulated guest OS
         if (getMachine().getEnableSVM() == 1 && (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64)) {
@@ -323,11 +321,13 @@ private String getQemuLibrary() {
             return;
         }
 
+        // TAP config
         if (network.equals("tap")) {
             paramsList.add("-netdev");
             paramsList.add("tap,id=net0,ifname=tap0,script=no");
         }
 
+        // User config
         if (network.equals("user")) {
             String netdevParams = "user,id=net0";
             String hostFwd = getHostFwd();
@@ -349,9 +349,8 @@ private String getQemuLibrary() {
             paramsList.add(netdevParams);
         }
 
-        //Unknown interface
-        paramsList.add("-net");
-        paramsList.add("none");
+        paramsList.add("-device");
+        paramsList.add(networkCard + ",netdev=net0");
     }
 
     private String getHostFwd() {

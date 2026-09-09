@@ -1,23 +1,11 @@
 # generic defs
 
-## Do not comment this, always specify a gcc base version
-GCC_TOOLCHAIN_VERSION=4.9
-
 # override the log functions 
 ARCH_EXTRA_CFLAGS += -include $(LOGUTILS)
 
-# choose gcc or clang
-ifneq ($(USE_GCC),true)
-    NDK_TOOLCHAIN_VERSION=clang
-else
-    NDK_TOOLCHAIN_VERSION=$(GCC_TOOLCHAIN_VERSION)
-endif
-
-ifneq ($(NDK_TOOLCHAIN_VERSION),clang)
-    ARCH_CFLAGS += -std=gnu99
-else
-    ARCH_LD_CLANG_FLAGS += -Wc,-shared
-endif
+# Qube: Clang-only toolchain (GCC support removed)
+NDK_TOOLCHAIN_VERSION=clang
+ARCH_LD_CLANG_FLAGS += -Wc,-shared
 
 ARCH_CFLAGS += -Wno-macro-redefined
     
@@ -30,9 +18,6 @@ ARCH_CFLAGS += -D__ENABLE_AAUDIO__
 # Suppress some warnings
 #ARCH_CFLAGS += -Wno-psabi
 ARCH_CFLAGS += -Wno-error=declaration-after-statement -Wno-unused-variable
-ifneq ($(NDK_TOOLCHAIN_VERSION),clang)
-	ARCH_CFLAGS += -Wno-unused-but-set-variable -Wno-unused-function
-endif
 
 # Smaller code generation for shared libraries, usually faster
 # if doesn't work use -fPIC

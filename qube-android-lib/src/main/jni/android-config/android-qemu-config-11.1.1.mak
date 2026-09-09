@@ -4,7 +4,7 @@
 # Clang-compatible warning flags (NDK clang does not support GCC-specific flags
 WARNING_FLAGS = -Wno-redundant-decls -Wno-unused-variable \
 	-Wno-uninitialized -Wno-unused-function \
-	-Wno-unknown-warning-option
+	-Wno-unknown-warning-option -Wno-unknown-attributes
 
 # slirp is built internally as a subproject (libslirp)
 # qemu/build/subprojects/libslirp/src/libslirp.a
@@ -21,8 +21,6 @@ MISC += --disable-gtk
 MISC += --disable-vnc-jpeg
 MISC += --disable-vnc-sasl
 
-# If the user want or doesn't want VirGL
-ifeq ($(USE_VIRGL),true)
 MISC += --enable-opengl --enable-virglrenderer
 QEMU_EXTRA_CFLAGS += -DCONFIG_QUBE_VIRGL
 QEMU_EXTRA_CFLAGS += -I$(QUBE_JNI_ROOT)/virglrenderer/build-android/install/include/virgl
@@ -30,10 +28,6 @@ QEMU_EXTRA_CFLAGS += -I$(QUBE_JNI_ROOT)/libepoxy/build-android/install/include
 QEMU_EXTRA_LDFLAGS += -L$(QUBE_JNI_ROOT)/virglrenderer/build-android/install/lib
 QEMU_EXTRA_LDFLAGS += -L$(QUBE_JNI_ROOT)/libepoxy/build-android/install/lib
 QEMU_EXTRA_LDFLAGS += -lvirglrenderer -lepoxy -lEGL -lGLESv2
-else
-MISC += --disable-opengl
-MISC += --disable-virglrenderer
-endif
 MISC += --disable-curses
 MISC += --disable-brlapi
 MISC += --disable-gnutls

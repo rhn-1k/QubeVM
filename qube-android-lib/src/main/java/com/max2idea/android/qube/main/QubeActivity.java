@@ -1455,22 +1455,23 @@ public class QubeActivity extends AppCompatActivity
     public void setupNativeLibs() {
         if (libLoaded)
             return;
-        //Compatibility lib
+        // Compatibility lib
         System.loadLibrary("compat-qube");
 
-        //Glib deps
+        // Glib deps
         System.loadLibrary("compat-musl");
 
-        //Glib for qemu
+        // Glib for qemu
         System.loadLibrary("glib-2.0");
 
-        //Pixman for qemu
+        // Pixman for qemu
         System.loadLibrary("pixman-1");
 
-        //VirGL for qemu
+        // VirGL for qemu
         try {
             System.loadLibrary("epoxy");
             System.loadLibrary("virglrenderer");
+        // If not found (disabled) skip
         } catch (UnsatisfiedLinkError e) {
         }
 

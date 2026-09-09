@@ -204,11 +204,6 @@ public class MachineController {
         notifyMachineStatusChangeListeners(machine, getCurrStatus(), null);
     }
 
-    protected void onVMResolutionChanged(MachineExecutor machineExecutor, int vm_width, int vm_height) {
-        if(machineExecutor == this.machineExecutor)
-            notifyEventListeners(Event.MachineResolutionChanged, new Object[]{vm_width, vm_height});
-    }
-
     public void setFullscreen() {
         notifyEventListeners(Event.MachineFullscreen, null);
     }
@@ -218,7 +213,7 @@ public class MachineController {
     }
 
     public enum Event {
-        MachineCreated, MachineCreateFailed, MachineLoaded, MachineResolutionChanged, MachineFullscreen
+        MachineCreated, MachineCreateFailed, MachineLoaded, MachineFullscreen
     }
 
     public interface OnMachineStatusChangeListener {

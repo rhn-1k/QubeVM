@@ -1,6 +1,6 @@
 /*
  * qube_compat_missing.c
- * Qube: stubs for POSIX functions missing or not linked from Android NDK.
+ * stubs for POSIX functions missing or not linked from Android NDK.
  */
 
 #include <errno.h>

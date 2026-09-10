@@ -1,27 +1,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="2dip"
+    android:padding="2dp"
     android:theme="@style/AppTheme">
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/cdromimgl"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dip">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="48dp"
@@ -32,22 +32,23 @@
 
                 <Spinner
                     android:id="@+id/cdromimgval"
-                    android:layout_width="fill_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="start"
                     android:gravity="right"
                     android:singleLine="true"
                     android:text=""
-                    android:textSize="15dip" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/floppyimgl"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dip">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="48dp"
@@ -58,22 +59,23 @@
 
                 <Spinner
                     android:id="@+id/floppyimgval"
-                    android:layout_width="fill_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="start"
                     android:gravity="right"
                     android:singleLine="true"
                     android:text=""
-                    android:textSize="15dip" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/floppybimgl"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dip">
+                android:padding="10dp">
 
                 <ImageView
                     android:layout_width="48dp"
@@ -84,14 +86,15 @@
 
                 <Spinner
                     android:id="@+id/floppybimgval"
-                    android:layout_width="fill_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="start"
                     android:gravity="right"
                     android:singleLine="true"
                     android:text=""
-                    android:textSize="15dip" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
         </LinearLayout>

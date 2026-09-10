@@ -605,6 +605,7 @@ class VMExecutor extends MachineExecutor {
             param += ",if=";
             param += getMachine().getCDInterface();
             param += ",media=cdrom";
+            param += ",id=" + cdDeviceName;
             if (!cdImagePath.equals("")) {
                 param += ",file=" + cdImagePath;
             }
@@ -614,7 +615,7 @@ class VMExecutor extends MachineExecutor {
         String fdaImagePath = getDriveFilePath(getMachine().getFdaImagePath());
         if (Config.enableEmulatedFloppy && fdaImagePath != null) {
             paramsList.add("-drive"); //empty
-            String param = "index=0,if=floppy";
+            String param = "index=0,if=floppy,id=" + fdaDeviceName;
             if (!fdaImagePath.equals("")) {
                 param += ",file=" + fdaImagePath;
             }
@@ -624,7 +625,7 @@ class VMExecutor extends MachineExecutor {
         String fdbImagePath = getDriveFilePath(getMachine().getFdbImagePath());
         if (Config.enableEmulatedFloppy && fdbImagePath != null) {
             paramsList.add("-drive"); //empty
-            String param = "index=1,if=floppy";
+            String param = "index=1,if=floppy,id=" + fdbDeviceName;
             if (!fdbImagePath.equals("")) {
                 param += ",file=" + fdbImagePath;
             }

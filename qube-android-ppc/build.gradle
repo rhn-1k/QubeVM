@@ -9,7 +9,7 @@ android {
         applicationId = "com.qubevm.ppc"
         minSdk = 30
         targetSdk = 37
-        ndk { abiFilters "arm64-v8a", "x86", "x86_64" }
+        ndk { abiFilters "arm64-v8a", "x86_64" }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -47,7 +47,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "qube-ppc-q${rootProject.ext.qemuVersion}-android-ARM64-${variant.buildType.name}.apk"
+            outputFileName = "qube-ppc-q${rootProject.ext.qemuVersion}-android-${variant.buildType.name}.apk"
         }
     }
 }

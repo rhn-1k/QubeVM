@@ -160,11 +160,9 @@ https://github.com/rhn-1k/QubeVM
             export NDK_DEBUG=<ENABLE_DEBUG>
 
         where:
-            EABI is the Android device type (host arch): armeabi-v7a, arm64-v8a, x86, x86_64
+            EABI is the Android device type (host arch): arm64-v8a, x86_64
             GUEST_ARCH is the Emulator type: x86_64-softmmu,aarch64-softmmu,ppc64-softmmu
             ENABLE_DEBUG is 1 (optional)
-
-        # Note: QEMU 11.1.1 dropped 32-bit host support. For ARM hosts, use arm64-v8a.
 
         # To start the build type on your terminal:
             make qube

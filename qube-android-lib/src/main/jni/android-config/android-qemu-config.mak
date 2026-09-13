@@ -168,8 +168,6 @@ WARNING_FLAGS ?= -Wno-redundant-decls -Wno-unused-variable \
 
 ifeq ($(APP_ABI), arm64-v8a)
 	QEMU_HOST_CPU = aarch64
-else ifeq ($(APP_ABI), x86)
-    QEMU_HOST_CPU = i686
 else ifeq ($(APP_ABI), x86_64)
     QEMU_HOST_CPU = x86_64
 endif

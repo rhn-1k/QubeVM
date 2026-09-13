@@ -31,9 +31,6 @@ ARCH_LD_FLAGS=
 ifeq ($(BUILD_HOST), arm64-v8a)
 ######### Armv8 64 bit (Newest ARM phones only)
 include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-armv8.mak
-else ifeq ($(BUILD_HOST), x86)
-######### x86 (x86 Phones only)
-include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-x86.mak
 else ifeq ($(BUILD_HOST), x86_64)
 ######### x86_64 (x86 64bit Phones only)
 include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-x86_64.mak
@@ -43,11 +40,6 @@ ifeq ($(APP_ABI),arm64-v8a)
     HOST_PREFIX = aarch64-linux-android
     GNU_HOST = aarch64-unknown-linux-android
     TARGET_ARCH=arm64
-    APP_ABI_DIR=$(APP_ABI)
-else ifeq ($(APP_ABI),x86)
-    HOST_PREFIX = i686-linux-android
-    GNU_HOST = i686-unknown-linux-android
-    TARGET_ARCH=x86
     APP_ABI_DIR=$(APP_ABI)
 else ifeq ($(APP_ABI),x86_64)
     HOST_PREFIX = x86_64-linux-android

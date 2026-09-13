@@ -7,9 +7,6 @@ ifeq ($(APP_ABI),arm64-v8a)
 else ifeq ($(APP_ABI),x86_64)
 	QUBE_CPU_FAMILY = x86_64
 	QUBE_CPU = x86_64
-else ifeq ($(APP_ABI),x86)
-	QUBE_CPU_FAMILY = x86
-	QUBE_CPU = i686
 endif
 
 ifeq ($(NDK_ENV), windows)
@@ -78,7 +75,7 @@ INSTALL_VIRGL_LIBS=cp -Lf \
 MOD_QEMU_LIBS=$(OBJ_COPY) --redefine-sym open=android_open  \
     qemu/x86_64-softmmu/qemu-system-x86_64
 
-# QEMU 7.x: meson puts .so directly in qemu/build/ (not in a subdirectory)
+# meson puts .so directly in qemu/build/
 # Run redefine-sym on each .so then copy to NDK obj dir
 QEMU7_BUILD_DIR=qemu/build
 QEMU7_RELINK_SYMS=--redefine-sym open=android_open \
@@ -489,7 +486,6 @@ EXPORT_GUEST_ALL=export BUILD_GUEST=x86_64-softmmu,aarch64-softmmu,ppc64-softmmu
 #most common combinations
 all:
 	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=arm64-v8a && make qube
-	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=x86 && make qube
 	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=x86_64 && make qube
 
 ndk-gdb:
@@ -516,6 +512,6 @@ clean:
 help:
 	@echo " Usage: export BUILD_GUEST=<emu-arch>-softmmu && export BUILD_HOST=<eabi> && make qube"
 	@echo "  emu-arch (emulator): x86_64, aarch64, ppc64"
-	@echo "  eabi (device): arm64-v8a, x86, x86_64"
+	@echo "  eabi (device): arm64-v8a, x86_64"
 	@echo "  optional: export NDK_DEBUG=1 for debuggable binaries"
 	@echo " example: export BUILD_GUEST=x86_64-softmmu && export BUILD_HOST=arm64-v8a && make qube"

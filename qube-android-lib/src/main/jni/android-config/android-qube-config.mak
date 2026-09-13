@@ -15,9 +15,8 @@ USE_OPTIMIZATION ?= true
 # If you enable debugging you should turn off optimization as well
 #NDK_DEBUG=1
 
-# Uncomment if you use Linux x86, Linux 64bit, or macosx PC to compile
+# Uncomment if you use Linux 64bit, or macosx PC to compile
 # Compiling on Windows is no longer supported
-#NDK_ENV ?= linux-x86
 NDK_ENV ?= linux-x86_64
 #NDK_ENV ?= darwin-x86
 
@@ -27,7 +26,7 @@ BUILD_THREADS ?= 4
 ############## QEMU Host and Guest
 
 # Android device type (host arch)
-# values: arm64-v8a, x86, x86_64
+# values: arm64-v8a, x86_64
 BUILD_HOST?=arm64-v8a
 
 # GUEST_ARCH is the Emulator type

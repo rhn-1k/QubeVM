@@ -15,9 +15,7 @@ endif
 ##### QEMU generic configuration
 
 #use coroutine
-#ucontext is deprecated and also not avail in Bionic
-# gthread is not working right AFAIK
-# possible values: gthread, ucontext, sigaltstack, windows
+# sigaltstack is the only recommended option
 COROUTINE=sigaltstack
 #COROUTINE=gthread
 
@@ -56,7 +54,7 @@ VNC +=  --enable-vnc
 #VNC += --enable-vnc-jpeg
 VNC += --disable-vnc-jpeg
 #VNC += --enable-vnc-png
-# vnc-png renamed to png in QEMU 7.x+ (handled in version-specific mak)
+# vnc-png renamed to png in QEMU 7.x (handled in version-specific mak)
 ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.1),)
 else
 VNC += --disable-vnc-png
@@ -167,14 +165,8 @@ WARNING_FLAGS ?= -Wno-redundant-decls -Wno-unused-variable \
 	-Wno-maybe-uninitialized -Wno-unused-function \
 	-Wunused-but-set-variable -Wno-unknown-warning-option \
 	-Wno-unknown-attributes
-	
-ifeq ($(APP_ABI), armeabi)
-    QEMU_HOST_CPU = arm
-else ifeq ($(APP_ABI), armeabi-v7a)
-    QEMU_HOST_CPU = arm
-else ifeq ($(APP_ABI), armeabi-v7a-hard)
-    QEMU_HOST_CPU = arm
-else ifeq ($(APP_ABI), arm64-v8a)
+
+ifeq ($(APP_ABI), arm64-v8a)
 	QEMU_HOST_CPU = aarch64
 else ifeq ($(APP_ABI), x86)
     QEMU_HOST_CPU = i686

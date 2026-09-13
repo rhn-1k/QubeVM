@@ -246,7 +246,7 @@ static void qube_gfx_cursor_define(DisplayChangeListener *dcl, QEMUCursor *curso
 // Called on every guest cursor move, x/y is the on-screen position of the
 // cursor's hotspot, not its top-left corner. Recomposites right away using
 // the last clean GL frame, don't wait for virgl to push a new one
-static void qube_gfx_mouse_set(DisplayChangeListener *dcl, int x, int y, bool on)
+static void qube_gfx_mouse_set(DisplayChangeListener *dcl, int x, int y, int on)
 {
     qemu_mutex_lock(&qube_gfx_lock);
     qube_gfx_cursor_x = x;

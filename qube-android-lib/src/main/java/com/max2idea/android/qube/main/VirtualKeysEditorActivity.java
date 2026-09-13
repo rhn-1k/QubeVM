@@ -123,9 +123,7 @@ public class VirtualKeysEditorActivity extends AppCompatActivity {
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), screen);
         controller.setAppearanceLightStatusBars(false);
         controller.setAppearanceLightNavigationBars(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            getWindow().setNavigationBarContrastEnforced(false);
-        }
+        getWindow().setNavigationBarContrastEnforced(false);
         final int appBarLeft = appBar.getPaddingLeft();
         final int appBarTop = appBar.getPaddingTop();
         final int appBarRight = appBar.getPaddingRight();

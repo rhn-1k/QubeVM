@@ -14,7 +14,7 @@ https://github.com/rhn-1k/QubeVM
 2. Requirements:
 
     Android SDK (platform 37.0.0 / build-tools 37.0.0)
-    Android NDK r23b (clang)
+    Android NDK r30 (clang)
     JDK 17
     Meson and Ninja (for QEMU's build system)
     Linux Desktop pc (Debian-based distro preferred)
@@ -137,8 +137,8 @@ https://github.com/rhn-1k/QubeVM
         cd qube-android-lib/src/main/jni
         
     Make sure you update file android-qube-config.mak with the NDK folder to your installation folder.
-    QEMU 11.1.1 requires clang, built with NDK r23b:
-    NDK_ROOT = /home/dev/tools/ndk/android-ndk-r23b
+    QEMU 11.1.1 requires clang, built with Android NDK r30:
+    NDK_ROOT = /home/dev/tools/ndk/android-ndk-r30
 
     The rest of the configuration is for specifying the right QEMU version: USE_QEMU_VERSION=11.1.1
     the host architecture (android device): BUILD_HOST

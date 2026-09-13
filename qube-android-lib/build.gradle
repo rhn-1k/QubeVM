@@ -51,9 +51,10 @@ tasks.named('preBuild') {
 android {
     namespace = 'com.qube.emu.lib'
     compileSdk = 37
+    ndkVersion = rootProject.ext.ndkVersion
 
     defaultConfig{
-        minSdk = 26
+        minSdk = 30
         targetSdk = 37
         // Controls whether Venus (Vulkan passthrough) acceleration is
         // compiled into the app. Override with -PuseVenus=true, otherwise
@@ -112,4 +113,3 @@ tasks.all { task ->
         task.enabled = false
     }
 }
-

@@ -96,45 +96,10 @@ diff -ru --no-dereference qemu-11.1.1/audio/meson.build qemu-11.1.1-work/audio/m
    'noaudio.c',
    'wavaudio.c',
  ))
-diff -ru --no-dereference qemu-11.1.1/chardev/char-pty.c qemu-11.1.1-work/chardev/char-pty.c
---- qemu-11.1.1/chardev/char-pty.c	2026-08-11 19:40:25.000000000 +0300
-+++ qemu-11.1.1-work/chardev/char-pty.c	2026-08-27 17:58:41.189513983 +0300
-@@ -237,6 +237,31 @@
- # include <termios.h>
- #endif
- 
-+#ifdef __ANDROID__
-+// QUBE: no openpty() in the Android NDK, implement via /dev/ptmxl
-+#include <fcntl.h>
-+static int qube_openpty(int *amaster, int *aslave, char *name,
-+                   struct termios *termp, struct winsize *winp)
-+{
-+    int mfd, sfd;
-+    char *slave_name;
-+    mfd = open("/dev/ptmx", O_RDWR | O_NOCTTY | O_CLOEXEC);
-+    if (mfd < 0) { return -1; }
-+    if (grantpt(mfd) != 0 || unlockpt(mfd) != 0) { close(mfd); return -1; }
-+    slave_name = ptsname(mfd);
-+    if (!slave_name) { close(mfd); return -1; }
-+    sfd = open(slave_name, O_RDWR | O_NOCTTY | O_CLOEXEC);
-+    if (sfd < 0) { close(mfd); return -1; }
-+    if (termp) { tcgetattr(sfd, termp); }
-+    if (winp)  { ioctl(sfd, TIOCSWINSZ, winp); }
-+    if (name)  { strcpy(name, slave_name); }
-+    *amaster = mfd;
-+    *aslave  = sfd;
-+    return 0;
-+}
-+#define openpty qube_openpty
-+#endif /* __ANDROID__ */
-+
- #ifdef __sun__
- 
- #if !defined(HAVE_OPENPTY)
 diff -ru --no-dereference qemu-11.1.1/configure qemu-11.1.1-work/configure
 --- qemu-11.1.1/configure	2026-08-11 19:40:25.000000000 +0300
 +++ qemu-11.1.1-work/configure	2026-08-27 17:58:41.193513983 +0300
-@@ -746,6 +746,12 @@
+@@ -746,6 +746,15 @@
    ;;
    --wasm64-32bit-address-limit)
    ;;
@@ -143,6 +108,9 @@ diff -ru --no-dereference qemu-11.1.1/configure qemu-11.1.1-work/configure
 +                             meson_option_add -Db_staticpic=true
 +  ;;
 +  --disable-qube-android-so) meson_option_add -Dqube_android_so=false
++  ;;
++  # QUBE: use ThinLTO to match the ndk-build side (Application.mk)
++  --enable-lto) meson_option_add -Db_lto=true -Db_lto_mode=thin
 +  ;;
    # everything else has the same name in configure and meson
    --*) meson_option_parse "$opt" "$optarg"
@@ -511,7 +479,7 @@ diff -ru --no-dereference qemu-11.1.1/meson.build qemu-11.1.1-work/meson.build
  config_host_data.set('CONFIG_PTHREAD_FCHDIR_NP', cc.has_function('pthread_fchdir_np'))
  config_host_data.set('CONFIG_SENDFILE', cc.has_function('sendfile'))
  config_host_data.set('CONFIG_SETNS', cc.has_function('setns') and cc.has_function('unshare'))
-@@ -2633,10 +2686,22 @@
+@@ -2633,10 +2686,18 @@
  config_host_data.set('CONFIG_GETLOADAVG', cc.has_function('getloadavg'))
  config_host_data.set('CONFIG_ARPA_INET_64', cc.has_function('htonll'))
  config_host_data.set('HAVE_COPY_FILE_RANGE', cc.has_function('copy_file_range'))
@@ -522,10 +490,6 @@ diff -ru --no-dereference qemu-11.1.1/meson.build qemu-11.1.1-work/meson.build
  config_host_data.set('HAVE_GETIFADDRS', cc.has_function('getifaddrs'))
  config_host_data.set('HAVE_GLIB_WITH_SLICE_ALLOCATOR', glib_has_gslice)
  config_host_data.set('HAVE_OPENPTY', cc.has_function('openpty', dependencies: util))
-+# QUBE: openpty is not available on Android NDK
-+if get_option('qube_android_so')
-+  config_host_data.set('HAVE_OPENPTY', false)
-+endif
  config_host_data.set('HAVE_STRCHRNUL', cc.has_function('strchrnul', prefix: osdep_prefix))
 +# QUBE: disable strchrnul for Android
 +if get_option('qube_android_so')
@@ -1102,12 +1066,12 @@ diff -ru --no-dereference qemu-11.1.1/util/mmap-alloc.c qemu-11.1.1-work/util/mm
 diff -ru --no-dereference qemu-11.1.1/util/oslib-posix.c qemu-11.1.1-work/util/oslib-posix.c
 --- qemu-11.1.1/util/oslib-posix.c	2026-08-11 19:40:26.000000000 +0300
 +++ qemu-11.1.1-work/util/oslib-posix.c	2026-08-27 17:58:41.241513983 +0300
-@@ -989,6 +989,24 @@
+@@ -989,6 +989,23 @@
      static int sequence;
      mode_t mode;
  
 +#ifdef __ANDROID__
-+    // QUBE: Android API < 26 lacks shm_open; use memfd_create (API 23+) instead
++    // QUBE: Bionic has no shm_open/shm_unlink, use memfd_create instead
 +    {
 +        int fd = memfd_create("qemu-shm", MFD_CLOEXEC);
 +        if (fd < 0) {
@@ -1122,8 +1086,13 @@ diff -ru --no-dereference qemu-11.1.1/util/oslib-posix.c qemu-11.1.1-work/util/o
 +        }
 +        return fd;
 +    }
-+#endif /* __ANDROID__ */
-+
++#else
      cur_sequence = qatomic_fetch_inc(&sequence);
  
      /*
+@@ -1032,4 +1049,5 @@
+     }
+ 
+     return fd;
++#endif /* __ANDROID__ */
+ }

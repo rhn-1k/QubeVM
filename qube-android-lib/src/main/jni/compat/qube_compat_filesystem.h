@@ -27,6 +27,7 @@ void *close_fd_thread(void *t);
 int create_thread_close_fd(int fd);
 void *qube_get_fd_thread(void *t);
 int create_thread_qube_get_fd(const char * filepath);
+int create_thread_get_fd(const char * filepath);
 #endif
 
 FILE* android_fopen(const char *path, const char * mode);

@@ -1,5 +1,17 @@
 include android-qube-build.mak
 
+# Meson needs specific CPU definitions
+ifeq ($(APP_ABI),arm64-v8a)
+	QUBE_CPU_FAMILY = aarch64
+	QUBE_CPU = aarch64
+else ifeq ($(APP_ABI),x86_64)
+	QUBE_CPU_FAMILY = x86_64
+	QUBE_CPU = x86_64
+else ifeq ($(APP_ABI),x86)
+	QUBE_CPU_FAMILY = x86
+	QUBE_CPU = i686
+endif
+
 ifeq ($(NDK_ENV), windows)
 	NDK_BUILD = ndk-build.cmd
 else ifeq ($(NDK_ENV), windows-x86_64)
@@ -217,8 +229,8 @@ gen-glib-cross:
 	@echo '' >> $(GLIB_CROSS_FILE)
 	@echo '[host_machine]' >> $(GLIB_CROSS_FILE)
 	@echo "system = 'android'" >> $(GLIB_CROSS_FILE)
-	@echo "cpu_family = 'aarch64'" >> $(GLIB_CROSS_FILE)
-	@echo "cpu = 'aarch64'" >> $(GLIB_CROSS_FILE)
+	@echo "cpu_family = '$(QUBE_CPU_FAMILY)'" >> $(GLIB_CROSS_FILE)
+	@echo "cpu = '$(QUBE_CPU)'" >> $(GLIB_CROSS_FILE)
 	@echo "endian = 'little'" >> $(GLIB_CROSS_FILE)
 	@mkdir -p $(GLIB_FAKE_PC_DIR)
 	@echo 'Name: libffi' > $(GLIB_FAKE_PC_DIR)/libffi.pc
@@ -282,8 +294,8 @@ gen-pixman-cross:
 	@echo '' >> $(PIXMAN_CROSS_FILE)
 	@echo '[host_machine]' >> $(PIXMAN_CROSS_FILE)
 	@echo "system = 'android'" >> $(PIXMAN_CROSS_FILE)
-	@echo "cpu_family = 'aarch64'" >> $(PIXMAN_CROSS_FILE)
-	@echo "cpu = 'aarch64'" >> $(PIXMAN_CROSS_FILE)
+	@echo "cpu_family = '$(QUBE_CPU_FAMILY)'" >> $(PIXMAN_CROSS_FILE)
+	@echo "cpu = '$(QUBE_CPU)'" >> $(PIXMAN_CROSS_FILE)
 	@echo "endian = 'little'" >> $(PIXMAN_CROSS_FILE)
 
 config-pixman: ndk gen-pixman-cross
@@ -295,15 +307,9 @@ config-pixman: ndk gen-pixman-cross
 		-Dmmx=disabled \
 		-Dsse2=disabled \
 		-Dssse3=disabled \
-		-Dvmx=disabled \
-		-Darm-simd=disabled \
-		-Dneon=disabled \
-		-Da64-neon=disabled \
 		-Dloongson-mmi=disabled \
 		-Dmips-dspr2=disabled \
 		-Drvv=disabled \
-		-Dgnu-inline-asm=disabled \
-		-Dopenmp=disabled \
 		-Dgtk=disabled \
 		-Dlibpng=disabled \
 		-Dtests=disabled \
@@ -334,8 +340,8 @@ gen-epoxy-cross:
 	@echo '' >> $(EPOXY_CROSS_FILE)
 	@echo '[host_machine]' >> $(EPOXY_CROSS_FILE)
 	@echo "system = 'android'" >> $(EPOXY_CROSS_FILE)
-	@echo "cpu_family = 'aarch64'" >> $(EPOXY_CROSS_FILE)
-	@echo "cpu = 'aarch64'" >> $(EPOXY_CROSS_FILE)
+	@echo "cpu_family = '$(QUBE_CPU_FAMILY)'" >> $(EPOXY_CROSS_FILE)
+	@echo "cpu = '$(QUBE_CPU)'" >> $(EPOXY_CROSS_FILE)
 	@echo "endian = 'little'" >> $(EPOXY_CROSS_FILE)
 
 config-epoxy: ndk gen-epoxy-cross
@@ -375,8 +381,8 @@ gen-virgl-cross:
 	@echo '' >> $(VIRGL_CROSS_FILE)
 	@echo '[host_machine]' >> $(VIRGL_CROSS_FILE)
 	@echo "system = 'android'" >> $(VIRGL_CROSS_FILE)
-	@echo "cpu_family = 'aarch64'" >> $(VIRGL_CROSS_FILE)
-	@echo "cpu = 'aarch64'" >> $(VIRGL_CROSS_FILE)
+	@echo "cpu_family = '$(QUBE_CPU_FAMILY)'" >> $(VIRGL_CROSS_FILE)
+	@echo "cpu = '$(QUBE_CPU)'" >> $(VIRGL_CROSS_FILE)
 	@echo "endian = 'little'" >> $(VIRGL_CROSS_FILE)
 
 config-virgl: ndk gen-virgl-cross epoxy
@@ -483,7 +489,6 @@ EXPORT_GUEST_ALL=export BUILD_GUEST=x86_64-softmmu,aarch64-softmmu,ppc64-softmmu
 #most common combinations
 all:
 	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=arm64-v8a && make qube
-	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=armeabi-v7a && make qube
 	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=x86 && make qube
 	make distclean && $(EXPORT_GUEST_ALL) && export BUILD_HOST=x86_64 && make qube
 
@@ -511,6 +516,6 @@ clean:
 help:
 	@echo " Usage: export BUILD_GUEST=<emu-arch>-softmmu && export BUILD_HOST=<eabi> && make qube"
 	@echo "  emu-arch (emulator): x86_64, aarch64, ppc64"
-	@echo "  eabi (device): armeabi-v7a, arm64-v8a, x86, x86_64"
+	@echo "  eabi (device): arm64-v8a, x86, x86_64"
 	@echo "  optional: export NDK_DEBUG=1 for debuggable binaries"
-	@echo " example: export BUILD_GUEST=x86_64-softmmu && export BUILD_HOST=armeabi-v7a && make qube"
+	@echo " example: export BUILD_GUEST=x86_64-softmmu && export BUILD_HOST=arm64-v8a && make qube"

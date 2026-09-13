@@ -1,3 +1,6 @@
+/*
+Copyright (C) Rhn 2026
+ */
 package com.max2idea.android.qube.main;
 
 import android.content.Context;

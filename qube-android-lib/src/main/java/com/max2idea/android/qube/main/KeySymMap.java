@@ -1,14 +1,13 @@
+/*
+Copyright (C) Rhn 2026
+ */
 package com.max2idea.android.qube.main;
 
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
-/**
- * sends key events as X11 keysyms, not Android keycodes or scancodes, so every key
- * needs translating. Printable characters go through KeyCharacterMap so layout/shift/etc
- * are already resolved by Android; everything else (control keys, arrows, function keys)
- * is a fixed table lookup.
- */
+// sends X11 keysyms, not Android keycodes/scancodes, printables via KeyCharacterMap, layout/shift resolved by Android
+// rest via fixed table lookup
 public class KeySymMap {
 
     public static long get(KeyEvent event, int keyCode) {

@@ -776,10 +776,7 @@ public class QubeQGEActivity extends AppCompatActivity
         if (root == null || mTopLayout == null)
             return;
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
-            hookInsetsListener(root);
-        else
-            hookLegacyInsetsListener(root);
+        hookInsetsListener(root);
     }
 
     private void hookInsetsListener(View root) {
@@ -793,47 +790,6 @@ public class QubeQGEActivity extends AppCompatActivity
             updateToolbarForKeyboard(insets.isVisible(WindowInsetsCompat.Type.ime()));
             return insets;
         });
-    }
-
-    // IME WindowInsets aren't reliably dispatched below API 30, so estimate keyboard
-    // height from the decor view's visible display frame instead
-    private void hookLegacyInsetsListener(View root) {
-        final View decorView = getWindow().getDecorView();
-        decorView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            android.graphics.Rect visibleFrame = new android.graphics.Rect();
-            decorView.getWindowVisibleDisplayFrame(visibleFrame);
-            int screenHeight = getRealScreenHeight();
-            int navBarHeight = getLegacyNavigationBarHeight();
-            int keypadHeight = screenHeight - visibleFrame.bottom - navBarHeight;
-            imeBottomInset = keypadHeight > screenHeight * 0.15 ? keypadHeight : 0;
-            applyKeyboardInset(imeBottomInset);
-            updateToolbarForKeyboard(imeBottomInset > 0);
-        });
-    }
-
-    // On pre-R getWindowVisibleDisplayFrame() includes nav bar in shrinkage, subtract it to get keyboard-only inset
-    private int getLegacyNavigationBarHeight() {
-        int resId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resId <= 0)
-            return 0;
-        android.view.WindowManager wm = (android.view.WindowManager)
-                getSystemService(Context.WINDOW_SERVICE);
-        android.graphics.Point realSize = new android.graphics.Point();
-        wm.getDefaultDisplay().getRealSize(realSize);
-        android.graphics.Point size = new android.graphics.Point();
-        wm.getDefaultDisplay().getSize(size);
-        // No real/app size difference means no reserved nav bar (eg gesture nav) to account for
-        if (realSize.y == size.y)
-            return 0;
-        return getResources().getDimensionPixelSize(resId);
-    }
-
-    private int getRealScreenHeight() {
-        android.view.WindowManager wm = (android.view.WindowManager)
-                getSystemService(Context.WINDOW_SERVICE);
-        android.graphics.Point realSize = new android.graphics.Point();
-        wm.getDefaultDisplay().getRealSize(realSize);
-        return realSize.y;
     }
 
     private void applyKeyboardInset(int bottom) {

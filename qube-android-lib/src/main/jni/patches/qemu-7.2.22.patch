@@ -90,45 +90,10 @@ diff -ru --no-dereference qemu-7.2.22/audio/meson.build qemu-7.2.22-work/audio/m
    'noaudio.c',
    'wavaudio.c',
    'wavcapture.c',
-diff -ru --no-dereference qemu-7.2.22/chardev/char-pty.c qemu-7.2.22-work/chardev/char-pty.c
---- qemu-7.2.22/chardev/char-pty.c	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/chardev/char-pty.c	2026-09-02 22:37:37.833624165 +0000
-@@ -228,6 +228,31 @@
- # include <termios.h>
- #endif
- 
-+#ifdef __ANDROID__
-+// QUBE: no openpty() in the Android NDK, implement via /dev/ptmxl
-+#include <fcntl.h>
-+static int qube_openpty(int *amaster, int *aslave, char *name,
-+                   struct termios *termp, struct winsize *winp)
-+{
-+    int mfd, sfd;
-+    char *slave_name;
-+    mfd = open("/dev/ptmx", O_RDWR | O_NOCTTY | O_CLOEXEC);
-+    if (mfd < 0) { return -1; }
-+    if (grantpt(mfd) != 0 || unlockpt(mfd) != 0) { close(mfd); return -1; }
-+    slave_name = ptsname(mfd);
-+    if (!slave_name) { close(mfd); return -1; }
-+    sfd = open(slave_name, O_RDWR | O_NOCTTY | O_CLOEXEC);
-+    if (sfd < 0) { close(mfd); return -1; }
-+    if (termp) { tcgetattr(sfd, termp); }
-+    if (winp)  { ioctl(sfd, TIOCSWINSZ, winp); }
-+    if (name)  { strcpy(name, slave_name); }
-+    *amaster = mfd;
-+    *aslave  = sfd;
-+    return 0;
-+}
-+#define openpty qube_openpty
-+#endif /* __ANDROID__ */
-+
- #ifdef __sun__
- 
- #if !defined(HAVE_OPENPTY)
 diff -ru --no-dereference qemu-7.2.22/configure qemu-7.2.22-work/configure
 --- qemu-7.2.22/configure	2025-12-06 13:17:12.000000000 +0000
 +++ qemu-7.2.22-work/configure	2026-09-02 22:39:27.334909376 +0000
-@@ -896,6 +896,12 @@
+@@ -896,6 +896,15 @@
    ;;
    --enable-jemalloc) meson_option_parse --enable-malloc=jemalloc jemalloc
    ;;
@@ -137,6 +102,9 @@ diff -ru --no-dereference qemu-7.2.22/configure qemu-7.2.22-work/configure
 +                             meson_option_add -Db_staticpic=true
 +  ;;
 +  --disable-qube-android-so) meson_option_add -Dqube_android_so=false
++  ;;
++  # QUBE: use ThinLTO to match the ndk-build side (Application.mk)
++  --enable-lto) meson_option_add -Db_lto=true -Db_lto_mode=thin
 +  ;;
    # everything else has the same name in configure and meson
    --*) meson_option_parse "$opt" "$optarg"
@@ -381,7 +349,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  config_host_data.set('CONFIG_PTHREAD_FCHDIR_NP', cc.has_function('pthread_fchdir_np'))
  config_host_data.set('CONFIG_SENDFILE', cc.has_function('sendfile'))
  config_host_data.set('CONFIG_SETNS', cc.has_function('setns') and cc.has_function('unshare'))
-@@ -1985,9 +2024,15 @@
+@@ -1985,9 +2024,13 @@
  config_host_data.set('CONFIG_SYNC_FILE_RANGE', cc.has_function('sync_file_range'))
  config_host_data.set('CONFIG_TIMERFD', cc.has_function('timerfd_create'))
  config_host_data.set('HAVE_COPY_FILE_RANGE', cc.has_function('copy_file_range'))
@@ -389,8 +357,6 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
 +config_host_data.set('HAVE_COPY_FILE_RANGE', false)
  config_host_data.set('HAVE_GETIFADDRS', cc.has_function('getifaddrs'))
  config_host_data.set('HAVE_OPENPTY', cc.has_function('openpty', dependencies: util))
-+# QUBE: openpty is not available on Android NDK
-+config_host_data.set('HAVE_OPENPTY', false)
  config_host_data.set('HAVE_STRCHRNUL', cc.has_function('strchrnul'))
 +# QUBE: disable strchrnul for Android
 +config_host_data.set('HAVE_STRCHRNUL', false)

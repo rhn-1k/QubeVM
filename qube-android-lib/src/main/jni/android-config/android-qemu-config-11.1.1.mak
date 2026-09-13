@@ -65,6 +65,9 @@ MISC += --disable-blkio
 MISC += --disable-libcbor
 MISC += --disable-igvm
 
+# Disabling safestack to sync with QEMU 7.x
+# it also gives a slight optimization
+MISC += --disable-safe-stack
 
 # NM tool: use llvm-nm from clang toolchain
 QUBE_NDK_CLANG_BIN = $(NDK_ROOT)/toolchains/llvm/prebuilt/linux-x86_64/bin

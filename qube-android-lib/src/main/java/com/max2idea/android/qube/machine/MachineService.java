@@ -157,19 +157,13 @@ public class MachineService extends Service {
             return;
         }
         Intent intent = new Intent(service.getApplicationContext(), Config.clientClass);
-        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntentFlags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
         PendingIntent pi = PendingIntent.getActivity(service.getApplicationContext(), 0, intent,
                 pendingIntentFlags);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel chan = new NotificationChannel(Config.notificationChannelID, Config.notificationChannelName, NotificationManager.IMPORTANCE_NONE);
-            NotificationManager notifService = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notifService.createNotificationChannel(chan);
-            builder = new NotificationCompat.Builder(service, Config.notificationChannelID);
-        } else
-            builder = new NotificationCompat.Builder(service, "");
+        NotificationChannel chan = new NotificationChannel(Config.notificationChannelID, Config.notificationChannelName, NotificationManager.IMPORTANCE_NONE);
+        NotificationManager notifService = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifService.createNotificationChannel(chan);
+        builder = new NotificationCompat.Builder(service, Config.notificationChannelID);
         mNotification = builder.setContentIntent(pi).setContentTitle(getString(R.string.app_name)).setContentText(text)
                 .setSmallIcon(R.drawable.qube)
                 .setLargeIcon(BitmapFactory.decodeResource(service.getResources(), R.drawable.qube)).build();

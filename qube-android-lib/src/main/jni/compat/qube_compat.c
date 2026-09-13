@@ -1,6 +1,7 @@
 
 #include <jni.h>
 #include <unistd.h>
+#include <malloc.h>
 #include "qube_logutils.h"
 #include "qube_compat.h"
 
@@ -29,7 +30,6 @@ valloc (size_t size)
 {
   return memalign (getpagesize (), size);
 }
-
 
 
 

@@ -19,6 +19,11 @@ ifeq ($(USE_GCC),true)
 	APP_CFLAGS +=-std=gnu99
 endif
 
+# ThinLTO for binaries, better performance
+ifeq ($(USE_OPTIMIZATION),true)
+APP_LTO := thin
+endif
+
 APP_ARM_MODE=$(ARM_MODE)
 
 $(info NDK_TOOLCHAIN_VERSION = $(NDK_TOOLCHAIN_VERSION))
@@ -26,6 +31,7 @@ $(info NDK_DEBUG = $(NDK_DEBUG))
 $(info APP_ARM_MODE = $(APP_ARM_MODE))
 $(info APP_ARM_NEON = $(APP_ARM_NEON))
 $(info APP_OPTIM = $(APP_OPTIM))
+$(info APP_LTO = $(APP_LTO))
 $(info APP_ABI = $(APP_ABI))
 $(info APP_PLATFORM = $(APP_PLATFORM))
 $(info NDK_PROJECT_PATH = $(NDK_PROJECT_PATH))

@@ -602,12 +602,7 @@ public class QubeActivity extends AppCompatActivity
             mVGAConfigInfo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CharSequence message;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        message = Html.fromHtml(getString(R.string.videoDisplayInfoMessage), Html.FROM_HTML_MODE_LEGACY);
-                    } else {
-                        message = Html.fromHtml(getString(R.string.videoDisplayInfoMessage));
-                    }
+                    CharSequence message = Html.fromHtml(getString(R.string.videoDisplayInfoMessage), Html.FROM_HTML_MODE_LEGACY);
                     new MaterialAlertDialogBuilder(QubeActivity.this)
                             .setTitle(R.string.videoDisplayInfoTitle)
                             .setIcon(R.drawable.desktop_windows_24px)
@@ -623,12 +618,7 @@ public class QubeActivity extends AppCompatActivity
             mUIInfo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CharSequence message;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        message = Html.fromHtml(getString(R.string.displayInfoMessage), Html.FROM_HTML_MODE_LEGACY);
-                    } else {
-                        message = Html.fromHtml(getString(R.string.displayInfoMessage));
-                    }
+                    CharSequence message = Html.fromHtml(getString(R.string.displayInfoMessage), Html.FROM_HTML_MODE_LEGACY);
                     new MaterialAlertDialogBuilder(QubeActivity.this)
                             .setTitle(R.string.displayInfoTitle)
                             .setIcon(R.drawable.cast_24px)
@@ -1208,9 +1198,7 @@ public class QubeActivity extends AppCompatActivity
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), root);
         controller.setAppearanceLightStatusBars(false);
         controller.setAppearanceLightNavigationBars(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            getWindow().setNavigationBarContrastEnforced(false);
-        }
+        getWindow().setNavigationBarContrastEnforced(false);
         View appBar = findViewById(R.id.top_app_bar);
         final int appBarLeftPadding = appBar.getPaddingLeft();
         final int appBarTopPadding = appBar.getPaddingTop();
@@ -1582,8 +1570,7 @@ public class QubeActivity extends AppCompatActivity
             @Override
             public void run() {
                 float maxRefreshRate = 60f;
-                Display display = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                        ? getDisplay() : getWindowManager().getDefaultDisplay();
+                Display display = getDisplay();
                 if (display != null) {
                     for (Display.Mode mode : display.getSupportedModes()) {
                         if (mode.getRefreshRate() > maxRefreshRate) {
@@ -2074,12 +2061,7 @@ public class QubeActivity extends AppCompatActivity
             mEnableVenusInfo.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CharSequence message;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        message = Html.fromHtml(getString(R.string.venusInfoMessage), Html.FROM_HTML_MODE_LEGACY);
-                    } else {
-                        message = Html.fromHtml(getString(R.string.venusInfoMessage));
-                    }
+                    CharSequence message = Html.fromHtml(getString(R.string.venusInfoMessage), Html.FROM_HTML_MODE_LEGACY);
                     new MaterialAlertDialogBuilder(QubeActivity.this)
                             .setTitle(R.string.venusInfoTitle)
                             .setIcon(R.drawable.desktop_windows_24px)
@@ -3423,38 +3405,19 @@ public class QubeActivity extends AppCompatActivity
     }
 
     //check permissions before start
-    private static final int LEGACY_STORAGE_PERMISSION_REQUEST = 9001;
-
     private void checkStoragePermission() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.WriteAccess)
-                    .setIcon(R.drawable.folder_24px)
-                    .setMessage(R.string.FullAccessWarning)
-                    .setPositiveButton(R.string.OkIUnderstand, (dialog, which) -> {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                        intent.setData(Uri.parse("package:" + getPackageName()));
-                        startActivity(intent);
-                    })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show();
-            }
-        } else {
-            // Android 6.0-10 (Api 23-29) use the classic permission type
-            boolean hasRead = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED;
-            boolean hasWrite = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED;
-            if (!hasRead || !hasWrite) {
-                requestPermissions(
-                        new String[]{
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        },
-                        LEGACY_STORAGE_PERMISSION_REQUEST
-                );
-            }
+        if (!Environment.isExternalStorageManager()) {
+            new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.WriteAccess)
+                .setIcon(R.drawable.folder_24px)
+                .setMessage(R.string.FullAccessWarning)
+                .setPositiveButton(R.string.OkIUnderstand, (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    startActivity(intent);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
         }
     }
 

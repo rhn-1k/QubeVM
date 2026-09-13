@@ -38,7 +38,7 @@ ARCH_LD_CFLAGS += -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--warn-shared-t
 ifeq ($(USE_OPTIMIZATION),true)
         #ARCH_CFLAGS += -O2
         # Below optimizations might not be safe
-        ARCH_CFLAGS += -Ofast
+        ARCH_CFLAGS += -O3 -ffast-math
         # might not be supported by clang
         #ARCH_CFLAGS += -fforce-addr
         #ARCH_CFLAGS += -ffast-math
@@ -49,27 +49,9 @@ else
     ARCH_CFLAGS += -O0
 endif
 
-ifeq ($(USE_SECURITY),true)
-        # Hardening security but slow performance is the best option for now
-        ARCH_CFLAGS += -D_FORTIFY_SOURCE=2
-        ARCH_CFLAGS += -fstack-protector-strong
-        # extra hardening
-        #ARCH_CFLAGS += -fstack-protector-all
-        
-        # add sanitize options (they should be off by default)
-        #CLANG_SANITIZE_FLAGS = -fsanitize=safe-stack
-        #ARCH_CFLAGS += $(CLANG_SANITIZE_FLAGS)
-        #ARCH_LD_FLAGS += $(CLANG_SANITIZE_FLAGS)
-else
-        # Uncomment to get a slight performance boost but with less security
+        # Slight performance boost
         ARCH_CFLAGS += -U_FORTIFY_SOURCE
         ARCH_CFLAGS += -fno-stack-protector
-        
-        # remove sanitize options (they should be off by default)
-        #CLANG_SANITIZE_FLAGS += -fno-sanitize=safe-stack
-        #ARCH_CFLAGS += $(CLANG_SANITIZE_FLAGS)
-        #ARCH_LD_FLAGS += $(CLANG_SANITIZE_FLAGS)
-endif
 
 ###################### DEBUGGING
 ifeq ($(NDK_DEBUG),1)

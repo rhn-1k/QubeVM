@@ -12,7 +12,7 @@ SHELL := env PATH=$(PATH) /bin/bash
 APP_PLATFORM = android-$(NDK_PLATFORM_API)
 NDK_PLATFORM = platforms/$(APP_PLATFORM)
 
-ifeq ($(USE_NDK_PLATFORM21),true)
+# minSdk is 30, so the platform-21 and platform-26 feature defines are always available
 USE_PLATFORM21_FLAGS = -D__ANDROID_HAS_SIGNAL__ \
 	-D__ANDROID_HAS_FS_IOC__ \
 	-D__ANDROID_HAS_SYS_GETTID__ \
@@ -20,23 +20,17 @@ USE_PLATFORM21_FLAGS = -D__ANDROID_HAS_SIGNAL__ \
 	-D__ANDROID_HAS_IEEE__ \
 	-D__ANDROID_HAS_STATVFS__ \
 	-D__ANDROID__HAS_PTHREAD_ATFORK_
-endif
 
-ifeq ($(USE_NDK_PLATFORM26),true)
 USE_PLATFORM26_FLAGS = -D__ANDROID_HAVE_STRCHRNUL__
-endif
 
 #SET/RESET vars
-ARCH_CFLAGS := -D__QUBE__ -D__ANDROID__ -DANDROID -D__linux__ -DCONFIG_LINUX $(USE_NDK11) \
+ARCH_CFLAGS := -D__QUBE__ -D__ANDROID__ -DANDROID -D__linux__ -DCONFIG_LINUX \
   $(USE_PLATFORM21_FLAGS) $(USE_PLATFORM26_FLAGS)
 ARCH_LD_FLAGS=
 
 ifeq ($(BUILD_HOST), arm64-v8a)
 ######### Armv8 64 bit (Newest ARM phones only)
 include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-armv8.mak
-else ifeq ($(BUILD_HOST), armeabi-v7a)
-######### ARMv7 Soft Float (Most ARM phones
-include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-armv7a-softfp.mak
 else ifeq ($(BUILD_HOST), x86)
 ######### x86 (x86 Phones only)
 include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-x86.mak
@@ -45,12 +39,7 @@ else ifeq ($(BUILD_HOST), x86_64)
 include $(QUBE_JNI_ROOT)/android-config/android-device-config/android-x86_64.mak
 endif
 
-ifeq ($(APP_ABI),armeabi-v7a)
-    HOST_PREFIX = arm-linux-androideabi
-    GNU_HOST = arm-unknown-linux-android
-    TARGET_ARCH=arm
-    APP_ABI_DIR=$(APP_ABI)
-else ifeq ($(APP_ABI),arm64-v8a)
+ifeq ($(APP_ABI),arm64-v8a)
     HOST_PREFIX = aarch64-linux-android
     GNU_HOST = aarch64-unknown-linux-android
     TARGET_ARCH=arm64
@@ -68,10 +57,7 @@ else ifeq ($(APP_ABI),x86_64)
 endif
 
 
-# Since we need ndk 11 and above we need to fix some missing calls
-USE_NDK11 = -D__NDK11_FUNC_MISSING__
-
-# Qube: Clang-only toolchain (unified NDK toolchain, r23+)
+# Qube: Clang-only toolchain (unified NDK toolchain)
 TOOLCHAIN_CLANG_DIR = $(NDK_ROOT)/toolchains/llvm/prebuilt/$(NDK_ENV)
 
 NDK_PROJECT_PATH := $(QUBE_JNI_ROOT)/../
@@ -142,11 +128,8 @@ $(info PATH = $(PATH))
 $(info NDK_ROOT = $(NDK_ROOT))
 $(info NDK_TOOLCHAIN_VERSION = $(NDK_TOOLCHAIN_VERSION))
 $(info APP_PLATFORM = $(APP_PLATFORM))
-$(info USE_NDK_PLATFORM21 = $(USE_NDK_PLATFORM21))
-$(info USE_NDK_PLATFORM26 = $(USE_NDK_PLATFORM26))
 $(info APP_ABI = $(APP_ABI))
 $(info USE_OPTIMIZATION = $(USE_OPTIMIZATION))
-$(info USE_SECURITY = $(USE_SECURITY))
 $(info BUILD_THREADS = $(BUILD_THREADS))
 $(info NDK_ENV = $(NDK_ENV))
 $(info BUILD_HOST = $(BUILD_HOST))

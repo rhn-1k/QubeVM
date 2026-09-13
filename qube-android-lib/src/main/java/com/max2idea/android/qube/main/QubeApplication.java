@@ -81,7 +81,6 @@ public class QubeApplication extends Application {
                     + Integer.parseInt(parts[2]);
             Log.d(TAG, "Qemu Version: " + qemuVersionString);
             Log.d(TAG, "Qemu Version Number: " + qemuVersion);
-            HostCapabilities.logHostCapabilities();
         } catch (Exception ex) {
             ex.printStackTrace();
             ToastUtils.toastShort(context, "Could not load version information: " + ex);
@@ -113,10 +112,6 @@ public class QubeApplication extends Application {
 
     public static boolean isHostX86() {
         return contains(Build.SUPPORTED_32_BIT_ABIS, "x86");
-    }
-
-    public static boolean isHostArm() {
-        return contains(Build.SUPPORTED_32_BIT_ABIS, "armeabi-v7a");
     }
 
     public static boolean isHostArmv8() {
@@ -171,11 +166,7 @@ public class QubeApplication extends Application {
         return qubeVersion;
     }
 
-    @SuppressWarnings("deprecation")
     private static int getPackageVersionCode(PackageInfo packageInfo) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return (int) packageInfo.getLongVersionCode();
-        }
-        return packageInfo.versionCode;
+        return (int) packageInfo.getLongVersionCode();
     }
 }

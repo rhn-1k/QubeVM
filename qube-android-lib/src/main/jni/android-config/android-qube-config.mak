@@ -2,24 +2,14 @@
 # if the  makefile doesn't recognize the project path you can override it here:
 #QUBE_JNI_ROOT := /home/dev/qube/workspace_qube/qube-android-lib/src/main/jni
 
-# Qube: Clang-only toolchain (GCC support removed, NDK r23+ required)
-NDK_ROOT ?= /home/dev/tools/ndk/android-ndk-r23b
+# Qube: Clang-only toolchain (GCC support removed)
+NDK_ROOT ?= /home/dev/tools/ndk/android-ndk-r30
 
 ### the ndk api should be the same as the minSdkVersion in your AndroidManifest.xml 
-NDK_PLATFORM_API=26
-
-# Set to true if you use platform-21 or above
-USE_NDK_PLATFORM21 ?= true
-
-# Set to true if you use platform-26 or above
-USE_NDK_PLATFORM26 ?= false
+NDK_PLATFORM_API=30
 
 # Optimization, generally it is better set to false when debugging
 USE_OPTIMIZATION ?= true
-
-# Hardening: it produces slower runtimes but helps preventing buffer overflow attacks
-# Qube: disabled for raw TCG performance, no hardening needed here
-USE_SECURITY ?= false
 
 # Uncomment to enable debugging
 # If you enable debugging you should turn off optimization as well
@@ -32,12 +22,12 @@ NDK_ENV ?= linux-x86_64
 #NDK_ENV ?= darwin-x86
 
 # Build threads (make -j ?) makes building faster
-BUILD_THREADS ?= 3
+BUILD_THREADS ?= 4
 
 ############## QEMU Host and Guest
 
 # Android device type (host arch)
-# values: armeabi-v7a, arm64-v8a, x86, x86_64
+# values: arm64-v8a, x86, x86_64
 BUILD_HOST?=arm64-v8a
 
 # GUEST_ARCH is the Emulator type
@@ -53,5 +43,4 @@ USE_QEMU_VERSION ?= 11.1.1
 USE_VENUS ?= false
 
 # Enable KVM
-# Note: KVM headers are available only for android-21 platform and above
 USE_KVM ?= true

@@ -53,6 +53,9 @@ MISC += --disable-libudev
 MISC += --disable-avx2
 MISC += --disable-membarrier
 
+# QEMU 7.x having issues with clang safestack, Disabling it
+# it also gives a slight optimization
+MISC += --disable-safe-stack
 
 # NM tool: use llvm-nm from clang toolchain (NDK r23+ has no binutils nm)
 # NDK_ROOT must be set (passed as env var from parent make)

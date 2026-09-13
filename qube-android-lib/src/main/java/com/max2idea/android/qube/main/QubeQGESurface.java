@@ -92,12 +92,28 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
 
     public boolean onTouchProcess(View v, MotionEvent event) {
         int action = event.getActionMasked();
+
+        // ACTION_CANCEL fires when gesture nav intercepts the touch mid swipe
+        // reset state or the next move jumps using stale coordinates
+        if (action == MotionEvent.ACTION_CANCEL) {
+            resetTouchState();
+            return false;
+        }
+
         mouseState.x = event.getX();
         mouseState.y = event.getY();
 
         processMouseMovement(action, event.getToolType(0), mouseState.x, mouseState.y);
         processMouseButton(event, action, mouseState.x, mouseState.y);
         return false;
+    }
+
+    private void resetTouchState() {
+        mouseState.mouseUp = true;
+        mouseState.down_pending = false;
+        mouseState.lastMouseButtonDown = -1;
+        firstTouch = false;
+        pointerAcceleration.clear();
     }
 
     private void processMouseMovement(int action, int toolType, float x, float y) {

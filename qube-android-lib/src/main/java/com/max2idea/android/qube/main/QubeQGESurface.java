@@ -163,13 +163,10 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
             if (mouseButton == 0 && MotionEvent.TOOL_TYPE_FINGER == event.getToolType(0)) {
                 mouseButton = Config.MOUSE_BUTTON_LEFT;
             }
+
             if (QGEActivity.isRelativeMode(event.getToolType(0))) {
-                if (!firstTouch) {
-                    QGEActivity.sendMouseEvent(mouseButton, MotionEvent.ACTION_DOWN, event.getToolType(0), x, y);
-                    firstTouch = true;
-                } else {
-                    setPendingMouseDown(x, y, mouseButton);
-                }
+                setPendingMouseDown(x, y, mouseButton);
+                firstTouch = true;
             } else {
                 float[] pt = toFrameBufferPoint(x, y);
                 QGEActivity.sendAbsoluteMove(pt[0], pt[1]);

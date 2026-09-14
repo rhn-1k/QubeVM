@@ -66,7 +66,7 @@ See [COPYING](COPYING) for more info
 
 ## Credits
 
-QubeVM is a forked and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo), however it depends on these projects:
+QubeVM is a forked and improved version of the [Limbo PC Emulator](https://github.com/limboemu/limbo), however it depends on these projects too:
 
 - [qemu](https://github.com/qemu/qemu)
 - [glib](https://gitlab.gnome.org/GNOME/glib.git)

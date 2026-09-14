@@ -1,0 +1,290 @@
+name: Qube Android Build
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+    inputs:
+      qemu_version:
+        description: 'QEMU version to build'
+        required: true
+        default: '7.2.22'
+        type: choice
+        options:
+          - 7.2.22
+          - 11.1.1
+      build_guest:
+        description: 'Guest architecture to build'
+        required: true
+        default: 'x86_64-softmmu'
+        type: choice
+        options:
+          - x86_64-softmmu
+          - aarch64-softmmu
+          - ppc64-softmmu
+
+env:
+  QEMU_VERSION: "11.1.1"
+  GLIB_VERSION: "2.88.3"
+  LIBFFI_VERSION: "3.8.0"
+  PIXMAN_VERSION: "0.46.4"
+  LIBSLIRP_VERSION: "4.9.4"
+  EPOXY_VERSION: "1.5.10"
+  VIRGLRENDERER_VERSION: "1.3.0"
+  NDK_ROOT: "${{ github.workspace }}/android-ndk-r30"
+  BUILD_HOST: "arm64-v8a"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Resolve build parameters
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            QEMU_VERSION="${{ github.event.inputs.qemu_version }}"
+            if [ "${{ github.event.inputs.build_guest }}" = "all" ]; then
+              BUILD_GUEST="x86_64-softmmu,aarch64-softmmu,ppc64-softmmu"
+              BUILD_GUEST_LABEL="all"
+            else
+              BUILD_GUEST="${{ github.event.inputs.build_guest }}"
+              BUILD_GUEST_LABEL="${{ github.event.inputs.build_guest }}"
+            fi
+          else
+            QEMU_VERSION="$QEMU_VERSION"
+            BUILD_GUEST="x86_64-softmmu"
+            BUILD_GUEST_LABEL="x86_64-softmmu"
+          fi
+          echo "QEMU_VERSION=$QEMU_VERSION" >> $GITHUB_ENV
+          echo "BUILD_GUEST=$BUILD_GUEST" >> $GITHUB_ENV
+          echo "BUILD_GUEST_LABEL=$BUILD_GUEST_LABEL" >> $GITHUB_ENV
+
+          if [ "$QEMU_VERSION" = "7.2.22" ]; then
+            echo "USE_VENUS=false" >> $GITHUB_ENV
+          elif [ "$QEMU_VERSION" = "11.1.1" ]; then
+            echo "USE_VENUS=true" >> $GITHUB_ENV
+          else
+            echo "USE_VENUS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            make autoconf automake git \
+            binutils libtool-bin pkg-config flex bison \
+            gettext texinfo rsync apksigner \
+            libglib2.0-dev libpixman-1-dev zlib1g-dev gtk-doc-tools
+
+      - name: Install meson + ninja
+        run: |
+          sudo apt-get install -y ninja-build python3-pip
+          sudo pip3 install --upgrade meson mako
+          meson --version
+
+      # CACHE: Android NDK. Same key every run, so this hits after run #1.
+      - name: Cache Android NDK
+        id: cache-ndk
+        uses: actions/cache@v4
+        with:
+          path: android-ndk-r30
+          key: ndk-r30-30.0.16248370
+
+      - name: Download Android NDK r30
+        if: steps.cache-ndk.outputs.cache-hit != 'true'
+        run: |
+          wget -q https://dl.google.com/android/repository/android-ndk-r30-linux.zip -O ndk.zip
+          unzip -q ndk.zip
+          rm ndk.zip
+
+      # CACHE: Restore the compiled outputs if found
+      # if something changed, make a new cache
+      - name: Cache native build output
+        id: cache-native
+        uses: actions/cache@v4
+        with:
+          path: |
+            qube-android-lib/src/main/obj
+            qube-android-lib/src/main/libs
+            qube-android-lib/src/main/jniLibs
+            qube-android-lib/src/main/assets
+            qube-android-x86/src/main/jniLibs
+            qube-android-x86/src/main/assets
+            qube-android-arm/src/main/jniLibs
+            qube-android-arm/src/main/assets
+            qube-android-ppc/src/main/jniLibs
+            qube-android-ppc/src/main/assets
+          key: native-libs-${{ env.QEMU_VERSION }}-${{ env.BUILD_GUEST_LABEL }}-${{ hashFiles('qube-android-lib/src/main/jni/patches/**') }}
+
+      - name: Download QEMU source
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        run: |
+          wget -q https://download.qemu.org/qemu-${{ env.QEMU_VERSION }}.tar.xz
+
+      - name: Download dependency sources
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        run: |
+          wget -q https://download.gnome.org/sources/glib/2.88/glib-${{ env.GLIB_VERSION }}.tar.xz
+          wget -q https://github.com/libffi/libffi/releases/download/v${{ env.LIBFFI_VERSION }}/libffi-${{ env.LIBFFI_VERSION }}.tar.gz
+          wget -q https://gitlab.freedesktop.org/pixman/pixman/-/archive/pixman-${{ env.PIXMAN_VERSION }}/pixman-pixman-${{ env.PIXMAN_VERSION }}.tar.gz
+          wget -q https://gitlab.freedesktop.org/slirp/libslirp/-/archive/v${{ env.LIBSLIRP_VERSION }}/libslirp-v${{ env.LIBSLIRP_VERSION }}.zip
+          wget -q https://github.com/anholt/libepoxy/archive/refs/tags/${{ env.EPOXY_VERSION }}.zip -O libepoxy-${{ env.EPOXY_VERSION }}.zip
+
+      - name: Clone virglrenderer
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          git clone https://gitlab.freedesktop.org/virgl/virglrenderer.git virglrenderer
+
+      - name: Extract sources into jni
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          tar -xJf ${{ github.workspace }}/qemu-${{ env.QEMU_VERSION }}.tar.xz \
+            && mv qemu-${{ env.QEMU_VERSION }} qemu
+          tar -xJf ${{ github.workspace }}/glib-${{ env.GLIB_VERSION }}.tar.xz \
+            && mv glib-${{ env.GLIB_VERSION }} glib
+          tar -xzf ${{ github.workspace }}/libffi-${{ env.LIBFFI_VERSION }}.tar.gz \
+            && mv libffi-${{ env.LIBFFI_VERSION }} libffi
+          tar -xzf ${{ github.workspace }}/pixman-pixman-${{ env.PIXMAN_VERSION }}.tar.gz \
+            && mv pixman-pixman-${{ env.PIXMAN_VERSION }} pixman
+          unzip -q ${{ github.workspace }}/libepoxy-${{ env.EPOXY_VERSION }}.zip \
+            && mv libepoxy-${{ env.EPOXY_VERSION }} libepoxy
+
+      - name: Place libslirp into QEMU subprojects
+        if: steps.cache-native.outputs.cache-hit != 'true' && (env.QEMU_VERSION == '7.2.22' || env.QEMU_VERSION == '11.1.1')
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          mkdir -p qemu/subprojects
+          unzip -q ${{ github.workspace }}/libslirp-v${{ env.LIBSLIRP_VERSION }}.zip -d qemu/subprojects/
+          mv qemu/subprojects/libslirp-v${{ env.LIBSLIRP_VERSION }} \
+             qemu/subprojects/libslirp
+
+      - name: Patch QEMU
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          cd qemu && patch -p1 < ../patches/qemu-${{ env.QEMU_VERSION }}.patch
+
+      - name: Patch glib
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        run: |
+          cd ${{ github.workspace }}/qube-android-lib/src/main/jni/glib
+          if [ "${{ env.QEMU_VERSION }}" = "11.1.1" ]; then
+            patch -p1 < ../patches/glib-${{ env.GLIB_VERSION }}.patch
+          elif [ "${{ env.QEMU_VERSION }}" = "7.2.22" ]; then
+            patch -p1 < ../patches/glib-${{ env.GLIB_VERSION }}-qemu7.patch
+          fi
+
+      - name: Patch libslirp
+        if: steps.cache-native.outputs.cache-hit != 'true' && (env.QEMU_VERSION == '7.2.22' || env.QEMU_VERSION == '11.1.1')
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          cd qemu/subprojects/libslirp \
+            && patch -p1 < ../../../patches/libslirp-${{ env.LIBSLIRP_VERSION }}.patch
+
+      - name: Patch virglrenderer
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          cd virglrenderer && patch -p1 < ../patches/virglrenderer-1.3.0-android-egl.patch
+
+      - name: Build native libraries
+        if: steps.cache-native.outputs.cache-hit != 'true'
+        working-directory: qube-android-lib/src/main/jni
+        env:
+          USE_QEMU_VERSION: ${{ env.QEMU_VERSION }}
+          BUILD_HOST: ${{ env.BUILD_HOST }}
+          BUILD_GUEST: ${{ env.BUILD_GUEST }}
+          NDK_ROOT: ${{ env.NDK_ROOT }}
+          NDK_DEBUG: "0"
+          BUILD_THREADS: "16"
+          NDK_TOOLCHAIN_VERSION: "clang"
+          USE_VENUS: ${{ env.USE_VENUS }}
+        run: make qube
+
+      - name: Dump QEMU config logs on failure
+        if: failure()
+        working-directory: qube-android-lib/src/main/jni
+        run: |
+          find qemu -iname "config.log" -o -iname "meson-log.txt" 2>/dev/null
+          echo "===== This is config.log ====="
+          cat qemu/build/config.log 2>/dev/null || echo "(not found)"
+          echo "===== This is meson-log.txt ====="
+          cat qemu/build/meson-logs/meson-log.txt 2>/dev/null || echo "(not found)"
+
+      - name: RM QEMU files to prevent conflict
+        run: rm -rf qube-android-lib/src/main/jni/qemu/build
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # CACHE: Restore the Gradle deps if found
+      # if something changed, make a new cache
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-deps
+          restore-keys: |
+            gradle-
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform
+        run: sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0'
+
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Determine Gradle project
+        id: gradle_project
+        run: |
+          if [ "${{ env.BUILD_GUEST_LABEL }}" = "all" ]; then
+            echo "PROJECT=" >> $GITHUB_OUTPUT
+          else
+            case "${{ env.BUILD_GUEST }}" in
+              *x86_64*) PROJECT=":qube-android-x86" ;;
+              *aarch64*) PROJECT=":qube-android-arm" ;;
+              *ppc*) PROJECT=":qube-android-ppc" ;;
+              *) PROJECT=":qube-android-x86" ;;
+            esac
+            echo "PROJECT=$PROJECT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build release APK
+        run: |
+          if [ -z "${{ steps.gradle_project.outputs.PROJECT }}" ]; then
+            ./gradlew assembleRelease --no-daemon --stacktrace -PuseVenus=${{ env.USE_VENUS }} -PqemuVersion=${{ env.QEMU_VERSION }}
+          else
+            ./gradlew ${{ steps.gradle_project.outputs.PROJECT }}:assembleRelease --no-daemon --stacktrace -PuseVenus=${{ env.USE_VENUS }} -PqemuVersion=${{ env.QEMU_VERSION }}
+          fi
+
+      - name: Sign release APKs
+        run: |
+          find qube-android-*/build/outputs/apk/release/ -name "*.apk" -exec \
+            apksigner sign \
+            --ks keystore/QubeVM.keystore \
+            --ks-key-alias QubeVM \
+            --ks-pass pass:171717 \
+            --key-pass pass:171717 \
+            {} \;
+
+      - name: Package
+        run: |
+          mkdir -p qube-${{ env.QEMU_VERSION }}
+          find qube-android-*/build/outputs/apk/release/ -name "*.apk" -exec cp {} qube-${{ env.QEMU_VERSION }}/ \;
+          zip -r qube-${{ env.QEMU_VERSION }}.zip qube-${{ env.QEMU_VERSION }}/
+
+      - name: Upload
+        run: |
+          curl -F "file=@qube-${{ env.QEMU_VERSION }}.zip" https://tempspace.fly.dev/upload

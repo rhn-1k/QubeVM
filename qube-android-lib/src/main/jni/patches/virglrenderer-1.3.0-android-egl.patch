@@ -1,6 +1,6 @@
-diff -ru pristine/meson.build final/meson.build
---- a/meson.build	2026-08-29 21:45:17.682600564 +0000
-+++ b/meson.build	2026-08-29 21:45:35.367611705 +0000
+diff -ru --no-dereference pristine/meson.build final/meson.build
+--- pristine/meson.build	2026-09-17 03:18:37.005933927 +0000
++++ final/meson.build	2026-09-17 03:18:37.020664719 +0000
 @@ -56,6 +56,9 @@
  
  with_host_windows = host_machine.system() == 'windows'
@@ -11,11 +11,11 @@ diff -ru pristine/meson.build final/meson.build
  
  warnings = [
     '-Werror=enum-int-mismatch',
-@@ -85,7 +88,16 @@
- not_found = dependency('', required: false)
+@@ -86,7 +89,16 @@
  gbm_dep = not_found
  thread_dep = dependency('threads')
--epoxy_dep = dependency('epoxy', version: '>= 1.5.4')
+ with_vrend = get_option('vrend')
+-epoxy_dep = dependency('epoxy', version: '>= 1.5.4', required: with_vrend)
 +if with_host_android
 +  # QUBE: pkg-config is unreliable in the NDK sysroot, epoxy is
 +  # supplied directly via -I/-L (see Makefile config-virgl target).
@@ -24,12 +24,12 @@ diff -ru pristine/meson.build final/meson.build
 +    link_args: ['-lepoxy'],
 +    version: '1.5.10')
 +else
-+  epoxy_dep = dependency('epoxy', version: '>= 1.5.4')
++  epoxy_dep = dependency('epoxy', version: '>= 1.5.4', required: with_vrend)
 +endif
  m_dep = cc.find_library('m', required : false)
  dl_dep = not_found
  if not with_host_windows and not with_host_darwin
-@@ -294,8 +306,10 @@
+@@ -307,8 +319,10 @@
  have_glx = false
  
  if with_egl
@@ -42,7 +42,7 @@ diff -ru pristine/meson.build final/meson.build
           have_egl = true
        else
           if libdrm_dep.found()
-@@ -316,7 +330,9 @@
+@@ -329,7 +343,9 @@
  endif
  
  if with_glx
@@ -53,20 +53,20 @@ diff -ru pristine/meson.build final/meson.build
        glx_dep = dependency('x11', required: require_glx)
        have_glx = glx_dep.found()
        conf_data.set('HAVE_EPOXY_GLX_H', 1)
-@@ -470,7 +486,9 @@
+@@ -489,7 +505,9 @@
  endif
  
  subdir('src')
--if not with_host_windows
-+if not with_host_windows and not with_host_android
+-if with_vrend and not with_host_windows
++if with_vrend and not with_host_windows and not with_host_android
 +   # QUBE: vtest isn't needed for QEMU, and it links against a
 +   # legacy GCC toolchain path that doesn't exist in NDK r23+.
     subdir('vtest')
  endif
  
-diff -ru pristine/src/mesa/util/os_misc.c final/src/mesa/util/os_misc.c
---- a/src/mesa/util/os_misc.c	2026-08-29 21:45:17.691956418 +0000
-+++ b/src/mesa/util/os_misc.c	2026-08-29 21:45:17.737220489 +0000
+diff -ru --no-dereference pristine/src/mesa/util/os_misc.c final/src/mesa/util/os_misc.c
+--- pristine/src/mesa/util/os_misc.c	2026-09-17 03:18:37.008288913 +0000
++++ final/src/mesa/util/os_misc.c	2026-09-17 03:18:37.017685697 +0000
 @@ -55,8 +55,8 @@
  #if DETECT_OS_ANDROID
  #  define LOG_TAG "MESA"
@@ -109,9 +109,9 @@ diff -ru pristine/src/mesa/util/os_misc.c final/src/mesa/util/os_misc.c
     if (len > 1) {
        opt = ralloc_strdup(options_tbl, value);
     }
-diff -ru pristine/src/mesa/util/u_thread.h final/src/mesa/util/u_thread.h
---- a/src/mesa/util/u_thread.h	2026-08-29 21:45:17.692928820 +0000
-+++ b/src/mesa/util/u_thread.h	2026-08-29 21:45:17.737432449 +0000
+diff -ru --no-dereference pristine/src/mesa/util/u_thread.h final/src/mesa/util/u_thread.h
+--- pristine/src/mesa/util/u_thread.h	2026-09-17 03:18:37.008846028 +0000
++++ final/src/mesa/util/u_thread.h	2026-09-17 03:18:37.017448808 +0000
 @@ -289,7 +289,7 @@
   * util_barrier
   */
@@ -121,9 +121,9 @@ diff -ru pristine/src/mesa/util/u_thread.h final/src/mesa/util/u_thread.h
  
  typedef pthread_barrier_t util_barrier;
  
-diff -ru pristine/src/virgl_util.c final/src/virgl_util.c
---- a/src/virgl_util.c	2026-08-29 21:45:17.696781827 +0000
-+++ b/src/virgl_util.c	2026-08-29 21:45:38.413668137 +0000
+diff -ru --no-dereference pristine/src/virgl_util.c final/src/virgl_util.c
+--- pristine/src/virgl_util.c	2026-09-17 03:18:37.010287866 +0000
++++ final/src/virgl_util.c	2026-09-17 03:18:37.017697851 +0000
 @@ -43,6 +43,10 @@
  #include <stdio.h>
  
@@ -135,9 +135,9 @@ diff -ru pristine/src/virgl_util.c final/src/virgl_util.c
  #include <linux/dma-buf.h>
  #include <sys/ioctl.h>
  #endif
-diff -ru pristine/src/vrend/vrend_renderer.c final/src/vrend/vrend_renderer.c
---- a/src/vrend/vrend_renderer.c	2026-08-29 21:45:17.698902765 +0000
-+++ b/src/vrend/vrend_renderer.c	2026-08-29 21:45:17.738022288 +0000
+diff -ru --no-dereference pristine/src/vrend/vrend_renderer.c final/src/vrend/vrend_renderer.c
+--- pristine/src/vrend/vrend_renderer.c	2026-09-17 03:18:37.010583376 +0000
++++ final/src/vrend/vrend_renderer.c	2026-09-17 03:18:37.019123357 +0000
 @@ -7663,6 +7663,14 @@
     init_features(gles ? 0 : gl_ver,
                   gles ? gl_ver : 0);

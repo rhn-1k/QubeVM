@@ -1177,7 +1177,6 @@ public class QubeActivity extends AppCompatActivity
         setupAppEnvironment();
         clearNotifications();
         setupStrictMode();
-        checkStoragePermission();
         setContentView(R.layout.qube_main);
         setupEdgeToEdge();
         setupWidgets();
@@ -1415,6 +1414,8 @@ public class QubeActivity extends AppCompatActivity
             public void run() {
                 if (QubeSettingsManager.isFirstLaunch(QubeActivity.this)) {
                     onFirstLaunch();
+                } else {
+                    checkStoragePermission();
                 }
             }
         });
@@ -1559,7 +1560,7 @@ public class QubeActivity extends AppCompatActivity
 
     public void onFirstLaunch() {
         autoDetectAndSaveRefreshRate();
-        promptLicense();
+        promptLicense(true);
     }
 
     // Detects the screen's own max refresh rate and saves it to settings
@@ -1638,6 +1639,10 @@ public class QubeActivity extends AppCompatActivity
     }
 
     private void promptLicense() {
+        promptLicense(false);
+    }
+
+    private void promptLicense(boolean isFirstLaunch) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1645,7 +1650,8 @@ public class QubeActivity extends AppCompatActivity
                     QubeActivityCommon.promptLicense(QubeActivity.this,
                             Config.APP_NAME + " " + QubeApplication.getQubeVersionString()
                             + " " + "QEMU" + " " + QubeApplication.getQemuVersionString() ,
-                            FileUtils.LoadFile(QubeActivity.this, "LICENSE", false));
+                            FileUtils.LoadFile(QubeActivity.this, "LICENSE", false),
+                            isFirstLaunch ? QubeActivity.this::checkStoragePermission : null);
                 } catch (IOException e) {
 
                     e.printStackTrace();
@@ -3397,12 +3403,12 @@ public class QubeActivity extends AppCompatActivity
                 .setTitle(R.string.WriteAccess)
                 .setIcon(R.drawable.folder_24px)
                 .setMessage(R.string.FullAccessWarning)
+                .setCancelable(false)
                 .setPositiveButton(R.string.OkIUnderstand, (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                     intent.setData(Uri.parse("package:" + getPackageName()));
                     startActivity(intent);
                 })
-                .setNegativeButton(android.R.string.cancel, null)
                 .show();
         }
     }

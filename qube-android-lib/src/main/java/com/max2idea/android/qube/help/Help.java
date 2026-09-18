@@ -24,7 +24,7 @@ import com.max2idea.android.qube.network.NetworkUtils;
 public class Help {
     private static final String TAG = "Help";
 
-    public static void showHelp(final Activity activity) {
+    public static void showHelp(final Activity activity, final Runnable onDismiss) {
         LinearLayout mLayout = new LinearLayout(activity);
         mLayout.setOrientation(LinearLayout.VERTICAL);
         TextView textView = new TextView(activity);
@@ -53,14 +53,19 @@ public class Help {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 NetworkUtils.openURL(activity, Config.guidesLink);
+                                if (onDismiss != null) onDismiss.run();
                             }
                         })
                 .setNegativeButton(activity.getString(android.R.string.ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
+                                if (onDismiss != null) onDismiss.run();
                             }
                         })
                 .show();
+    }
+
+    public static void showHelp(final Activity activity) {
+        showHelp(activity, null);
     }
 }

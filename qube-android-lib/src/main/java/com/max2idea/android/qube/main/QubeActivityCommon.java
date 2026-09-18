@@ -68,6 +68,10 @@ public final class QubeActivityCommon {
     }
 
     public static void promptLicense(final Activity activity, final String title, final String body) {
+        promptLicense(activity, title, body, null);
+    }
+
+    public static void promptLicense(final Activity activity, final String title, final String body, final Runnable onFirstLaunchComplete) {
         activity.runOnUiThread(() -> {
             TextView textView = new TextView(activity);
             textView.setText(body == null ? "" : body);
@@ -82,7 +86,7 @@ public final class QubeActivityCommon {
                     .setPositiveButton(R.string.IAcknowledge, (dialog, which) -> {
                         if (QubeSettingsManager.isFirstLaunch(activity)) {
                             Installer.installFiles(activity, true);
-                            Help.showHelp(activity);
+                            Help.showHelp(activity, onFirstLaunchComplete);
                         }
                         QubeSettingsManager.setFirstLaunch(activity);
                     })

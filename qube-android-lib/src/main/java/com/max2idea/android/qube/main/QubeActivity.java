@@ -3398,19 +3398,21 @@ public class QubeActivity extends AppCompatActivity
 
     //check permissions before start
     private void checkStoragePermission() {
-        if (!Environment.isExternalStorageManager()) {
-            new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.WriteAccess)
-                .setIcon(R.drawable.folder_24px)
-                .setMessage(R.string.FullAccessWarning)
-                .setCancelable(false)
-                .setPositiveButton(R.string.OkIUnderstand, (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                    intent.setData(Uri.parse("package:" + getPackageName()));
-                    startActivity(intent);
-                })
-                .show();
-        }
+        runOnUiThread(() -> {
+            if (!Environment.isExternalStorageManager()) {
+                new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.WriteAccess)
+                    .setIcon(R.drawable.folder_24px)
+                    .setMessage(R.string.FullAccessWarning)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.OkIUnderstand, (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        startActivity(intent);
+                    })
+                    .show();
+            }
+        });
     }
 
     static class DiskInfo {

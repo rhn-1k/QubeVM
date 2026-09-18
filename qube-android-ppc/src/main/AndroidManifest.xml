@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="70009"
-    android:versionName="7.0.9-ppc">
+    android:versionCode="70100"
+    android:versionName="7.1.0-ppc">
 
     <application android:label="@string/app_name">
         <activity

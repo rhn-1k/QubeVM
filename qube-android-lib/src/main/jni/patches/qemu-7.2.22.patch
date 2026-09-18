@@ -1,6 +1,6 @@
 diff -ru --no-dereference qemu-7.2.22/Makefile qemu-7.2.22-work/Makefile
---- qemu-7.2.22/Makefile	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/Makefile	2026-09-18 17:26:34.014472903 +0000
+--- qemu-7.2.22/Makefile	2026-09-18 18:41:12.297986941 +0000
++++ qemu-7.2.22-work/Makefile	2026-09-18 18:41:16.576428737 +0000
 @@ -185,7 +185,8 @@
  
  SUBDIR_MAKEFLAGS=$(if $(V),,--no-print-directory --quiet)
@@ -12,8 +12,8 @@ diff -ru --no-dereference qemu-7.2.22/Makefile qemu-7.2.22-work/Makefile
  all: recurse-all
  
 diff -ru --no-dereference qemu-7.2.22/accel/kvm/kvm-all.c qemu-7.2.22-work/accel/kvm/kvm-all.c
---- qemu-7.2.22/accel/kvm/kvm-all.c	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/accel/kvm/kvm-all.c	2026-09-18 17:26:34.014901833 +0000
+--- qemu-7.2.22/accel/kvm/kvm-all.c	2026-09-18 18:41:12.581198029 +0000
++++ qemu-7.2.22-work/accel/kvm/kvm-all.c	2026-09-18 18:41:16.576795122 +0000
 @@ -2373,7 +2373,12 @@
      QLIST_INIT(&s->kvm_parked_vcpus);
      s->fd = qemu_open_old("/dev/kvm", O_RDWR);
@@ -28,8 +28,8 @@ diff -ru --no-dereference qemu-7.2.22/accel/kvm/kvm-all.c qemu-7.2.22-work/accel
          goto err;
      }
 diff -ru --no-dereference qemu-7.2.22/audio/audio.c qemu-7.2.22-work/audio/audio.c
---- qemu-7.2.22/audio/audio.c	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/audio/audio.c	2026-09-18 17:26:34.015258084 +0000
+--- qemu-7.2.22/audio/audio.c	2026-09-18 18:41:12.384082137 +0000
++++ qemu-7.2.22-work/audio/audio.c	2026-09-18 18:41:16.577124169 +0000
 @@ -2063,6 +2063,8 @@
          CASE(SNDIO, sndio, );
          CASE(SPICE, spice, );
@@ -52,8 +52,8 @@ diff -ru --no-dereference qemu-7.2.22/audio/audio.c qemu-7.2.22-work/audio/audio
      if (!pdo->has_channels) {
          pdo->has_channels = true;
 diff -ru --no-dereference qemu-7.2.22/audio/audio_legacy.c qemu-7.2.22-work/audio/audio_legacy.c
---- qemu-7.2.22/audio/audio_legacy.c	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/audio/audio_legacy.c	2026-09-18 17:26:34.015464437 +0000
+--- qemu-7.2.22/audio/audio_legacy.c	2026-09-18 18:41:12.384121208 +0000
++++ qemu-7.2.22-work/audio/audio_legacy.c	2026-09-18 18:41:16.577332018 +0000
 @@ -105,7 +105,11 @@
  static uint32_t frames_to_usecs(uint32_t frames,
                                  AudiodevPerDirectionOptions *pdo)
@@ -67,8 +67,8 @@ diff -ru --no-dereference qemu-7.2.22/audio/audio_legacy.c qemu-7.2.22-work/audi
  }
  
 diff -ru --no-dereference qemu-7.2.22/audio/audio_template.h qemu-7.2.22-work/audio/audio_template.h
---- qemu-7.2.22/audio/audio_template.h	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/audio/audio_template.h	2026-09-18 17:26:34.015553624 +0000
+--- qemu-7.2.22/audio/audio_template.h	2026-09-18 18:41:12.384292128 +0000
++++ qemu-7.2.22-work/audio/audio_template.h	2026-09-18 18:41:16.577496111 +0000
 @@ -349,6 +349,9 @@
          return dev->u.spice.TYPE;
      case AUDIODEV_DRIVER_WAV:
@@ -80,8 +80,8 @@ diff -ru --no-dereference qemu-7.2.22/audio/audio_template.h qemu-7.2.22-work/au
      case AUDIODEV_DRIVER__MAX:
          break;
 diff -ru --no-dereference qemu-7.2.22/audio/meson.build qemu-7.2.22-work/audio/meson.build
---- qemu-7.2.22/audio/meson.build	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/audio/meson.build	2026-09-18 17:26:34.015612322 +0000
+--- qemu-7.2.22/audio/meson.build	2026-09-18 18:41:12.383903659 +0000
++++ qemu-7.2.22-work/audio/meson.build	2026-09-18 18:41:16.577597377 +0000
 @@ -2,6 +2,7 @@
  softmmu_ss.add(files(
    'audio_legacy.c',
@@ -91,8 +91,8 @@ diff -ru --no-dereference qemu-7.2.22/audio/meson.build qemu-7.2.22-work/audio/m
    'wavaudio.c',
    'wavcapture.c',
 diff -ru --no-dereference qemu-7.2.22/configure qemu-7.2.22-work/configure
---- qemu-7.2.22/configure	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/configure	2026-09-18 17:26:34.015800035 +0000
+--- qemu-7.2.22/configure	2026-09-18 18:41:12.297719691 +0000
++++ qemu-7.2.22-work/configure	2026-09-18 18:41:16.577782814 +0000
 @@ -896,6 +896,15 @@
    ;;
    --enable-jemalloc) meson_option_parse --enable-malloc=jemalloc jemalloc
@@ -142,9 +142,27 @@ diff -ru --no-dereference qemu-7.2.22/configure qemu-7.2.22-work/configure
  if test "$modules" = yes; then
      glib_modules="$glib_modules gmodule-export-2.0"
  elif test "$plugins" = "yes"; then
+diff -ru --no-dereference qemu-7.2.22/fsdev/9p-marshal.h qemu-7.2.22-work/fsdev/9p-marshal.h
+--- qemu-7.2.22/fsdev/9p-marshal.h	2026-09-18 18:41:12.565673158 +0000
++++ qemu-7.2.22-work/fsdev/9p-marshal.h	2026-09-18 19:18:58.000586763 +0000
+@@ -1,6 +1,14 @@
+ #ifndef QEMU_9P_MARSHAL_H
+ #define QEMU_9P_MARSHAL_H
+ 
++#ifdef __ANDROID__
++// QUBE: Android NDK sys/stat.h defines these timestamp names as macros
++// so undefine them before QEMU's 9P struct uses them as field names
++#undef st_atime_nsec
++#undef st_mtime_nsec
++#undef st_ctime_nsec
++#endif
++
+ #include "p9array.h"
+ 
+ typedef struct V9fsString {
 diff -ru --no-dereference qemu-7.2.22/hw/display/vga.c qemu-7.2.22-work/hw/display/vga.c
---- qemu-7.2.22/hw/display/vga.c	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/hw/display/vga.c	2026-09-18 17:26:34.016054176 +0000
+--- qemu-7.2.22/hw/display/vga.c	2026-09-18 18:41:12.378930021 +0000
++++ qemu-7.2.22-work/hw/display/vga.c	2026-09-18 18:41:16.578075588 +0000
 @@ -1461,6 +1461,12 @@
  {
      memory_region_set_log(&s->vram, false, DIRTY_MEMORY_VGA);
@@ -181,8 +199,8 @@ diff -ru --no-dereference qemu-7.2.22/hw/display/vga.c qemu-7.2.22-work/hw/displ
      memset(s->invalidated_y_table, 0, sizeof(s->invalidated_y_table));
  }
 diff -ru --no-dereference qemu-7.2.22/hw/input/ps2.c qemu-7.2.22-work/hw/input/ps2.c
---- qemu-7.2.22/hw/input/ps2.c	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/hw/input/ps2.c	2026-09-18 17:27:02.864264663 +0000
+--- qemu-7.2.22/hw/input/ps2.c	2026-09-18 18:41:12.315953350 +0000
++++ qemu-7.2.22-work/hw/input/ps2.c	2026-09-18 18:41:16.578305405 +0000
 @@ -286,11 +286,60 @@
      q->cwptr = -1;
  }
@@ -290,8 +308,8 @@ diff -ru --no-dereference qemu-7.2.22/hw/input/ps2.c qemu-7.2.22-work/hw/input/p
  
  static void ps2_mouse_reset(DeviceState *dev)
 diff -ru --no-dereference qemu-7.2.22/hw/input/trace-events qemu-7.2.22-work/hw/input/trace-events
---- qemu-7.2.22/hw/input/trace-events	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/hw/input/trace-events	2026-09-18 17:27:02.864396095 +0000
+--- qemu-7.2.22/hw/input/trace-events	2026-09-18 18:41:12.316010353 +0000
++++ qemu-7.2.22-work/hw/input/trace-events	2026-09-18 18:41:16.578507722 +0000
 @@ -41,6 +41,8 @@
  ps2_write_mouse(void *opaque, int val) "%p val %d"
  ps2_kbd_reset(void *opaque) "%p"
@@ -302,8 +320,8 @@ diff -ru --no-dereference qemu-7.2.22/hw/input/trace-events qemu-7.2.22-work/hw/
  # hid.c
  hid_kbd_queue_full(void) "queue full"
 diff -ru --no-dereference qemu-7.2.22/include/hw/input/ps2.h qemu-7.2.22-work/include/hw/input/ps2.h
---- qemu-7.2.22/include/hw/input/ps2.h	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/include/hw/input/ps2.h	2026-09-18 17:27:02.864520315 +0000
+--- qemu-7.2.22/include/hw/input/ps2.h	2026-09-18 18:41:12.682234872 +0000
++++ qemu-7.2.22-work/include/hw/input/ps2.h	2026-09-18 18:41:16.578604391 +0000
 @@ -73,6 +73,12 @@
      int ledstate;
      bool need_high_bit;
@@ -326,8 +344,8 @@ diff -ru --no-dereference qemu-7.2.22/include/hw/input/ps2.h qemu-7.2.22-work/in
 +
  #endif /* HW_PS2_H */
 diff -ru --no-dereference qemu-7.2.22/include/qemu/osdep.h qemu-7.2.22-work/include/qemu/osdep.h
---- qemu-7.2.22/include/qemu/osdep.h	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/include/qemu/osdep.h	2026-09-18 17:26:34.016241000 +0000
+--- qemu-7.2.22/include/qemu/osdep.h	2026-09-18 18:41:12.696547215 +0000
++++ qemu-7.2.22-work/include/qemu/osdep.h	2026-09-18 18:41:16.578713292 +0000
 @@ -92,6 +92,12 @@
  #include <stddef.h>
  #include <stdbool.h>
@@ -355,8 +373,8 @@ diff -ru --no-dereference qemu-7.2.22/include/qemu/osdep.h qemu-7.2.22-work/incl
   * Use the same value as Linux for now.
   */
 diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
---- qemu-7.2.22/meson.build	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/meson.build	2026-09-18 17:26:34.016523270 +0000
+--- qemu-7.2.22/meson.build	2026-09-18 18:41:09.802299128 +0000
++++ qemu-7.2.22-work/meson.build	2026-09-18 19:05:15.628702537 +0000
 @@ -550,8 +550,16 @@
  endif
  pixman = not_found
@@ -476,7 +494,30 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
    gbm = dependency('gbm', method: 'pkg-config', required: false,
                     kwargs: static_kwargs)
  endif
-@@ -1863,6 +1898,8 @@
+@@ -1742,17 +1777,19 @@
+            error_message: '-display dbus requires epoxy/egl and gbm') \
+   .allowed()
+ 
++# QUBE(backport): drop libcap-ng requirement for virtfs (upstream 1a67e07fe9)
++# only the unused proxy-helper tool needs it, not virtio-9p itself
+ have_virtfs = get_option('virtfs') \
+     .require(targetos == 'linux' or targetos == 'darwin',
+              error_message: 'virtio-9p (virtfs) requires Linux or macOS') \
+     .require(targetos == 'linux' or cc.has_function('pthread_fchdir_np'),
+              error_message: 'virtio-9p (virtfs) on macOS requires the presence of pthread_fchdir_np') \
+-    .require(targetos == 'darwin' or (libattr.found() and libcap_ng.found()),
+-             error_message: 'virtio-9p (virtfs) on Linux requires libcap-ng-devel and libattr-devel') \
++    .require(targetos == 'darwin' or libattr.found(),
++             error_message: 'virtio-9p (virtfs) on Linux requires libattr-devel') \
+     .disable_auto_if(not have_tools and not have_system) \
+     .allowed()
+ 
+-have_virtfs_proxy_helper = targetos != 'darwin' and have_virtfs and have_tools
++have_virtfs_proxy_helper = targetos != 'darwin' and have_virtfs and have_tools and libcap_ng.found()
+ 
+ if get_option('block_drv_ro_whitelist') == ''
+   config_host_data.set('CONFIG_BDRV_RO_WHITELIST', '')
+@@ -1863,6 +1900,8 @@
  config_host_data.set('CONFIG_LIBPMEM', libpmem.found())
  config_host_data.set('CONFIG_NUMA', numa.found())
  config_host_data.set('CONFIG_OPENGL', opengl.found())
@@ -485,7 +526,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  config_host_data.set('CONFIG_PROFILER', get_option('profiler'))
  config_host_data.set('CONFIG_RBD', rbd.found())
  config_host_data.set('CONFIG_RDMA', rdma.found())
-@@ -1978,6 +2015,8 @@
+@@ -1978,6 +2017,8 @@
  config_host_data.set('CONFIG_MEMALIGN', cc.has_function('memalign'))
  config_host_data.set('CONFIG_PPOLL', cc.has_function('ppoll'))
  config_host_data.set('CONFIG_PREADV', cc.has_function('preadv', prefix: '#include <sys/uio.h>'))
@@ -494,7 +535,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  config_host_data.set('CONFIG_PTHREAD_FCHDIR_NP', cc.has_function('pthread_fchdir_np'))
  config_host_data.set('CONFIG_SENDFILE', cc.has_function('sendfile'))
  config_host_data.set('CONFIG_SETNS', cc.has_function('setns') and cc.has_function('unshare'))
-@@ -1985,9 +2024,13 @@
+@@ -1985,9 +2026,13 @@
  config_host_data.set('CONFIG_SYNC_FILE_RANGE', cc.has_function('sync_file_range'))
  config_host_data.set('CONFIG_TIMERFD', cc.has_function('timerfd_create'))
  config_host_data.set('HAVE_COPY_FILE_RANGE', cc.has_function('copy_file_range'))
@@ -508,7 +549,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  config_host_data.set('HAVE_SYSTEM_FUNCTION', cc.has_function('system', prefix: '#include <stdlib.h>'))
  if rbd.found()
    config_host_data.set('HAVE_RBD_NAMESPACE_EXISTS',
-@@ -2018,6 +2061,8 @@
+@@ -2018,6 +2063,8 @@
  config_host_data.set('CONFIG_GETRANDOM',
                       cc.has_function('getrandom') and
                       cc.has_header_symbol('sys/random.h', 'GRND_NONBLOCK'))
@@ -517,7 +558,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  config_host_data.set('CONFIG_INOTIFY',
                       cc.has_header_symbol('sys/inotify.h', 'inotify_init'))
  config_host_data.set('CONFIG_INOTIFY1',
-@@ -2157,6 +2202,10 @@
+@@ -2157,6 +2204,10 @@
    #include <sys/signalfd.h>
    #include <stddef.h>
    int main(void) { return signalfd(-1, NULL, SFD_CLOEXEC); }'''))
@@ -528,7 +569,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  config_host_data.set('CONFIG_SPLICE', cc.links(gnu_source_prefix + '''
    #include <unistd.h>
    #include <fcntl.h>
-@@ -3145,8 +3194,10 @@
+@@ -3145,8 +3196,10 @@
  subdir('linux-user')
  
  # needed for fuzzing binaries
@@ -541,7 +582,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  
  # accel modules
  tcg_real_module_ss = ss.source_set()
-@@ -3515,7 +3566,20 @@
+@@ -3515,7 +3568,20 @@
        exe_name += '-unsigned'
      endif
  
@@ -563,7 +604,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
                 install: true,
                 c_args: c_args,
                 dependencies: arch_deps + deps + exe['dependencies'],
-@@ -3524,6 +3588,7 @@
+@@ -3524,6 +3590,7 @@
                 link_depends: [block_syms, qemu_syms] + exe.get('link_depends', []),
                 link_args: link_args,
                 win_subsystem: exe['win_subsystem'])
@@ -571,7 +612,7 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
  
      if targetos == 'darwin'
        icon = 'pc-bios/qemu.rsrc'
-@@ -3639,7 +3704,9 @@
+@@ -3639,7 +3706,9 @@
  subdir('tools')
  subdir('pc-bios')
  subdir('docs')
@@ -583,8 +624,8 @@ diff -ru --no-dereference qemu-7.2.22/meson.build qemu-7.2.22-work/meson.build
    subdir('po')
  endif
 diff -ru --no-dereference qemu-7.2.22/meson_options.txt qemu-7.2.22-work/meson_options.txt
---- qemu-7.2.22/meson_options.txt	2025-12-06 13:17:12.000000000 +0000
-+++ qemu-7.2.22-work/meson_options.txt	2026-09-18 17:26:34.017047988 +0000
+--- qemu-7.2.22/meson_options.txt	2026-09-18 18:41:12.297911606 +0000
++++ qemu-7.2.22-work/meson_options.txt	2026-09-18 18:41:16.579366220 +0000
 @@ -321,3 +321,7 @@
         description: 'profiler support')
  option('slirp_smbd', type : 'feature', value : 'auto',
@@ -594,8 +635,8 @@ diff -ru --no-dereference qemu-7.2.22/meson_options.txt qemu-7.2.22-work/meson_o
 +option('qube_android_so', type: 'boolean', value: false,
 +       description: 'Build emulator targets as shared libraries for Android (Qube)')
 diff -ru --no-dereference qemu-7.2.22/qapi/audio.json qemu-7.2.22-work/qapi/audio.json
---- qemu-7.2.22/qapi/audio.json	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/qapi/audio.json	2026-09-18 17:26:34.115983027 +0000
+--- qemu-7.2.22/qapi/audio.json	2026-09-18 18:41:12.578640942 +0000
++++ qemu-7.2.22-work/qapi/audio.json	2026-09-18 18:41:16.579524360 +0000
 @@ -409,7 +409,7 @@
  ##
  { 'enum': 'AudiodevDriver',
@@ -613,8 +654,8 @@ diff -ru --no-dereference qemu-7.2.22/qapi/audio.json qemu-7.2.22-work/qapi/audi
 +    'wav':       'AudiodevWavOptions',
 +    'qube':     'AudiodevGenericOptions' } }
 diff -ru --no-dereference qemu-7.2.22/qapi/ui.json qemu-7.2.22-work/qapi/ui.json
---- qemu-7.2.22/qapi/ui.json	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/qapi/ui.json	2026-09-18 17:26:34.116145511 +0000
+--- qemu-7.2.22/qapi/ui.json	2026-09-18 18:41:12.579276449 +0000
++++ qemu-7.2.22-work/qapi/ui.json	2026-09-18 18:41:16.579664710 +0000
 @@ -1372,6 +1372,9 @@
      { 'name': 'sdl', 'if': 'CONFIG_SDL' },
      { 'name': 'egl-headless',
@@ -626,8 +667,8 @@ diff -ru --no-dereference qemu-7.2.22/qapi/ui.json qemu-7.2.22-work/qapi/ui.json
      { 'name': 'cocoa', 'if': 'CONFIG_COCOA' },
      { 'name': 'spice-app', 'if': 'CONFIG_SPICE' },
 diff -ru --no-dereference qemu-7.2.22/softmmu/vl.c qemu-7.2.22-work/softmmu/vl.c
---- qemu-7.2.22/softmmu/vl.c	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/softmmu/vl.c	2026-09-18 17:26:34.116383191 +0000
+--- qemu-7.2.22/softmmu/vl.c	2026-09-18 18:41:12.708593156 +0000
++++ qemu-7.2.22-work/softmmu/vl.c	2026-09-18 18:41:16.579909454 +0000
 @@ -3609,6 +3609,13 @@
          qmp_x_exit_preconfig(&error_fatal);
      }
@@ -643,8 +684,8 @@ diff -ru --no-dereference qemu-7.2.22/softmmu/vl.c qemu-7.2.22-work/softmmu/vl.c
      os_setup_post();
      resume_mux_open();
 diff -ru --no-dereference qemu-7.2.22/tests/qtest/meson.build qemu-7.2.22-work/tests/qtest/meson.build
---- qemu-7.2.22/tests/qtest/meson.build	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/tests/qtest/meson.build	2026-09-18 17:26:34.116586837 +0000
+--- qemu-7.2.22/tests/qtest/meson.build	2026-09-18 18:41:12.554383671 +0000
++++ qemu-7.2.22-work/tests/qtest/meson.build	2026-09-18 18:41:16.580122354 +0000
 @@ -35,7 +35,7 @@
  
  qtests_pci = \
@@ -655,8 +696,8 @@ diff -ru --no-dereference qemu-7.2.22/tests/qtest/meson.build qemu-7.2.22-work/t
  qtests_cxl = \
    (config_all_devices.has_key('CONFIG_CXL') ? ['cxl-test'] : [])
 diff -ru --no-dereference qemu-7.2.22/ui/meson.build qemu-7.2.22-work/ui/meson.build
---- qemu-7.2.22/ui/meson.build	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/ui/meson.build	2026-09-18 17:26:34.116691269 +0000
+--- qemu-7.2.22/ui/meson.build	2026-09-18 18:41:12.566727253 +0000
++++ qemu-7.2.22-work/ui/meson.build	2026-09-18 18:41:16.580244977 +0000
 @@ -15,6 +15,8 @@
    'keymaps.c',
    'qemu-pixman.c',
@@ -667,8 +708,8 @@ diff -ru --no-dereference qemu-7.2.22/ui/meson.build qemu-7.2.22-work/ui/meson.b
  if dbus_display
    softmmu_ss.add(files('dbus-module.c'))
 diff -ru --no-dereference qemu-7.2.22/ui/shader/texture-blit-flip.vert qemu-7.2.22-work/ui/shader/texture-blit-flip.vert
---- qemu-7.2.22/ui/shader/texture-blit-flip.vert	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/ui/shader/texture-blit-flip.vert	2026-09-18 17:26:34.116748675 +0000
+--- qemu-7.2.22/ui/shader/texture-blit-flip.vert	2026-09-18 18:41:12.569848725 +0000
++++ qemu-7.2.22-work/ui/shader/texture-blit-flip.vert	2026-09-18 18:41:16.580327291 +0000
 @@ -1,5 +1,5 @@
 -
  #version 300 es
@@ -677,8 +718,8 @@ diff -ru --no-dereference qemu-7.2.22/ui/shader/texture-blit-flip.vert qemu-7.2.
  in vec2  in_position;
  out vec2 ex_tex_coord;
 diff -ru --no-dereference qemu-7.2.22/ui/shader/texture-blit.frag qemu-7.2.22-work/ui/shader/texture-blit.frag
---- qemu-7.2.22/ui/shader/texture-blit.frag	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/ui/shader/texture-blit.frag	2026-09-18 17:26:34.116789455 +0000
+--- qemu-7.2.22/ui/shader/texture-blit.frag	2026-09-18 18:41:12.569833845 +0000
++++ qemu-7.2.22-work/ui/shader/texture-blit.frag	2026-09-18 18:41:16.580404646 +0000
 @@ -1,5 +1,5 @@
 -
  #version 300 es
@@ -687,8 +728,8 @@ diff -ru --no-dereference qemu-7.2.22/ui/shader/texture-blit.frag qemu-7.2.22-wo
  uniform sampler2D image;
  in  mediump vec2 ex_tex_coord;
 diff -ru --no-dereference qemu-7.2.22/ui/shader/texture-blit.vert qemu-7.2.22-work/ui/shader/texture-blit.vert
---- qemu-7.2.22/ui/shader/texture-blit.vert	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/ui/shader/texture-blit.vert	2026-09-18 17:26:34.116825537 +0000
+--- qemu-7.2.22/ui/shader/texture-blit.vert	2026-09-18 18:41:12.569861778 +0000
++++ qemu-7.2.22-work/ui/shader/texture-blit.vert	2026-09-18 18:41:16.580491083 +0000
 @@ -1,5 +1,5 @@
 -
  #version 300 es
@@ -697,8 +738,8 @@ diff -ru --no-dereference qemu-7.2.22/ui/shader/texture-blit.vert qemu-7.2.22-wo
  in vec2  in_position;
  out vec2 ex_tex_coord;
 diff -ru --no-dereference qemu-7.2.22/ui/vnc.c qemu-7.2.22-work/ui/vnc.c
---- qemu-7.2.22/ui/vnc.c	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/ui/vnc.c	2026-09-18 17:26:34.220180250 +0000
+--- qemu-7.2.22/ui/vnc.c	2026-09-18 18:41:12.567751442 +0000
++++ qemu-7.2.22-work/ui/vnc.c	2026-09-18 18:41:16.580712231 +0000
 @@ -2058,6 +2058,40 @@
      return QKeyCode_str(qemu_input_key_number_to_qcode(keycode));
  }
@@ -752,8 +793,8 @@ diff -ru --no-dereference qemu-7.2.22/ui/vnc.c qemu-7.2.22-work/ui/vnc.c
  }
  
 diff -ru --no-dereference qemu-7.2.22/util/coroutine-sigaltstack.c qemu-7.2.22-work/util/coroutine-sigaltstack.c
---- qemu-7.2.22/util/coroutine-sigaltstack.c	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/util/coroutine-sigaltstack.c	2026-09-18 17:26:34.220542279 +0000
+--- qemu-7.2.22/util/coroutine-sigaltstack.c	2026-09-18 18:41:12.702248398 +0000
++++ qemu-7.2.22-work/util/coroutine-sigaltstack.c	2026-09-18 18:41:16.581055466 +0000
 @@ -21,10 +21,9 @@
   * License along with this library; if not, see <http://www.gnu.org/licenses/>.
   */
@@ -1015,8 +1056,8 @@ diff -ru --no-dereference qemu-7.2.22/util/coroutine-sigaltstack.c qemu-7.2.22-w
  }
 -
 diff -ru --no-dereference qemu-7.2.22/util/meson.build qemu-7.2.22-work/util/meson.build
---- qemu-7.2.22/util/meson.build	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/util/meson.build	2026-09-18 17:26:34.220611925 +0000
+--- qemu-7.2.22/util/meson.build	2026-09-18 18:41:12.700984674 +0000
++++ qemu-7.2.22-work/util/meson.build	2026-09-18 18:41:16.581147611 +0000
 @@ -75,6 +75,9 @@
    util_ss.add(files('main-loop.c'))
    util_ss.add(files('qemu-coroutine.c', 'qemu-coroutine-lock.c', 'qemu-coroutine-io.c'))
@@ -1028,8 +1069,8 @@ diff -ru --no-dereference qemu-7.2.22/util/meson.build qemu-7.2.22-work/util/mes
    util_ss.add(files('qemu-sockets.c'))
  endif
 diff -ru --no-dereference qemu-7.2.22/util/mmap-alloc.c qemu-7.2.22-work/util/mmap-alloc.c
---- qemu-7.2.22/util/mmap-alloc.c	2025-12-06 13:17:13.000000000 +0000
-+++ qemu-7.2.22-work/util/mmap-alloc.c	2026-09-18 17:26:34.220723270 +0000
+--- qemu-7.2.22/util/mmap-alloc.c	2026-09-18 18:41:12.701381928 +0000
++++ qemu-7.2.22-work/util/mmap-alloc.c	2026-09-18 18:41:16.581226435 +0000
 @@ -10,9 +10,11 @@
   * later.  See the COPYING file in the top-level directory.
   */

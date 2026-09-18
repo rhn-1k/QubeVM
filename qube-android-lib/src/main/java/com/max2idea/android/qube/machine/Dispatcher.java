@@ -47,9 +47,6 @@ public final class Dispatcher implements ViewListener {
             case ENABLE_VENUS:
                 machine.setEnableVenus(convertBoolean(property, value) ? 1 : 0);
                 break;
-            case ENABLE_SVM:
-                machine.setEnableSVM(convertBoolean(property, value) ? 1 : 0);
-                break;
             case CPU:
                 machine.setCpu(convertString(property, value));
                 break;
@@ -118,6 +115,9 @@ public final class Dispatcher implements ViewListener {
                 break;
             case HOSTFWD:
                 machine.setHostFwd(convertString(property, value));
+                break;
+            case DNS:
+                machine.setDns(convertString(property, value));
                 break;
             case MOUSE:
                 changeMouse(convertString(property, value));
@@ -263,6 +263,9 @@ public final class Dispatcher implements ViewListener {
                 break;
             case CDROM:
                 machine.setCdInterface(driveInterface);
+                break;
+            case SHARED_FOLDER:
+                machine.setSharedFolderType(driveInterface);
                 break;
             default:
                 break;

@@ -1,32 +1,6 @@
 apply plugin: 'com.android.library'
 
-// Reads the USE_VENUS default straight from android-qube-config.mak, the
-// single source of truth also used by the native Make build
-def resolveUseVenusDefault() {
-    def configMak = file("${projectDir}/src/main/jni/android-config/android-qube-config.mak")
-    if (configMak.exists()) {
-        def match = configMak.text =~ /(?m)^\s*USE_VENUS\s*\?=\s*(true|false)\s*$/
-        if (match.find()) {
-            return match.group(1)
-        }
-    }
-    return 'false' // fallback
-}
-
-// Reads the USE_QEMU_VERSION default straight from android-qube-config.mak, same
-// source of truth as resolveUseVenusDefault above
-def resolveQemuVersionDefault() {
-    def configMak = file("${projectDir}/src/main/jni/android-config/android-qube-config.mak")
-    if (configMak.exists()) {
-        def match = configMak.text =~ /(?m)^\s*USE_QEMU_VERSION\s*\?=\s*(\S+)\s*$/
-        if (match.find()) {
-            return match.group(1)
-        }
-    }
-    return '7.2.22' // fallback
-}
-
-def qemuVersion = project.hasProperty('qemuVersion') ? project.property('qemuVersion') : resolveQemuVersionDefault()
+def qemuVersion = project.hasProperty('qemuVersion') ? project.property('qemuVersion') : '7.2.22' // fallback
 
 // This is for giving the specific qemu version it's values, copies to raw directory
 tasks.register('syncQemuValues') {
@@ -56,10 +30,9 @@ android {
     defaultConfig{
         minSdk = 30
         targetSdk = 37
-        // Controls whether Venus (Vulkan passthrough) acceleration is
-        // compiled into the app. Override with -PuseVenus=true, otherwise
-        // falls back to USE_VENUS from android-qube-config.mak if the user didn't specific the USE_VENUS state
-        buildConfigField "boolean", "USE_VENUS", "${project.hasProperty('useVenus') ? project.property('useVenus') : resolveUseVenusDefault()}"
+        // Controls whether Venus is enabled into the app (show or hide)
+        // fallbacks to false
+        buildConfigField "boolean", "USE_VENUS", "${project.hasProperty('useVenus') ? project.property('useVenus') : 'false'}"
     }
 
     buildFeatures {

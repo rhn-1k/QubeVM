@@ -16,4 +16,5 @@ public interface IMachineDatabase {
     int insertMachine(Machine machine);
     ArrayList<String> getMachineNames();
     boolean deleteMachine(Machine machine);
+    boolean renameMachine(Machine machine, String newName);
 }

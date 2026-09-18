@@ -44,7 +44,8 @@ class VMExecutor extends MachineExecutor {
     private static final String cdDeviceName = "ide1-cd0";
     private static final String fdaDeviceName = "floppy0";
     private static final String fdbDeviceName = "floppy1";
-    private static final String sdDeviceName = "sd0";
+    private static final String SHARED_FOLDER_FSDEV_ID = "sharedfolder0";
+    private static final String SHARED_FOLDER_MOUNT_TAG = "hostshare";
     private static final String DEFAULT_UEFI = "Default";
     //TODO: make this a proper singleton but the views should not be able to access it
     private static VMExecutor mInstance;
@@ -259,18 +260,6 @@ class VMExecutor extends MachineExecutor {
                     cpu = "qemu64";
             }
             cpu += ",-tsc";
-        }
-
-        //+svm exposes AMD-V nested virtualization to the guest, useful for running
-        //hypervisors/VMs inside the emulated guest OS
-        if (getMachine().getEnableSVM() == 1 && (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64)) {
-            if (cpu == null || cpu.equals("Default")) {
-                if (QubeApplication.arch == Config.Arch.x86)
-                    cpu = "qemu32";
-                else if (QubeApplication.arch == Config.Arch.x86_64)
-                    cpu = "qemu64";
-            }
-            cpu += ",+svm";
         }
 
         if (cpu != null && !cpu.equals("Default")) {
@@ -575,8 +564,8 @@ class VMExecutor extends MachineExecutor {
         if (!Config.enableSharedFolder || sharedFolderPath == null || sharedFolderPath.trim().isEmpty())
             return;
 
-        // QEMU's "fat:rw:" driver needs a real path, not a SAF content:// URI,
-        // or it fails to create its temp file and crashes the whole process.
+        // QEMU's "fat:rw:" and virtio-9p "local" fsdev backends both need a real path, not a SAF content:// URI
+       // or it fails to create its temp file and crashes the whole process.
         String realPath = FileUtils.getRealPathForSharedFolder(QubeApplication.getInstance(), sharedFolderPath);
         if (realPath == null) {
             Log.w(TAG, "Shared folder could not be resolved to a real path, skipping: " + sharedFolderPath);
@@ -585,6 +574,15 @@ class VMExecutor extends MachineExecutor {
             return;
         }
 
+        if ("virtio9p".equals(getMachine().getSharedFolderType())) {
+            addSharedFolderVirtio9p(paramsList, realPath);
+        } else {
+            addSharedFolderVvfat(paramsList, realPath);
+        }
+    }
+
+    // Adding the shared folder as an emulated FAT hard disk (if vvfat)
+    private void addSharedFolderVvfat(ArrayList<String> paramsList, String realPath) {
         //XXX; We use hdd to mount any virtual fat drives
         paramsList.add("-drive"); //empty
         String driveParams = "index=3";
@@ -597,6 +595,25 @@ class VMExecutor extends MachineExecutor {
         paramsList.add(driveParams);
     }
 
+    // Passing the folder straight through via virtfs (if virtio9p)
+    private void addSharedFolderVirtio9p(ArrayList<String> paramsList, String realPath) {
+        paramsList.add("-fsdev");
+        //XXX: virtfs doesn't need to image/sync additional step
+        String fsdevParams = "local";
+        fsdevParams += ",id=" + SHARED_FOLDER_FSDEV_ID;
+        fsdevParams += ",path=" + realPath;
+        // TODO: add an option using security_model=passthrough for rooted users
+        // since it has real permission control instead of using mapped-file metadata shadow file
+        fsdevParams += ",security_model=mapped-file";
+        paramsList.add(fsdevParams);
+
+        paramsList.add("-device");
+        String deviceParams = "virtio-9p-pci";
+        deviceParams += ",fsdev=" + SHARED_FOLDER_FSDEV_ID;
+        deviceParams += ",mount_tag=" + SHARED_FOLDER_MOUNT_TAG;
+        paramsList.add(deviceParams);
+    }
+
     public void addRemovableDrives(ArrayList<String> paramsList) {
         String cdImagePath = getDriveFilePath(getMachine().getCdImagePath());
         if (cdImagePath != null) {
@@ -605,7 +622,6 @@ class VMExecutor extends MachineExecutor {
             param += ",if=";
             param += getMachine().getCDInterface();
             param += ",media=cdrom";
-            param += ",id=" + cdDeviceName;
             if (!cdImagePath.equals("")) {
                 param += ",file=" + cdImagePath;
             }
@@ -615,7 +631,7 @@ class VMExecutor extends MachineExecutor {
         String fdaImagePath = getDriveFilePath(getMachine().getFdaImagePath());
         if (Config.enableEmulatedFloppy && fdaImagePath != null) {
             paramsList.add("-drive"); //empty
-            String param = "index=0,if=floppy,id=" + fdaDeviceName;
+            String param = "index=0,if=floppy";
             if (!fdaImagePath.equals("")) {
                 param += ",file=" + fdaImagePath;
             }
@@ -625,35 +641,18 @@ class VMExecutor extends MachineExecutor {
         String fdbImagePath = getDriveFilePath(getMachine().getFdbImagePath());
         if (Config.enableEmulatedFloppy && fdbImagePath != null) {
             paramsList.add("-drive"); //empty
-            String param = "index=1,if=floppy,id=" + fdbDeviceName;
+            String param = "index=1,if=floppy";
             if (!fdbImagePath.equals("")) {
                 param += ",file=" + fdbImagePath;
             }
             paramsList.add(param);
         }
-
-
     }
 
 
     protected String changedev(String dev, String value) {
         String response = QmpClient.sendCommand(QmpClient.getChangeDeviceCommand(dev, value));
         String displayDevValue = FileUtils.getFullPathFromDocumentFilePath(value);
-        if (response != null && response.contains("\"error\"")) {
-            String errDesc = response;
-            try {
-                JSONObject resObj = new JSONObject(response);
-                if (resObj.has("error")) {
-                    errDesc = resObj.getJSONObject("error").optString("desc", response);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            Log.e(TAG, "changedev QMP error for " + dev + ": " + errDesc);
-            ToastUtils.toastLong(QubeApplication.getInstance(), Gravity.BOTTOM,
-                    QubeApplication.getInstance().getString(R.string.CouldNotOpenDocFile) + ": " + errDesc);
-            return null;
-        }
         if (Config.debug)
             ToastUtils.toastLong(QubeApplication.getInstance(), Gravity.BOTTOM,
                     QubeApplication.getInstance().getString(R.string.ChangedDevice) + ": "
@@ -730,13 +729,12 @@ class VMExecutor extends MachineExecutor {
                 return fdaDeviceName;
             case FDB:
                 return fdbDeviceName;
-            case SD:
-                return sdDeviceName;
         }
         return null;
     }
 
     //TODO: re-enable getting status from the vm
+    // for now, this function is no-op
     public String getVmState() {
         String res = QmpClient.sendCommand(QmpClient.getStateCommand());
         String state = "";
@@ -774,9 +772,9 @@ class VMExecutor extends MachineExecutor {
             return true;
         }
 
-        // Use our function in FileUtils.java to get the real not encoded path
+        //XXX: we encode some characters from the document file path so it's processed
+        // correctly by qemu
         String imagePathConverted = getDriveFilePath(imagePath);
-
 
         if (!FileUtils.fileValid(imagePathConverted)) {
             String msg = QubeApplication.getInstance().getString(R.string.CouldNotOpenDocFile) + " "

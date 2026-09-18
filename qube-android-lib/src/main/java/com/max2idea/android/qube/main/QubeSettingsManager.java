@@ -39,19 +39,6 @@ public class QubeSettingsManager extends AppCompatActivity {
     private static final String TAG = "QubeSettingsManager";
     private SettingsFragment settingsFragment;
 
-    // DNS server
-    static String getDNSServer(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString("dnsServer", Config.defaultDNSServer);
-    }
-
-    public static void setDNSServer(Context context, String dnsServer) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = prefs.edit();
-        edit.putString("dnsServer", dnsServer);
-        edit.apply();
-    }
-
     // Screen
     public static int getOrientationSetting(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -167,12 +154,6 @@ public class QubeSettingsManager extends AppCompatActivity {
     public static boolean getEnableExternalQMP(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean("enableExternalQMP", false);
-    }
-
-    public static int getKeyPressDelay(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String sizeStr = prefs.getString("keyPressDelay", "100");
-        return Integer.parseInt(sizeStr);
     }
 
     public static int getMouseButtonDelay(Context context) {

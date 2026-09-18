@@ -43,9 +43,9 @@
         android:icon="@drawable/power_settings_new_24px"
         android:title="@string/shutdown" />
     <item
-        android:id="@+id/itemDisconnet"
+        android:id="@+id/itemMinimize"
         android:icon="@drawable/exit_to_app_24px"
-        android:title="@string/disconnect" />
+        android:title="@string/minimize" />
     <item
         android:id="@+id/itemScreenshot"
         android:icon="@android:drawable/ic_menu_camera"
@@ -54,32 +54,4 @@
         android:id="@+id/itemViewLog"
         android:icon="@drawable/notes_24px"
         android:title="@string/view_log" />
-    <item
-        android:id="@+id/itemScaling"
-        android:icon="@drawable/zoom_in_24px"
-        android:title="@string/scaling">
-        <menu>
-            <group
-                android:id="@+id/groupScaling"
-                android:checkableBehavior="single">
-                <item android:id="@+id/itemOneToOne"   android:title="@string/one_to_one" />
-                <item android:id="@+id/itemZoomIn"     android:title="@string/zoom_in" />
-                <item android:id="@+id/itemZoomOut"    android:title="@string/zoom_out" />
-                <item android:id="@+id/itemFitToScreen"     android:title="@string/fit_to_screen" />
-                <item android:id="@+id/itemStretchToScreen" android:title="@string/stretch_to_screen" />
-            </group>
-        </menu>
-    </item>
-    <item
-        android:id="@+id/itemExternalMouse"
-        android:icon="@drawable/mouse_24px"
-        android:title="@string/external_mouse"/>
-    <item
-        android:id="@+id/itemCtrlC"
-        android:icon="@drawable/content_copy_24px"
-        android:title="@string/ctrl_c" />
-    <item
-        android:id="@+id/itemCtrlAltDel"
-        android:icon="@drawable/keyboard_24px"
-        android:title="@string/ctrl_alt_del" />
 </menu>

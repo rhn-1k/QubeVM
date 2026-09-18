@@ -3,23 +3,12 @@
 
     <string name="app_name">QubeVM</string>
     <string name="app_short_name">Qube</string>
-    <string name="auto">Авто</string>
     <string name="button_send_text">Отправить текст</string>
     <string name="center_mouse">Мышь</string>
     <string name="close">Закрыть</string>
     <string name="reset">Сброс</string>
     <string name="shutdown">Выключение</string>
-    <string name="ctrl_alt_del">Ctrl-Alt-Del</string>
-    <string name="ctrl_c">Ctrl-c</string>
-    <string name="disconnect">Отключиться</string>
-    <string name="external_mouse">Внешняя мышь</string>
-    <string name="stretch_to_screen">Растянуть на экран</string>
-    <string name="fit_to_screen">Подогнать под экран</string>
-    <string name="zoom_in">Увеличить</string>
-    <string name="zoom_out">Уменьшить</string>
-    <string name="on">Вкл</string>
-    <string name="one_to_one">Обычный (1:1)</string>
-    <string name="scaling">Масштабирование</string>
+    <string name="minimize">минимизировать</string>
     <string name="showkbd_label">Клавиатура</string>
     <string name="help">Помощь</string>
     <string name="drives">Диски</string>
@@ -76,7 +65,6 @@
     <string name="chooseDirToCreateImage">Выберите каталог для создания образа</string>
     <string name="ImageCreated">Образ создан</string>
     <string name="vncServer">VNC-сервер</string>
-    <string name="Enable">Включить</string>
     <string name="DeleteVM">Удалить ВМ</string>
     <string name="deleteVMWarning">Удалить ВМ? Будет удалена только конфигурация машины, файлы образов дисков удалены не будут</string>
     <string name="NoMachineSelected">Машина не выбрана</string>
@@ -101,6 +89,7 @@
     <string name="ChangeDirectory">Изменить каталог</string>
     <string name="InstallRoms">Установить ROM</string>
     <string name="CreateMachine">Создать машину</string>
+    <string name="renameMachine">Переименовать машину</string>
     <string name="DeleteMachine">Удалить машину</string>
     <string name="Settings">Настройки</string>
     <string name="ViewLog">Просмотреть журнал</string>
@@ -170,7 +159,6 @@
     <string name="DoNotShowAgain">Больше не показывать</string>
     <string name="GenNewVersion">Получить новую версию</string>
     <string name="Cancel">Отмена</string>
-    <string name="Delete">Удалить</string>
     <string name="CopyTo">Копировать в</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
@@ -192,8 +180,6 @@
     <string name="PointerSpeedSummary">Скорость движения курсора в режиме тачпада/относительном режиме</string>
     <string name="RefreshRate">Частота обновления ВМ</string>
     <string name="RefreshRateSummary">Частота обновления дисплея виртуальной машины, более высокие значения обеспечивают более плавную картинку, но используют больше ресурсов</string>
-    <string name="keyPressDelay">Задержка нажатия клавиш</string>
-    <string name="keyPressDelaySummary">Задержка между нажатиями клавиш. Меньшие значения повышают производительность, но эмулятор может не распознавать события клавиш, поэтому используйте большие значения при необходимости.</string>
     <string name="mouseButtonDelay">Задержка клика мыши</string>
     <string name="mouseButtonDelaySummary">Задержка между кликами кнопок мыши. Меньшие значения повышают производительность, но эмулятор может не распознавать события мыши, поэтому используйте большие значения при необходимости.</string>
     <string name="machineHeader">Машина:</string>
@@ -222,7 +208,6 @@
     <string name="ram_memory_label">Оперативная память (МБ)</string>
     <string name="disable_hpet_label">Отключить HPET</string>
     <string name="disable_tsc_label">Отключить TSC</string>
-    <string name="enable_svm_label">Включить SVM</string>
     <string name="disable_acpi_label">Отключить ACPI</string>
 
     <!-- Storage section -->
@@ -255,8 +240,6 @@
     <string name="bios_type_label">Тип BIOS</string>
     <string name="bios_code_label">Code</string>
     <string name="bios_vars_label">Vars</string>
-    <string name="bios_default_type">По умолчанию</string>
-    <string name="bios_uefi_type">UEFI</string>
 
     <!-- Boot section -->
     <string name="section_boot">Загрузка</string>
@@ -343,7 +326,6 @@
     <string name="summary_fda">FDA</string>
     <string name="summary_fdb">FDB</string>
     <string name="summary_boot_from">Загрузка с</string>
-    <string name="summary_bios">bios</string>
     <string name="summary_kernel">ядро</string>
     <string name="summary_initrd">initrd</string>
     <string name="summary_append">append</string>

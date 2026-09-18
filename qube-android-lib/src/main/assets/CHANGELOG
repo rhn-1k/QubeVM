@@ -1,3 +1,17 @@
+* QubeVM v7.1.0
+- Using latest ndk (r30)
+- improved keyboard typing latency
+- Using latest NDK optimizations for binaries
+- Removed SVM (nested virtualization)
+- Made DNS changes applies to current vm only
+- Now Shared Folder supports virtio-9p interface (click on the icon to change it)
+- Added more CPUs
+- Fixed crash when using some CPUs (thanks to Rickozzzz for reporting)
+- Fixed cursor jumps to random places when gestures mode is being used
+- Fixed cursor stays toggled on first touch
+- Android 11+ is required
+
+
 * QubeVM v7.0.9
 - Upgraded glib (2.88.2 -> 2.88.3)
 - Upgraded slirp (4.9.3 -> 4.9.4)
@@ -19,7 +33,7 @@
 - Fixed virgl black screen
 - Fixed virtio-gpu-gl-pci crash
 - Fixed q35 machine gets stuck at BIOS screen
-- Compiled with latest Android SDK
+- Compiled with latest Android SDK (37)
 
 
 * QubeVM v7.0.7
@@ -39,7 +53,7 @@
 - BIOS is now per-VM option
 - Updated some icons
 - Improved Logger
-- Now you can copy the crash summary text
+- The crash summary text can be copied now
 - Fixed issues introduced in v7.0.5
 
 
@@ -50,7 +64,7 @@
 - Added SVM for AMD nested virtualization toggle
 - Re-added soundcards: hda, ac97
 - Updated ram to increase by 256MB
-- Updated max ram limit (8GB max -> 12GB max)
+- Updated max ram limit (8GB -> 12GB)
 - Now creating Hard Disk drives can create qcow2 up to 64GB
 - Improved virgl renderer
 - Removed suspend system for VMs

@@ -3,23 +3,12 @@
 
     <string name="app_name">QubeVM</string>
     <string name="app_short_name">Qube</string>
-    <string name="auto">Auto</string>
     <string name="button_send_text">Send Text</string>
     <string name="center_mouse">Mouse</string>
     <string name="close">Close</string>
     <string name="reset">Reset</string>
     <string name="shutdown">Shutdown</string>
-    <string name="ctrl_alt_del">Ctrl-Alt-Del</string>
-    <string name="ctrl_c">Ctrl-c</string>
-    <string name="disconnect">Disconnect</string>
-    <string name="external_mouse">External Mouse</string>
-    <string name="stretch_to_screen">Stretch to Screen</string>
-    <string name="fit_to_screen">Fit to Screen</string>
-    <string name="zoom_in">Zoom In</string>
-    <string name="zoom_out">Zoom Out</string>
-    <string name="on">On</string>
-    <string name="one_to_one">Normal (1:1)</string>
-    <string name="scaling">Scaling</string>
+    <string name="minimize">Minimize</string>
     <string name="showkbd_label">Keyboard</string>
     <string name="help">Help</string>
     <string name="drives">Drives</string>
@@ -75,7 +64,6 @@
     <string name="chooseDirToCreateImage">Choose a directory to create your image</string>
     <string name="ImageCreated">Image Created</string>
     <string name="vncServer">VNC Server</string>
-    <string name="Enable">Enable</string>
     <string name="DeleteVM">Delete VM</string>
     <string name="deleteVMWarning">Delete VM? you will lose the machine configuration only, disk images files will not be deleted</string>
     <string name="NoMachineSelected">No Machine selected</string>
@@ -100,6 +88,7 @@
     <string name="ChangeDirectory">Change Directory</string>
     <string name="InstallRoms">Install Roms</string>
     <string name="CreateMachine">Create Machine</string>
+    <string name="renameMachine">Rename Machine</string>
     <string name="DeleteMachine">Delete Machine</string>
     <string name="Settings">Settings</string>
     <string name="ViewLog">View Log</string>
@@ -171,7 +160,6 @@
     <string name="DoNotShowAgain">Do not Show Again</string>
     <string name="GenNewVersion">Get New Version</string>
     <string name="Cancel">Cancel</string>
-    <string name="Delete">Delete</string>
     <string name="CopyTo">Copy To</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
@@ -193,8 +181,6 @@
     <string name="PointerSpeedSummary">Cursor movement speed in trackpad/relative mode</string>
     <string name="RefreshRate">VM Refresh Rate</string>
     <string name="RefreshRateSummary">Virtual Machine display refresh rate, Higher values are smoother but use more resources</string>
-    <string name="keyPressDelay">Key Pressed Delay</string>
-    <string name="keyPressDelaySummary">Delay between keyboard keys pressed. Lower values have better performance but key events might not be understood by the emulator so use higher values.</string>
     <string name="mouseButtonDelay">Mouse Button Click Delay</string>
     <string name="mouseButtonDelaySummary">Delay between mouse button clicks. Lower values have better performance but mouse events might be not be understood by the emulator so use higher values.</string>
     <string name="machineHeader">Machine:</string>
@@ -223,7 +209,6 @@
     <string name="ram_memory_label">RAM Memory (MB)</string>
     <string name="disable_hpet_label">Disable HPET</string>
     <string name="disable_tsc_label">Disable TSC</string>
-    <string name="enable_svm_label">Enable SVM</string>
     <string name="disable_acpi_label">Disable ACPI</string>
 
     <!-- Storage section -->
@@ -256,8 +241,6 @@
     <string name="bios_type_label">BIOS type</string>
     <string name="bios_code_label">Code</string>
     <string name="bios_vars_label">Vars</string>
-    <string name="bios_default_type">Default</string>
-    <string name="bios_uefi_type">UEFI</string>
 
     <!-- Boot section -->
     <string name="section_boot">Boot</string>
@@ -344,7 +327,6 @@
     <string name="summary_fda">FDA</string>
     <string name="summary_fdb">FDB</string>
     <string name="summary_boot_from">Boot from</string>
-    <string name="summary_bios">bios</string>
     <string name="summary_kernel">kernel</string>
     <string name="summary_initrd">initrd</string>
     <string name="summary_append">append</string>

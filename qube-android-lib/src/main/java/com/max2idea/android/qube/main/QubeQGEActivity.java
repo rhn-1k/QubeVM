@@ -222,7 +222,7 @@ public class QubeQGEActivity extends AppCompatActivity
         } else if (item.getItemId() == R.id.itemShutdown) {
             KeyboardUtils.hideKeyboard(this, mSurface);
             QubeActivityCommon.promptStopVM(this, viewListener);
-        } else if (item.getItemId() == R.id.itemDisconnet) {
+        } else if (item.getItemId() == R.id.itemMinimize) {
             finish();
         } else if (item.getItemId() == R.id.itemMouse) {
             promptMouseMode();
@@ -232,14 +232,10 @@ public class QubeQGEActivity extends AppCompatActivity
                 @Override
                 public void run() {
                     toggleKeyboardFlag = KeyboardUtils.showKeyboard(QubeQGEActivity.this, toggleKeyboardFlag, mSurface);
-                    // Virtual keys toggle based on IME visibility, not guessing the delays
-                    // This prevents missed toggles from timing issues
                 }
             }, 500);
         } else if (item.getItemId() == R.id.itemVolume) {
             promptVolume();
-        } else if (item.getItemId() == R.id.itemCtrlAltDel) {
-            sendCtrlAltDel();
         } else if (item.getItemId() == R.id.itemHideToolbar) {
             hideToolbar();
         } else if (item.getItemId() == R.id.itemViewLog) {
@@ -502,13 +498,6 @@ public class QubeQGEActivity extends AppCompatActivity
             actionShow = MenuItem.SHOW_AS_ACTION_ALWAYS;
         }
 
-        // Remove scaling for now
-        menu.removeItem(menu.findItem(R.id.itemScaling).getItemId());
-        // Remove external mouse for now
-        menu.removeItem(menu.findItem(R.id.itemExternalMouse).getItemId());
-        menu.removeItem(menu.findItem(R.id.itemCtrlAltDel).getItemId());
-        menu.removeItem(menu.findItem(R.id.itemCtrlC).getItemId());
-
         if (MachineController.getInstance().getMachine().getSoundCard() == null) {
             menu.removeItem(menu.findItem(R.id.itemVolume).getItemId());
             maxMenuItemsShown--;
@@ -712,14 +701,10 @@ public class QubeQGEActivity extends AppCompatActivity
         if (generation == 0 || generation == lastGfxGeneration)
             return;
         lastGfxGeneration = generation;
-
-        // Plain repaint, View.postInvalidate() is the lightweight redraw we want
-        // mSurface.refreshSurfaceView() spawns a thread and changes resolution, wrong for 60x/sec
         mSurface.postInvalidate();
     }
 
     private void setupUserInterface() {
-        Config.keyDelay = QubeSettingsManager.getKeyPressDelay(this);
         Config.mouseButtonDelay = QubeSettingsManager.getMouseButtonDelay(this);
     }
 
@@ -1078,6 +1063,7 @@ public class QubeQGEActivity extends AppCompatActivity
     protected void sendMouseEvent(int button, int action, int toolType, float x, float y) {
         //HACK: we generate an artificial delay since the qemu main event loop
         // is probably not able to process them if the timestamps are too close together?
+        // KeyDelay has been removed, we fixed it inside qemu
         sendMouseEvent(button, action, toolType, x, y, action == MotionEvent.ACTION_UP ? Config.mouseButtonDelay : 0);
     }
 
@@ -1157,18 +1143,10 @@ public class QubeQGEActivity extends AppCompatActivity
         return Math.max(min, Math.min(max, v));
     }
 
-    protected void sendKeyEvent(KeyEvent event, int keycode, boolean down) {
-        // HACK: generate an artificial delay since the qemu main event loop
-        // is probably not able to process key events if the timestamps are too close together.
-        sendKeyEvent(event, keycode, down, !down ? Config.keyDelay : 0);
-    }
-
-    private void sendKeyEvent(final KeyEvent event, final int keycode, final boolean down, final long delayMs) {
+    protected void sendKeyEvent(final KeyEvent event, final int keycode, final boolean down) {
         keyEventsExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                if (delayMs > 0)
-                    delay(delayMs);
                 if (machineRunning) {
                     long keysym = KeySymMap.get(event, keycode);
                     if (keysym != 0)

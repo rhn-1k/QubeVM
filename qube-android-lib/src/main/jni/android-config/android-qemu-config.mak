@@ -90,7 +90,7 @@ MISC += --disable-qom-cast-debug
 MISC += --disable-libnfs --disable-libiscsi --disable-docs
 MISC += --disable-rdma --disable-brlapi --disable-curl
 MISC += --disable-vde --disable-netmap --disable-cap-ng
-MISC += --disable-attr --disable-guest-agent --disable-pie
+MISC += --disable-guest-agent --disable-pie
 MISC += --disable-rbd --disable-lzo  --disable-snappy
 # xfsctl was removed in QEMU 6+; only pass for older versions
 ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.1),)
@@ -124,8 +124,8 @@ else
 VHOST = --disable-vhost-net --disable-vhost-scsi
 endif
 
-#VIRT
-VIRT = --disable-virtfs
+#VIRT (Needed for shared folder)
+VIRT = --enable-virtfs
 
 #AIO (Not supported yet)
 LINUX_AIO = --disable-linux-aio

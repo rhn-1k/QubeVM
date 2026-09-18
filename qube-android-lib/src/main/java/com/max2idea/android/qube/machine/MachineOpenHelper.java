@@ -27,7 +27,7 @@ import java.util.Observer;
 public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatabase, Observer {
     private static final String TAG = "MachineOpenHelper";
 
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 25;
     private static final String DATABASE_NAME = "QUBE";
     private static final String MACHINE_TABLE_NAME = "machines";
 
@@ -43,10 +43,12 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             + MachineProperty.MOUSE.name() + " TEXT, " + MachineProperty.KEYBOARD.name() + " TEXT, " + MachineProperty.ENABLE_MTTCG.name() + " INTEGER, " + MachineProperty.ENABLE_KVM.name() + " INTEGER , "
             + MachineProperty.HDA_INTERFACE.name() + " TEXT, " + MachineProperty.HDB_INTERFACE.name() + " TEXT, " + MachineProperty.HDC_INTERFACE.name() + " TEXT, " + MachineProperty.HDD_INTERFACE.name() + " TEXT , "
             + MachineProperty.CDROM_INTERFACE.name() + " TEXT, " + MachineProperty.PRIO.name() + " INTEGER, "
-            + MachineProperty.ENABLE_VENUS.name() + " INTEGER, " + MachineProperty.ENABLE_SVM.name() + " INTEGER, "
+            + MachineProperty.ENABLE_VENUS.name() + " INTEGER, "
             + MachineProperty.BIOS.name() + " TEXT, " + MachineProperty.BIOS_TYPE.name() + " TEXT, "
             + MachineProperty.BIOS_CODE.name() + " TEXT, " + MachineProperty.BIOS_VARS.name() + " TEXT, "
-            + MachineProperty.TCG_BUFFER.name() + " INTEGER "
+            + MachineProperty.TCG_BUFFER.name() + " INTEGER, "
+            + MachineProperty.DNS.name() + " TEXT, "
+            + MachineProperty.SHARED_FOLDER_TYPE.name() + " TEXT "
             + ");";
 
     private static MachineOpenHelper sInstance;
@@ -155,9 +157,6 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.ENABLE_VENUS + " INTEGER;");
         }
 
-        if (newVersion >= 20 && oldVersion <= 19) {
-            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.ENABLE_SVM + " INTEGER;");
-        }
         if (newVersion >= 21 && oldVersion <= 20) {
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.BIOS + " TEXT;");
         }
@@ -168,6 +167,12 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.BIOS_TYPE + " TEXT;");
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.BIOS_CODE + " TEXT;");
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.BIOS_VARS + " TEXT;");
+        }
+        if (newVersion >= 24 && oldVersion <= 23) {
+            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.DNS + " TEXT;");
+        }
+        if (newVersion >= 25 && oldVersion <= 24) {
+            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.SHARED_FOLDER_TYPE + " TEXT;");
         }
     }
 
@@ -195,6 +200,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         stateValues.put(MachineProperty.FDB.name(), machine.getFdbImagePath());
         stateValues.put(MachineProperty.SHARED_FOLDER.name(), machine.getSharedFolderPath());
         stateValues.put(MachineProperty.SHARED_FOLDER_MODE.name(), machine.getShared_folder_mode());
+        stateValues.put(MachineProperty.SHARED_FOLDER_TYPE.name(), machine.getSharedFolderType());
         stateValues.put(MachineProperty.BOOT_CONFIG.name(), machine.getBootDevice());
         stateValues.put(MachineProperty.NETCONFIG.name(), machine.getNetwork());
         stateValues.put(MachineProperty.NICCONFIG.name(), machine.getNetworkCard());
@@ -219,12 +225,12 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         stateValues.put(MachineProperty.ENABLE_KVM.name(), machine.getEnableKVM());
         stateValues.put(MachineProperty.PRIO.name(), machine.getPrio());
         stateValues.put(MachineProperty.ENABLE_VENUS.name(), machine.getEnableVenus());
-        stateValues.put(MachineProperty.ENABLE_SVM.name(), machine.getEnableSVM());
         stateValues.put(MachineProperty.BIOS.name(), machine.getBios());
         stateValues.put(MachineProperty.BIOS_TYPE.name(), machine.getBiosType());
         stateValues.put(MachineProperty.BIOS_CODE.name(), machine.getBiosCode());
         stateValues.put(MachineProperty.BIOS_VARS.name(), machine.getBiosVars());
         stateValues.put(MachineProperty.TCG_BUFFER.name(), machine.getTcgBuffer());
+        stateValues.put(MachineProperty.DNS.name(), machine.getDns());
 
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -285,7 +291,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
                 + MachineProperty.HOSTFWD + " , " + MachineProperty.GUESTFWD + " , " + MachineProperty.UI + ", " + MachineProperty.DISABLE_TSC + ", "
                 + MachineProperty.MOUSE + ", " + MachineProperty.KEYBOARD + ", " + MachineProperty.ENABLE_MTTCG + ", " + MachineProperty.ENABLE_KVM + ", "
                 + MachineProperty.HDA_INTERFACE + ", " + MachineProperty.HDB_INTERFACE + ", " + MachineProperty.HDC_INTERFACE + ", " + MachineProperty.HDD_INTERFACE + ", "
-                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.ENABLE_SVM + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " "
+                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " "
                 + " from " + MACHINE_TABLE_NAME
                 + " where " + MachineProperty.STATUS + " = " + Config.STATUS_CREATED
                 + " and " + MachineProperty.MACHINE_NAME + "=\"" + machine + "\"" + ";";
@@ -351,12 +357,13 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             myMachine.setCdInterface(cur.getString(43));
             myMachine.setPrio(cur.getInt(44));
             myMachine.setEnableVenus(cur.getInt(45));
-            myMachine.setEnableSVM(cur.getInt(46));
-            myMachine.setBios(cur.getString(47));
-            myMachine.setBiosType(cur.getString(48));
-            myMachine.setBiosCode(cur.getString(49));
-            myMachine.setBiosVars(cur.getString(50));
-            myMachine.setTcgBuffer(cur.getInt(51));
+            myMachine.setBios(cur.getString(46));
+            myMachine.setBiosType(cur.getString(47));
+            myMachine.setBiosCode(cur.getString(48));
+            myMachine.setBiosVars(cur.getString(49));
+            myMachine.setTcgBuffer(cur.getInt(50));
+            myMachine.setDns(cur.getString(51));
+            myMachine.setSharedFolderType(cur.getString(52));
         }
         cur.close();
 
@@ -392,6 +399,35 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
 
         boolean deleted = rowsAffected > 0;
         return deleted;
+    }
+
+    public synchronized boolean renameMachine(Machine machine, String newName) {
+        if (machine == null || newName == null)
+            return false;
+        if (getMachine(newName) != null)
+            return false;
+
+        int rowsAffected = 0;
+        try {
+            ContentValues stateValues = new ContentValues();
+            stateValues.put(MachineProperty.MACHINE_NAME.name(), newName);
+            db.beginTransaction();
+            rowsAffected = db.update(MACHINE_TABLE_NAME, stateValues,
+                    MachineProperty.MACHINE_NAME.name() + "=\"" + machine.getName() + "\" ",
+                    null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.w(TAG, "Error while renaming VM: " + e.getMessage());
+            if (Config.debug)
+                e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+
+        boolean renamed = rowsAffected > 0;
+        if (renamed)
+            machine.setName(newName);
+        return renamed;
     }
 
 

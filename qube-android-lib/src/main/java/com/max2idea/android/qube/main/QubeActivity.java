@@ -102,6 +102,7 @@ public class QubeActivity extends AppCompatActivity
     private static final int QUIT = 1;
     private static final int INSTALL = 2;
     private static final int DELETE = 3;
+    private static final int RENAME = 4;
 
     private static final int CHANGELOG = 6;
     private static final int LICENSE = 7;
@@ -114,8 +115,6 @@ public class QubeActivity extends AppCompatActivity
     // TCG Buffer
     private static final int TCG_MIN = 256;
     private static final int TCG_MAX = 2048;
-    private static final int TCG_STEP = 256;
-    private static final int TCG_DEFAULT = 256;
 
     // disk mapping
     private static final Hashtable<FileType, DiskInfo> diskMapping = new Hashtable<>();
@@ -153,6 +152,7 @@ public class QubeActivity extends AppCompatActivity
     private ImageView mHDDOptions;
     private Spinner mHDD;
     private Spinner mSharedFolder;
+    private ImageView mSharedFolderOptions;
 
     //removable
     private Spinner mCD;
@@ -206,7 +206,6 @@ public class QubeActivity extends AppCompatActivity
     private MaterialSwitch mDisableACPI;
     private MaterialSwitch mDisableHPET;
     private MaterialSwitch mDisableTSC;
-    private MaterialSwitch mEnableSVM;
     private MaterialSwitch mEnableKVM;
     private MaterialSwitch mEnableMTTCG;
     private com.google.android.material.slider.Slider mTcgBuffer;
@@ -674,7 +673,7 @@ public class QubeActivity extends AppCompatActivity
                     return;
                 if (!hasFocus) {
                     setDNSServer(mDNS.getText().toString());
-                    QubeSettingsManager.setDNSServer(QubeActivity.this, mDNS.getText().toString());
+                    notifyFieldChange(MachineProperty.DNS, mDNS.getText().toString());
                     updateNetworkSummary(false);
                 }
             }
@@ -788,14 +787,6 @@ public class QubeActivity extends AppCompatActivity
                 } else {
                     notifyFieldChange(MachineProperty.PRIO, false);
                 }
-            }
-        });
-
-        mEnableSVM.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton viewButton, boolean isChecked) {
-                if (getMachine() == null)
-                    return;
-                notifyFieldChange(MachineProperty.ENABLE_SVM, isChecked);
             }
         });
 
@@ -1031,14 +1022,17 @@ public class QubeActivity extends AppCompatActivity
         if(getMachine() == null)
             return;
 
-        final String[] items = {
-                "ide",
-                "scsi",
-                "virtio"
-        };
+        final String[] items = machineDriveName == MachineProperty.SHARED_FOLDER
+                ? new String[] { "vvfat", "virtio9p" }
+                : new String[] { "ide", "scsi", "virtio" };
         final AlertDialog.Builder mBuilder = new MaterialAlertDialogBuilder(this);
-        mBuilder.setTitle(machineDriveName + " " + getString(R.string.Interface));
-        mBuilder.setIcon(R.drawable.hard_drive_24px);
+        String driveTitle = machineDriveName == MachineProperty.SHARED_FOLDER
+                ? getString(R.string.SharedFolder)
+                : machineDriveName.toString();
+        mBuilder.setTitle(driveTitle + " " + getString(R.string.Interface));
+        mBuilder.setIcon(machineDriveName == MachineProperty.SHARED_FOLDER
+                ? R.drawable.folder_24px
+                : R.drawable.hard_drive_24px);
         int driveInterface = getMachineInterface(machineDriveName, items);
         mBuilder.setSingleChoiceItems(items, driveInterface, new DialogInterface.OnClickListener() {
             @Override
@@ -1068,6 +1062,9 @@ public class QubeActivity extends AppCompatActivity
                 break;
             case CDROM:
                 hdInterfaceStr = getMachine().getCDInterface();
+                break;
+            case SHARED_FOLDER:
+                hdInterfaceStr = getMachine().getSharedFolderType();
                 break;
         }
         for(int i=0; i<items.length; i++) {
@@ -1100,6 +1097,13 @@ public class QubeActivity extends AppCompatActivity
             }
 
             public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+        mSharedFolderOptions.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptDriveInterface(MachineProperty.SHARED_FOLDER);
             }
         });
     }
@@ -1142,7 +1146,6 @@ public class QubeActivity extends AppCompatActivity
         mEnableKVM.setOnCheckedChangeListener(null);
         mEnableMTTCG.setOnCheckedChangeListener(null);
         mHighPrio.setOnCheckedChangeListener(null);
-        mEnableSVM.setOnCheckedChangeListener(null);
         mHDA.setOnItemSelectedListener(null);
         mHDB.setOnItemSelectedListener(null);
         mHDC.setOnItemSelectedListener(null);
@@ -1674,27 +1677,35 @@ public class QubeActivity extends AppCompatActivity
         enableRemovableDiskValues(flag);
     }
 
-    private void updateSoundCardEnabledState(boolean enabled) {
-        if (mSoundCard == null)
+    // Fade helper for enable/disable animations
+    private void fadeViewEnabledState(final View view, final boolean enabled, boolean animate,
+            final boolean toggleEnabled, long fadeInMs, long fadeOutMs) {
+        if (view == null) return;
+        final float targetAlpha = enabled ? 1.0f : 0.4f;
+        boolean alreadyCorrect = (!toggleEnabled || view.isEnabled() == enabled)
+                && Math.abs(view.getAlpha() - targetAlpha) < 0.01f;
+        if (!animate) {
+            view.setAlpha(targetAlpha);
+            if (toggleEnabled) view.setEnabled(enabled);
             return;
-        if (!enabled && mSoundCard.isEnabled()) {
+        }
+        if (alreadyCorrect) return;
+        if (!enabled) {
             // Fade out then disable
-            mSoundCard.animate()
-                    .alpha(0.4f)
-                    .setDuration(250)
-                    .withEndAction(() -> mSoundCard.setEnabled(false))
-                    .start();
-        } else if (enabled && !mSoundCard.isEnabled()) {
-            // Fade back in then enable
-            mSoundCard.setEnabled(true);
-            mSoundCard.animate()
-                    .alpha(1.0f)
-                    .setDuration(200)
+            view.animate().alpha(0.4f).setDuration(fadeOutMs)
+                    .withEndAction(() -> {
+                        if (toggleEnabled) view.setEnabled(false);
+                    })
                     .start();
         } else {
-            mSoundCard.setAlpha(enabled ? 1.0f : 0.4f);
-            mSoundCard.setEnabled(enabled);
+            // Enable immediately, then fade in
+            if (toggleEnabled) view.setEnabled(true);
+            view.animate().alpha(1.0f).setDuration(fadeInMs).start();
         }
+    }
+
+    private void updateSoundCardEnabledState(boolean enabled) {
+        fadeViewEnabledState(mSoundCard, enabled, true, true, 200, 250);
     }
 
     // Only enabled if a supported virtio device is selected
@@ -1706,27 +1717,13 @@ public class QubeActivity extends AppCompatActivity
         boolean venusSupported = GraphicsCapabilities.supportsVenus(getSelectedVga());
 
         if (!venusSupported && mEnableVenus.isEnabled()) {
-            // Animate: turn off the switch first, then fade then disable it
+            // Turn off the switch first, then fade then disable it
             if (mEnableVenus.isChecked()) {
                 mEnableVenus.setChecked(false);
             }
-            mEnableVenus.postDelayed(() -> {
-                mEnableVenus.animate()
-                        .alpha(0.4f)
-                        .setDuration(250)
-                        .withEndAction(() -> mEnableVenus.setEnabled(false))
-                        .start();
-            }, 150);
-        } else if (venusSupported && !mEnableVenus.isEnabled()) {
-            // Fade back in then enable
-            mEnableVenus.setEnabled(true);
-            mEnableVenus.animate()
-                    .alpha(1.0f)
-                    .setDuration(200)
-                    .start();
+            mEnableVenus.postDelayed(() -> fadeViewEnabledState(mEnableVenus, false, true, true, 200, 250), 150);
         } else {
-            mEnableVenus.setAlpha(venusSupported ? 1.0f : 0.4f);
-            mEnableVenus.setEnabled(venusSupported);
+            fadeViewEnabledState(mEnableVenus, venusSupported, true, true, 200, 250);
         }
     }
 
@@ -1736,46 +1733,16 @@ public class QubeActivity extends AppCompatActivity
         setRemovableDriveRowEnabled(mFDBStr, mFDB, flag && mFDBenable.isChecked(), false);
     }
 
-    /**
-     * Fades in/out only the label (TextView) and the file picker (Spinner) of a
-     * removable-drive row.  The Switch and icon are intentionally excluded.
-     *
-     * @param label    The TextView ("CDROM: " / "Floppy A: " / …)
-     * @param spinner  The Spinner next to it
-     * @param enabled  Target enabled state
-     * @param animate  Whether to run the fade animation (false for instant sync)
-     */
-    private void setRemovableDriveRowEnabled(TextView label, Spinner spinner,
-                                              boolean enabled, boolean animate) {
+    // Fades label and spinner
+    private void setRemovableDriveRowEnabled(TextView label, Spinner spinner, boolean enabled, boolean animate) {
         if (label == null || spinner == null) {
             if (spinner != null) spinner.setEnabled(enabled);
             return;
         }
 
-        float targetAlpha = enabled ? 1.0f : 0.4f;
-        boolean alreadyCorrect = spinner.isEnabled() == enabled
-                && Math.abs(label.getAlpha() - targetAlpha) < 0.01f;
-        if (alreadyCorrect) return;
-
-        if (animate) {
-            if (!enabled) {
-                // Fade out then disable
-                label.animate().alpha(0.4f).setDuration(220).start();
-                spinner.animate().alpha(0.4f).setDuration(220)
-                        .withEndAction(() -> spinner.setEnabled(false))
-                        .start();
-            } else {
-                // Enable immediately, then fade in
-                spinner.setEnabled(true);
-                label.animate().alpha(1.0f).setDuration(180).start();
-                spinner.animate().alpha(1.0f).setDuration(180).start();
-            }
-        } else {
-            // Instant sync (like initial load)
-            label.setAlpha(targetAlpha);
-            spinner.setAlpha(targetAlpha);
-            spinner.setEnabled(enabled);
-        }
+        // Label keeps its enabled flag untouched, spinner doesn't
+        fadeViewEnabledState(label, enabled, animate, false, 180, 220);
+        fadeViewEnabledState(spinner, enabled, animate, true, 180, 220);
     }
 
     private void enableNonRemovableDeviceOptions(boolean flag) {
@@ -1841,7 +1808,6 @@ public class QubeActivity extends AppCompatActivity
         mDisableTSC.setEnabled(flag);
         mExtraParams.setEnabled(flag);
         mHighPrio.setEnabled(flag);
-        mEnableSVM.setEnabled(flag);
 
     }
 
@@ -1866,9 +1832,6 @@ public class QubeActivity extends AppCompatActivity
             ToastUtils.toastLong(QubeActivity.this, getString(R.string.Error) + ": " + ex);
             return;
         }
-
-        // XXX: save the user defined dns server before we start the vm
-        QubeSettingsManager.setDNSServer(this, mDNS.getText().toString());
 
         //XXX: make sure that bios files are installed in case we ran out of space in the last run
         FileInstaller.installFiles(QubeActivity.this, false);
@@ -1968,7 +1931,6 @@ public class QubeActivity extends AppCompatActivity
             mMachine.setEnabled(false);
 
         //UI
-
         mKeyboard = findViewById(R.id.keyboardval);
         mMouse = findViewById(R.id.mouseval);
 
@@ -2000,6 +1962,7 @@ public class QubeActivity extends AppCompatActivity
         if (!Config.enableSharedFolder)
             sharedFolderLayout.setVisibility(View.GONE);
         mSharedFolder = findViewById(R.id.sharedfolderval);
+        mSharedFolderOptions = findViewById(R.id.sharedfolderoptions);
 
         //Removable storage
         mCD = findViewById(R.id.cdromimgval);
@@ -2100,14 +2063,12 @@ public class QubeActivity extends AppCompatActivity
         mNetConfig = findViewById(R.id.netcfgval);
         mNetworkCard = findViewById(R.id.netDevicesVal);
         mDNS = findViewById(R.id.dnsval);
-        setDefaultDNServer();
         mHOSTFWD = findViewById(R.id.hostfwdval);
 
         // advanced
         mExtraParams = findViewById(R.id.extraparamsval);
 
         mHighPrio = findViewById(R.id.highprioval);
-        mEnableSVM = findViewById(R.id.enablesvmval);
 
         disableFeatures();
         enableRemovableDeviceOptions(false);
@@ -2184,24 +2145,6 @@ public class QubeActivity extends AppCompatActivity
                 && QubeApplication.arch != Config.Arch.arm && QubeApplication.arch != Config.Arch.arm64) {
             mEnableKVMLayout.setVisibility(View.GONE);
         }
-    }
-
-    private void setDefaultDNServer() {
-
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                final String defaultDNSServer = QubeSettingsManager.getDNSServer(QubeActivity.this);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        // Code here will run in UI thread
-                        mDNS.setText(defaultDNSServer);
-                    }
-                });
-            }
-        });
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
-
     }
 
     private void setupSections() {
@@ -2537,8 +2480,6 @@ public class QubeActivity extends AppCompatActivity
                 text = getString(R.string.ExtraParams) + ": " + getMachine().getExtraParams();
             if (mHighPrio.isChecked())
                 text = appendOption(getString(R.string.HighPriority), text);
-            if (mEnableSVM.isChecked())
-                text = appendOption(getString(R.string.enable_svm_label), text);
             mAdvancedSectionSummary.setText(text != null ? text : "");
         }
     }
@@ -2633,6 +2574,11 @@ public class QubeActivity extends AppCompatActivity
         else
             mExtraParams.setText("");
 
+        if (getMachine().getDns() != null)
+            mDNS.setText(getMachine().getDns());
+        else
+            mDNS.setText(Config.defaultDNSServer);
+
         // CDROM
         seMachineDriveValue(FileType.CDROM, getMachine().getCdImagePath());
 
@@ -2672,7 +2618,6 @@ public class QubeActivity extends AppCompatActivity
         mTcgBuffer.setValue(tcgBuffer);
         mTcgBufferDisplay.setText(tcgBuffer + "M");
         mHighPrio.setChecked(getMachine().getPrio() == 1);
-        mEnableSVM.setChecked(getMachine().getEnableSVM() == 1);
         if (BuildConfig.USE_VENUS)
             mEnableVenus.setChecked(getMachine().getEnableVenus() == 1);
 
@@ -2968,6 +2913,9 @@ public class QubeActivity extends AppCompatActivity
 
     private void populateRAM() {
         ArrayList<String> arraySpinner = new ArrayList<>();
+        // We add these because some OSes need lower ram size to boot
+        arraySpinner.add("64");
+        arraySpinner.add("128");
         for (int i = 0; i < 48; i++) {
             arraySpinner.add(((i + 1) * 256) + "");
         }
@@ -2991,9 +2939,9 @@ public class QubeActivity extends AppCompatActivity
     private void populateTcgBuffer() {
         mTcgBuffer.setValueFrom(TCG_MIN);
         mTcgBuffer.setValueTo(TCG_MAX);
-        mTcgBuffer.setStepSize(TCG_STEP);
-        mTcgBuffer.setValue(TCG_DEFAULT);
-        mTcgBufferDisplay.setText(TCG_DEFAULT + "M");
+        mTcgBuffer.setStepSize(TCG_MIN);
+        mTcgBuffer.setValue(TCG_MIN);
+        mTcgBufferDisplay.setText(TCG_MIN + "M");
     }
 
     private void populateBiosType() {
@@ -3213,6 +3161,7 @@ public class QubeActivity extends AppCompatActivity
         menu.add(0, INSTALL, 0, R.string.InstallRoms).setIcon(R.drawable.archive_24px);
         if(!MachineController.getInstance().isRunning()) {
             menu.add(0, CREATE, 0, R.string.CreateMachine).setIcon(R.drawable.developer_board_24px);
+            menu.add(0, RENAME, 0, R.string.renameMachine).setIcon(R.drawable.edit_note_24px);
             menu.add(0, DELETE, 0, R.string.DeleteMachine).setIcon(R.drawable.delete_24px);
         }
         menu.add(0, SETTINGS, 0, R.string.Settings).setIcon(R.drawable.settings_24px);
@@ -3239,6 +3188,8 @@ public class QubeActivity extends AppCompatActivity
             promptDeleteMachine();
         } else if (item.getItemId() == CREATE) {
             promptMachineName(this);
+        } else if (item.getItemId() == RENAME) {
+            promptRenameMachine();
         } else if (item.getItemId() == SETTINGS) {
             showSettings();
         } else if (item.getItemId() == TOOLS) {
@@ -3260,6 +3211,41 @@ public class QubeActivity extends AppCompatActivity
     private void showSettings() {
         Intent i = new Intent(this, QubeSettingsManager.class);
         startActivity(i);
+    }
+
+    private void promptRenameMachine() {
+        Machine machine = getMachine();
+        if (machine == null) {
+            ToastUtils.toastShort(this, getString(R.string.NoMachineSelected));
+            return;
+        }
+        EditText nameInput = new EditText(this);
+        nameInput.setSingleLine(true);
+        nameInput.setText(machine.getName());
+        nameInput.setSelectAllOnFocus(true);
+        int padding = (int) (24 * getResources().getDisplayMetrics().density);
+        nameInput.setPadding(padding, padding / 2, padding, padding / 2);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.renameMachine)
+                .setIcon(R.drawable.edit_note_24px)
+                .setView(nameInput)
+                .setPositiveButton(R.string.Save, null)
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+        dialog.setOnShowListener(ignored -> dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String newName = nameInput.getText().toString().trim();
+            if (newName.isEmpty()) {
+                ToastUtils.toastShort(this, getString(R.string.MachineNameCannotBeEmpty));
+                return;
+            }
+            if (!MachineController.getInstance().renameMachine(machine, newName)) {
+                ToastUtils.toastShort(this, getString(R.string.VMNameExistsChooseAnother));
+                return;
+            }
+            dialog.dismiss();
+            populateMachines(newName);
+        }));
+        dialog.show();
     }
 
     public void promptDeleteMachine() {

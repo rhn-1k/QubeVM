@@ -1,7 +1,6 @@
 #### QEMU 11.1.1 version-specific options
 #### Based on actual ./configure --help output
 
-# Clang-compatible warning flags (NDK clang does not support GCC-specific flags
 WARNING_FLAGS = -Wno-redundant-decls -Wno-unused-variable \
 	-Wno-uninitialized -Wno-unused-function \
 	-Wno-unknown-warning-option -Wno-unknown-attributes

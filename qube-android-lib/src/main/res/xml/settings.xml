@@ -25,14 +25,6 @@
 
         <ListPreference
             android:defaultValue="100"
-            android:entries="@array/keyPressDelayLabels"
-            android:entryValues="@array/keyPressDelayValues"
-            android:key="keyPressDelay"
-            android:summary="@string/keyPressDelaySummary"
-            android:title="@string/keyPressDelay" />
-
-        <ListPreference
-            android:defaultValue="100"
             android:entries="@array/mouseButtonDelayLabels"
             android:entryValues="@array/mouseButtonDelayValues"
             android:key="mousePressDelay"

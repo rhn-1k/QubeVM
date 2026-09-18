@@ -134,6 +134,9 @@ public class MachineController {
             case SHARED_FOLDER:
                 getMachine().setSharedFolderPath(value);
                 break;
+            case SHARED_FOLDER_TYPE:
+                getMachine().setSharedFolderType(value);
+                break;
         }
     }
 
@@ -194,6 +197,10 @@ public class MachineController {
 
     protected boolean deleteMachine(Machine machine) {
         return machineDatabase.deleteMachine(machine);
+    }
+
+    public boolean renameMachine(Machine machine, String newName) {
+        return machineDatabase.renameMachine(machine, newName);
     }
 
     public Class<?> getServiceClass() {

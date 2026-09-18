@@ -18,13 +18,14 @@ public class Machine extends Observable {
     private String name;
     private String keyboard = Config.defaultKeyboardLayout;
     private String mouse = "ps2";
+    private String dns = Config.defaultDNSServer;
     private int enableVNC;
     private int renderer;
     private String arch;
     private String machineType;
     private String cpu = "Default";
     private int cpuNum = 1;
-    private int memory = 256;
+    private int memory = 64;
     private int tcgBuffer = 256;
     private int enableMTTCG;
     private int enableKVM;
@@ -33,7 +34,6 @@ public class Machine extends Observable {
     private int disableHPET = 0;
     private int disableFdBootChk = 0;
     private int disableTSC = 0; //TSC left enabled by default (not recommended to disable on modern guests)
-    private int enableSVM = 0; //adds +svm to the cpu flags to expose AMD-V nested virtualization to the guest
     private int enableVenus = 0;
     // Storage
     private String hdaImagePath;
@@ -45,8 +45,9 @@ public class Machine extends Observable {
     private String hdbInterface = "ide";
     private String hdcInterface = "ide";
     private String hddInterface = "ide";
-
     private String sharedFolderPath;
+    // Shared folder interface
+    private String sharedFolderType = "vvfat";
     //Removable devices
     private boolean enableCDROM;
     private boolean enableFDA;
@@ -363,6 +364,20 @@ public class Machine extends Observable {
 
     public String getSharedFolderPath() {
         return sharedFolderPath;
+    }
+
+    public String getSharedFolderType() {
+        return sharedFolderType;
+    }
+
+    void setSharedFolderType(String sharedFolderType) {
+        if (sharedFolderType == null || sharedFolderType.trim().isEmpty())
+            sharedFolderType = "vvfat";
+        if (this.sharedFolderType == null || !this.sharedFolderType.equals(sharedFolderType)) {
+            this.sharedFolderType = sharedFolderType;
+            setChanged();
+            notifyChanged(MachineProperty.SHARED_FOLDER_TYPE, sharedFolderType);
+        }
     }
 
     void setSharedFolderPath(String sharedFolderPath) {
@@ -719,6 +734,18 @@ public class Machine extends Observable {
         }
     }
 
+    public String getDns() {
+        return dns;
+    }
+
+    void setDns(String dns) {
+        if (this.dns == null || !this.dns.equals(dns)) {
+            this.dns = dns;
+            setChanged();
+            notifyChanged(MachineProperty.DNS, dns);
+        }
+    }
+
     public int getDisableAcpi() {
         return disableACPI;
     }
@@ -734,18 +761,6 @@ public class Machine extends Observable {
             notifyChanged(MachineProperty.DISABLE_HPET, disableHPET);
         }
 
-    }
-
-    public int getEnableSVM() {
-        return enableSVM;
-    }
-
-    void setEnableSVM(int enableSVM) {
-        if (this.enableSVM != enableSVM) {
-            this.enableSVM = enableSVM;
-            setChanged();
-            notifyChanged(MachineProperty.ENABLE_SVM, enableSVM);
-        }
     }
 
     public int getEnableVenus() {

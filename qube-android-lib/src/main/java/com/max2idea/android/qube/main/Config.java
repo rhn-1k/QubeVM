@@ -44,7 +44,6 @@ public class Config {
     public static final int MAX_CPU_NUM = 8;
 
     // delay
-    public static int keyDelay = 100;
     public static int mouseButtonDelay = 100;
 
     // App config
@@ -69,7 +68,6 @@ public class Config {
 
     public static final int EXIT_SUCCESS = 1;
     public static final int EXIT_UNKNOWN = 2;
-
 
     // Enabling or disabling sound in the QGE build
     public static boolean enableQGESound = true;
@@ -126,7 +124,7 @@ public class Config {
     // VNC Defaults
     public static String defaultVNCHost = "127.0.0.1";
     //It seems that new versions of qemu expect a relative number
-    //  so we stop using absolute port numbers
+    // so we stop using absolute port numbers
     public static final int defaultVNCPort = 1;
 
     //Keyboard Layout

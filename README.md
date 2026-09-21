@@ -7,8 +7,8 @@
 QubeVM is a QEMU-based virtual machine emulator for Android
 
 <p align="center">
-  <a href="https://t.me/QubeVM">
-    <img src="https://img.shields.io/badge/Telegram-@QubeVM-blue?logo=telegram" alt="Telegram">
+  <a href="https://discord.gg/dZbQeakC6Y">
+    <img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=ffffff&style=flat" alt="QubeVM discord server">
   </a>
 </p>
 

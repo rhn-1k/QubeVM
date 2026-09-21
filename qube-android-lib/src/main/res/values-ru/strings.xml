@@ -151,7 +151,7 @@
     <string name="WriteAccess">Доступ на запись</string>
     <string name="FilePathNotSupportedWarning">Путь к файлу не поддерживается. Убедитесь, что выбираете файл/каталог из внутреннего хранилища или внешней SD-карты. Корневой каталог и папка Загрузки не поддерживаются.</string>
     <string name="KVMHelp">Помощь</string>
-    <string name="FullAccessWarning">Пожалуйста, разрешите доступ к хранилищу устройства, без этого приложение будет работать, но с ограниченным набором функций.</string>
+    <string name="FullAccessWarning">Пожалуйста, разрешите доступ к памяти устройства, без этого приложение не сможет работать</string>
     <string name="OkIUnderstand">Разрешить</string>
     <string name="SendText">Отправить текст</string>
     <string name="Send">Отправить</string>

@@ -152,7 +152,7 @@
     <string name="WriteAccess">Write Access</string>
     <string name="FilePathNotSupportedWarning">File path is not supported. Make sure you choose a file/directory from your internal storage or external sd card. Root and Download Directories are not supported.</string>
     <string name="KVMHelp">Help</string>
-    <string name="FullAccessWarning">Please allow access to your device\'s storage, without it, the app will work but limited to some features.</string>
+    <string name="FullAccessWarning">Please allow access to your device\'s storage, without it, the app will not work</string>
     <string name="OkIUnderstand">Allow</string>
     <string name="SendText">Send Text</string>
     <string name="Send">Send</string>

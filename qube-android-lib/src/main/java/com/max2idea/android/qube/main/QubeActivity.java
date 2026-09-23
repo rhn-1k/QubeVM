@@ -26,6 +26,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.transition.ChangeBounds;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -244,6 +249,8 @@ public class QubeActivity extends AppCompatActivity
 
     //layouts
     private NestedScrollView mScrollView;
+    private ViewGroup mFormContent;
+    private static final long SECTION_TOGGLE_MS = 280;
     private boolean firstMTTCGCheck;
     private ViewListener viewListener;
 
@@ -1912,17 +1919,22 @@ public class QubeActivity extends AppCompatActivity
         QubeActivityCommon.promptResetVM(this, viewListener);
     }
 
+    // Smooth collapse transition animation
     public void toggleSectionVisibility(View view) {
-        if (view.getVisibility() == View.VISIBLE) {
-            view.setVisibility(View.GONE);
-        } else if (view.getVisibility() == View.GONE || view.getVisibility() == View.INVISIBLE) {
-            view.setVisibility(View.VISIBLE);
-        }
+        final boolean expanding = view.getVisibility() != View.VISIBLE;
+
+        TransitionSet transition = new TransitionSet()
+                .addTransition(new ChangeBounds())
+                .setDuration(SECTION_TOGGLE_MS)
+                .setInterpolator(new DecelerateInterpolator());
+        TransitionManager.beginDelayedTransition(mFormContent, transition);
+        view.setVisibility(expanding ? View.VISIBLE : View.GONE);
     }
 
     public void setupWidgets() {
         setupSections();
         mScrollView = findViewById(R.id.scroll_view);
+        mFormContent = findViewById(R.id.form_content);
         mStatus = findViewById(R.id.statusVal);
         mStatus.setImageResource(R.drawable.power_settings_new_24px);
         mStatusText = findViewById(R.id.statusStr);
@@ -2300,7 +2312,7 @@ public class QubeActivity extends AppCompatActivity
                 setupNonRemovableDiskListeners();
                 enableRemovableDiskListeners();
             }
-        }, 500);
+        }, SECTION_TOGGLE_MS + 60);
     }
 
     public void updateUISummary(boolean clear) {

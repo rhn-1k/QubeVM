@@ -19,6 +19,7 @@ public final class GraphicsCapabilities {
                 vga.startsWith("virtio-vga") ||
                 vga.equals("ati-vga") ||
                 vga.equals("cirrus-vga") ||
+                vga.equals("isa-cirrus-vga") ||
                 vga.equals("bochs-display")
         );
     }

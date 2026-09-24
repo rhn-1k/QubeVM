@@ -34,18 +34,17 @@ public class ArchDefinitions {
         switch (QubeApplication.arch) {
             case x86:
             case x86_64:
-                networkCards.add("Default");
+                networkCards.add("e1000e");
+                networkCards.add("ne2k_isa");
                 networkCards.addAll(commonNetworkCards);
                 break;
             case arm:
             case arm64:
-                networkCards.add("Default");
                 networkCards.addAll(commonNetworkCards);
                 networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.arm_nic_cards)));
                 break;
             case ppc:
             case ppc64:
-                networkCards.add("Default");
                 networkCards.addAll(commonNetworkCards);
                 break;
         }
@@ -63,6 +62,7 @@ public class ArchDefinitions {
         if (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64) {
             vgaValues.add("cirrus");
             vgaValues.add("vmware");
+            vgaValues.add("isa-cirrus-vga");
             vgaValues.add("virtio-gpu-pci");
             vgaValues.add(GraphicsCapabilities.VIRTIO);
             vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_PCI);

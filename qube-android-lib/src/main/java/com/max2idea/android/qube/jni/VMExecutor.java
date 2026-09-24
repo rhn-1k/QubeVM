@@ -545,6 +545,28 @@ class VMExecutor extends MachineExecutor {
 
     public void addHardDisk(ArrayList<String> paramsList, String imagePath, int index, String hdInterface) {
         if (imagePath != null && !imagePath.trim().equals("")) {
+            String cache = QubeSettingsManager.getDiskCache(QubeApplication.getInstance());
+            if ("piix3-ide".equals(hdInterface) || "piix4-ide".equals(hdInterface)) {
+                // XXX: piix3-ide / piix4-ide are devices, not valid "-drive if=" values
+                String ctrlId = "qubeide_" + hdInterface.replace("-", "_");
+                if (!paramsList.contains(hdInterface + ",id=" + ctrlId)) {
+                    paramsList.add("-device");
+                    paramsList.add(hdInterface + ",id=" + ctrlId);
+                }
+                String driveId = "hd" + index;
+                paramsList.add("-drive");
+                String param = "if=none,id=" + driveId;
+                param += ",media=disk";
+                param += ",file=" + imagePath;
+                if (cache != null && !cache.equals("default"))
+                    param += ",cache=" + cache;
+                paramsList.add(param);
+                paramsList.add("-device");
+                paramsList.add("ide-hd,drive=" + driveId
+                        + ",bus=" + ctrlId + "." + (index / 2)
+                        + ",unit=" + (index % 2));
+                return;
+            }
             paramsList.add("-drive");
             String param = "index=" + index;
             param += ",if=";
@@ -553,7 +575,6 @@ class VMExecutor extends MachineExecutor {
             if (!imagePath.equals("")) {
                 param += ",file=" + imagePath;
             }
-            String cache = QubeSettingsManager.getDiskCache(QubeApplication.getInstance());
             if(cache != null && !cache.equals("default"))
                 param += ",cache=" + cache;
             paramsList.add(param);
@@ -617,15 +638,33 @@ class VMExecutor extends MachineExecutor {
     public void addRemovableDrives(ArrayList<String> paramsList) {
         String cdImagePath = getDriveFilePath(getMachine().getCdImagePath());
         if (cdImagePath != null) {
-            paramsList.add("-drive"); //empty
-            String param = "index=2";
-            param += ",if=";
-            param += getMachine().getCDInterface();
-            param += ",media=cdrom";
-            if (!cdImagePath.equals("")) {
-                param += ",file=" + cdImagePath;
+            String cdInterface = getMachine().getCDInterface();
+            if ("piix3-ide".equals(cdInterface) || "piix4-ide".equals(cdInterface)) {
+                String ctrlId = "qubeide_" + cdInterface.replace("-", "_");
+                if (!paramsList.contains(cdInterface + ",id=" + ctrlId)) {
+                    paramsList.add("-device");
+                    paramsList.add(cdInterface + ",id=" + ctrlId);
+                }
+                paramsList.add("-drive");
+                String cdParam = "if=none,id=cd0,media=cdrom";
+                if (!cdImagePath.equals("")) {
+                    cdParam += ",file=" + cdImagePath;
+                }
+                paramsList.add(cdParam);
+                // id matches cdDeviceName so QMP media change/eject keeps working
+                paramsList.add("-device");
+                paramsList.add("ide-cd,drive=cd0,bus=" + ctrlId + ".1,unit=0,id=" + cdDeviceName);
+            } else {
+                paramsList.add("-drive"); //empty
+                String param = "index=2";
+                param += ",if=";
+                param += cdInterface;
+                param += ",media=cdrom";
+                if (!cdImagePath.equals("")) {
+                    param += ",file=" + cdImagePath;
+                }
+                paramsList.add(param);
             }
-            paramsList.add(param);
         }
 
         String fdaImagePath = getDriveFilePath(getMachine().getFdaImagePath());

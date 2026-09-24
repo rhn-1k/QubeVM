@@ -1030,7 +1030,7 @@ public class QubeActivity extends AppCompatActivity
 
         final String[] items = machineDriveName == MachineProperty.SHARED_FOLDER
                 ? new String[] { "vvfat", "virtio9p" }
-                : new String[] { "ide", "scsi", "virtio" };
+                : new String[] { "ide", "scsi", "virtio", "piix3-ide", "piix4-ide" };
         final AlertDialog.Builder mBuilder = new MaterialAlertDialogBuilder(this);
         String driveTitle = machineDriveName == MachineProperty.SHARED_FOLDER
                 ? getString(R.string.SharedFolder)

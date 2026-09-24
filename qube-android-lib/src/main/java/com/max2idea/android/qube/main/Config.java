@@ -46,6 +46,13 @@ public class Config {
     // delay
     public static int mouseButtonDelay = 100;
 
+    // Animation timings (ms)
+    // Section collapse speed duration
+    public static final long SECTION_TOGGLE_MS = 250;
+    // Fade duration for enable/disable state of spinners/switches
+    public static final long FADE_IN_MS = 150;
+    public static final long FADE_OUT_MS = 180;
+
     // App config
     public static final String APP_NAME = "QubeVM";
 

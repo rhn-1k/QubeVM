@@ -250,7 +250,6 @@ public class QubeActivity extends AppCompatActivity
     //layouts
     private NestedScrollView mScrollView;
     private ViewGroup mFormContent;
-    private static final long SECTION_TOGGLE_MS = 280;
     private boolean firstMTTCGCheck;
     private ViewListener viewListener;
 
@@ -1718,7 +1717,7 @@ public class QubeActivity extends AppCompatActivity
     }
 
     private void updateSoundCardEnabledState(boolean enabled) {
-        fadeViewEnabledState(mSoundCard, enabled, true, true, 200, 250);
+        fadeViewEnabledState(mSoundCard, enabled, true, true, Config.FADE_IN_MS, Config.FADE_OUT_MS);
     }
 
     // Only enabled if a supported virtio device is selected
@@ -1734,9 +1733,9 @@ public class QubeActivity extends AppCompatActivity
             if (mEnableVenus.isChecked()) {
                 mEnableVenus.setChecked(false);
             }
-            mEnableVenus.postDelayed(() -> fadeViewEnabledState(mEnableVenus, false, true, true, 200, 250), 150);
+            mEnableVenus.postDelayed(() -> fadeViewEnabledState(mEnableVenus, false, true, true, Config.FADE_IN_MS, Config.FADE_OUT_MS), Config.FADE_OUT_MS);
         } else {
-            fadeViewEnabledState(mEnableVenus, venusSupported, true, true, 200, 250);
+            fadeViewEnabledState(mEnableVenus, venusSupported, true, true, Config.FADE_IN_MS, Config.FADE_OUT_MS);
         }
     }
 
@@ -1754,8 +1753,8 @@ public class QubeActivity extends AppCompatActivity
         }
 
         // Label keeps its enabled flag untouched, spinner doesn't
-        fadeViewEnabledState(label, enabled, animate, false, 180, 220);
-        fadeViewEnabledState(spinner, enabled, animate, true, 180, 220);
+        fadeViewEnabledState(label, enabled, animate, false, Config.FADE_IN_MS, Config.FADE_OUT_MS);
+        fadeViewEnabledState(spinner, enabled, animate, true, Config.FADE_IN_MS, Config.FADE_OUT_MS);
     }
 
     private void enableNonRemovableDeviceOptions(boolean flag) {
@@ -1919,15 +1918,16 @@ public class QubeActivity extends AppCompatActivity
         QubeActivityCommon.promptResetVM(this, viewListener);
     }
 
-    // Smooth collapse transition animation
+    /// Smooth collapse transition animation
     public void toggleSectionVisibility(View view) {
         final boolean expanding = view.getVisibility() != View.VISIBLE;
 
         TransitionSet transition = new TransitionSet()
                 .addTransition(new ChangeBounds())
-                .setDuration(SECTION_TOGGLE_MS)
+                .setDuration(Config.SECTION_TOGGLE_MS)
                 .setInterpolator(new DecelerateInterpolator());
         TransitionManager.beginDelayedTransition(mFormContent, transition);
+
         view.setVisibility(expanding ? View.VISIBLE : View.GONE);
     }
 
@@ -2312,7 +2312,7 @@ public class QubeActivity extends AppCompatActivity
                 setupNonRemovableDiskListeners();
                 enableRemovableDiskListeners();
             }
-        }, SECTION_TOGGLE_MS + 60);
+        }, Config.SECTION_TOGGLE_MS + 60);
     }
 
     public void updateUISummary(boolean clear) {

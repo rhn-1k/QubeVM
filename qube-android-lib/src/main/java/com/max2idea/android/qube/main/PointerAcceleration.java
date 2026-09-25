@@ -32,9 +32,6 @@ public class PointerAcceleration {
     // Accumulates the scaled fractional delta and only emits whole pixels, carrying the
     // remainder forward so low-scale sub-pixel movement isn't rounded away every call
     private float getScaledDelta(float value, boolean isX) {
-        if (scale == 1.0f) {
-            return value;
-        }
         if (isX) {
             scale_accum_x += scale * value;
             float result = scale_accum_x >= 0.0f

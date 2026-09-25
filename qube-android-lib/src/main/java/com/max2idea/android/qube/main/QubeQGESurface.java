@@ -15,6 +15,7 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import com.max2idea.android.qube.machine.MachineAction;
 
@@ -23,13 +24,15 @@ import java.util.ArrayList;
 /**
  * Draws the guest framebuffer (see QubeGfx) and turns touch input into pointer events,
  * sent via QubeInput. Trackpad mode uses relative deltas run through PointerAcceleration
- * for a smooth feel.
+ * for a smooth experience.
  */
 public class QubeQGESurface extends View implements View.OnTouchListener {
     private static final String TAG = "QubeQGESurface";
 
     MouseState mouseState = new MouseState();
+    // true from ACTION_DOWN until the finger has moved past the touch slop
     private boolean firstTouch = false;
+    private final float touchSlop;
 
     private final QubeQGEActivity QGEActivity;
     private final PointerAcceleration pointerAcceleration;
@@ -41,6 +44,7 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
         super(context);
         this.QGEActivity = QGEActivity;
         this.pointerAcceleration = new PointerAcceleration(context);
+        this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         setOnTouchListener(this);
         setOnGenericMotionListener(new ExternalMouseListener());
         setFocusable(true);
@@ -92,28 +96,12 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
 
     public boolean onTouchProcess(View v, MotionEvent event) {
         int action = event.getActionMasked();
-
-        // ACTION_CANCEL fires when gesture nav intercepts the touch mid swipe
-        // reset state or the next move jumps using stale coordinates
-        if (action == MotionEvent.ACTION_CANCEL) {
-            resetTouchState();
-            return false;
-        }
-
         mouseState.x = event.getX();
         mouseState.y = event.getY();
 
         processMouseMovement(action, event.getToolType(0), mouseState.x, mouseState.y);
         processMouseButton(event, action, mouseState.x, mouseState.y);
         return false;
-    }
-
-    private void resetTouchState() {
-        mouseState.mouseUp = true;
-        mouseState.down_pending = false;
-        mouseState.lastMouseButtonDown = -1;
-        firstTouch = false;
-        pointerAcceleration.clear();
     }
 
     private void processMouseMovement(int action, int toolType, float x, float y) {
@@ -126,6 +114,16 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
             }
 
             if (QGEActivity.isRelativeMode(toolType)) {
+                if (firstTouch) {
+                // XXX: it seems the panel holds back first slop of movement and sends it
+                // as one big delta, which jumps the cursor, so we swallow it here
+                    if (Math.hypot(x - mouseState.down_x, y - mouseState.down_y) < touchSlop)
+                        return;
+                    firstTouch = false;
+                    mouseState.old_x = x;
+                    mouseState.old_y = y;
+                    return;
+                }
                 float dx = pointerAcceleration.updateDx(x - mouseState.old_x);
                 float dy = pointerAcceleration.updateDy(y - mouseState.old_y);
                 QGEActivity.sendRelativeMove(dx, dy);

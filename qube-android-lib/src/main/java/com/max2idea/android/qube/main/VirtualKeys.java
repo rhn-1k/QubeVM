@@ -6,17 +6,16 @@ Copyright (C) Rhn 2026
 package com.max2idea.android.qube.main;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ToggleButton;
 
+import com.max2idea.android.qube.keyboard.KeyboardUtils;
 import com.qube.emu.lib.R;
 
 import java.util.HashSet;
@@ -100,11 +99,9 @@ public class VirtualKeys {
             keysGrid.addView(view);
 
             if (vk == VirtualKey.ToggleKeyboard) {
-                view.setOnClickListener(v -> {
-                    InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm != null)
-                        imm.toggleSoftInput(0, 0);
-                });
+                view.setOnClickListener(v ->
+                        QubeQGEActivity.toggleKeyboardFlag =
+                                KeyboardUtils.showKeyboard(activity, QubeQGEActivity.toggleKeyboardFlag, mSurface));
             } else if (vk == VirtualKey.CloseKeys) {
                 view.setOnClickListener(v -> hide());
             } else if (vk.keyCode != null) {

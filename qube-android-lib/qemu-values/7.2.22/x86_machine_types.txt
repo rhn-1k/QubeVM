@@ -1,7 +1,6 @@
 pc
 q35
 isapc
-xenfv
 microvm
 pc-i440fx-7.1
 pc-i440fx-7.0

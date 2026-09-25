@@ -1496,7 +1496,7 @@ public class QubeActivity extends AppCompatActivity
             ab.setDisplayHomeAsUpEnabled(false);
             ab.setDisplayShowCustomEnabled(true);
             ab.setDisplayShowTitleEnabled(true);
-            ab.setTitle(R.string.app_name);
+            ab.setTitle(getApplicationInfo().loadLabel(getPackageManager()));
         }
     }
 

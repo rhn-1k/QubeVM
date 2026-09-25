@@ -143,7 +143,7 @@ public class QubeQGEActivity extends AppCompatActivity
             ab.setDisplayHomeAsUpEnabled(false);
             ab.setDisplayShowCustomEnabled(true); // enable overriding the
             ab.setDisplayShowTitleEnabled(true); // disable the default title
-            ab.setTitle(R.string.app_name);
+            ab.setTitle(getApplicationInfo().loadLabel(getPackageManager()));
             if (!QubeSettingsManager.getAlwaysShowMenuToolbar(this)) {
                 ab.hide();
             }

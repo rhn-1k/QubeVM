@@ -164,7 +164,7 @@ public class MachineService extends Service {
         NotificationManager notifService = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notifService.createNotificationChannel(chan);
         builder = new NotificationCompat.Builder(service, Config.notificationChannelID);
-        mNotification = builder.setContentIntent(pi).setContentTitle(getString(R.string.app_name)).setContentText(text)
+        mNotification = builder.setContentIntent(pi).setContentTitle(service.getPackageManager().getApplicationLabel(service.getApplicationInfo())).setContentText(text)
                 .setSmallIcon(R.drawable.qube)
                 .setLargeIcon(BitmapFactory.decodeResource(service.getResources(), R.drawable.qube)).build();
         mNotification.tickerText = text;

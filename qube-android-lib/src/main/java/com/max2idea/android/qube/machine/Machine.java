@@ -68,8 +68,9 @@ public class Machine extends Observable {
     private String initRd;
     private String append;
     // net
+    public static final String DEFAULT_NETWORK_CARD = "e1000";
     private String network = null;
-    private String networkCard = "e1000";
+    private String networkCard = DEFAULT_NETWORK_CARD;
     private String guestFwd;
     private String hostFwd;
     //display

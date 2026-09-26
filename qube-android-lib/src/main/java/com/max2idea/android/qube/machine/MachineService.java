@@ -122,7 +122,6 @@ public class MachineService extends Service {
         // TODO: create int return codes instead of strings
         if (res != null) {
             if (!res.equals("VM shutdown")) {
-                ToastUtils.toastLong(service, res);
                 Log.e(TAG, res);
             } else {
                 Log.d(TAG, res);

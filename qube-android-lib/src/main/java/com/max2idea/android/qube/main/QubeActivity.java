@@ -3053,7 +3053,7 @@ public class QubeActivity extends AppCompatActivity
         mNetworkCard.setAdapter(nicCfgAdapter);
         mNetworkCard.invalidate();
 
-        int pos = nicCfgAdapter.getPosition(nic);
+        int pos = nicCfgAdapter.getPosition(nic != null ? nic : Machine.DEFAULT_NETWORK_CARD);
         if (pos >= 0) {
             mNetworkCard.setSelection(pos);
         }

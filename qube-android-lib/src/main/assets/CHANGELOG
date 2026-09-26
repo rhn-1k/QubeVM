@@ -1,3 +1,12 @@
+* QubeVM v7.1.1
+- Main interface redesign
+- Improved cursor trackpad movement
+- Expanded x86 machines support
+- New x86 drive interfaces (piix3-ide, piix4-ide)
+- New x86 Video Display device (isa-cirrus-vga)
+- New x86 network cards (e1000e, ne2k_isa)
+- Fixed white flash issue when opening keyboard via virtual keys keyboard button (Samsung keyboard only)
+
 * QubeVM v7.1.0
 - Using latest ndk (r30)
 - improved keyboard typing latency

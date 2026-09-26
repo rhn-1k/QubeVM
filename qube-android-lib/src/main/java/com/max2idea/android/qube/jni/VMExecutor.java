@@ -430,9 +430,21 @@ class VMExecutor extends MachineExecutor {
             }
         }
 
-        if (getBootDevice() != null) {
+        String bootDevice = getBootDevice();
+        boolean bootMenu = getMachine().getBootMenu() != 0;
+        if (bootDevice != null || bootMenu) {
+            StringBuilder bootParams = new StringBuilder();
+            if (bootDevice != null) {
+                bootParams.append("order=").append(bootDevice);
+            }
+            if (bootMenu) {
+                if (bootParams.length() > 0) {
+                    bootParams.append(",");
+                }
+                bootParams.append("menu=on");
+            }
             paramsList.add("-boot");
-            paramsList.add(getBootDevice());
+            paramsList.add(bootParams.toString());
         }
 
         String kernel = getKernel();

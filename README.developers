@@ -161,6 +161,7 @@ https://github.com/rhn-1k/QubeVM
 
         where:
             EABI is the Android device type (host arch): arm64-v8a, x86_64
+            NOTE: the x86_64 host is NOT support yet, it may fail or gives a corrupted binary, wait for official support
             GUEST_ARCH is the Emulator type: x86_64-softmmu,aarch64-softmmu,ppc64-softmmu
             ENABLE_DEBUG is 1 (optional)
 

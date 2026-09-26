@@ -113,6 +113,9 @@ public final class Dispatcher implements ViewListener {
             case PRIO:
                 machine.setPrio(convertBoolean(property, value) ? 1 : 0);
                 break;
+            case BOOT_MENU:
+                machine.setBootMenu(convertBoolean(property, value) ? 1 : 0);
+                break;
             case HOSTFWD:
                 machine.setHostFwd(convertString(property, value));
                 break;

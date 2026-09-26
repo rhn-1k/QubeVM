@@ -146,6 +146,7 @@ public class QubeActivity extends AppCompatActivity
     private Spinner mBiosType;
     private Spinner mBiosCode;
     private Spinner mBiosVars;
+    private MaterialSwitch mBootMenu;
 
     // HDD
     private ImageView mHDAOptions;
@@ -672,6 +673,14 @@ public class QubeActivity extends AppCompatActivity
             }
         });
 
+        mBootMenu.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton viewButton, boolean isChecked) {
+                if (getMachine() == null)
+                    return;
+                notifyFieldChange(MachineProperty.BOOT_MENU, isChecked);
+            }
+        });
+
         mDNS.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -1152,6 +1161,7 @@ public class QubeActivity extends AppCompatActivity
         mEnableKVM.setOnCheckedChangeListener(null);
         mEnableMTTCG.setOnCheckedChangeListener(null);
         mHighPrio.setOnCheckedChangeListener(null);
+        mBootMenu.setOnCheckedChangeListener(null);
         mHDA.setOnItemSelectedListener(null);
         mHDB.setOnItemSelectedListener(null);
         mHDC.setOnItemSelectedListener(null);
@@ -1791,6 +1801,7 @@ public class QubeActivity extends AppCompatActivity
         mBios.setEnabled(flag);
         mBiosCode.setEnabled(flag);
         mBiosVars.setEnabled(flag);
+        mBootMenu.setEnabled(flag);
 
         //boot
         mBootDevices.setEnabled(flag);
@@ -2005,6 +2016,7 @@ public class QubeActivity extends AppCompatActivity
         mBios = findViewById(R.id.biosval);
         mBiosCode = findViewById(R.id.bioscodeval);
         mBiosVars = findViewById(R.id.biosvarsval);
+        mBootMenu = findViewById(R.id.bootmenuval);
 
         //boot
         mBootDevices = findViewById(R.id.bootfromval);
@@ -2430,6 +2442,8 @@ public class QubeActivity extends AppCompatActivity
             text = appendDriveFilename(getMachine().getBios(), text,
                     getString(R.string.bios_label), false);
         }
+        if (mBootMenu.isChecked())
+            text = appendOption(getString(R.string.boot_menu_label), text);
         mBiosSectionSummary.setText(text);
     }
 
@@ -2576,6 +2590,7 @@ public class QubeActivity extends AppCompatActivity
             ensureDefaultUefiFirmware();
         populateDiskAdapter(mBiosCode, FileType.BIOS_CODE, false, getMachine().getBiosCode());
         populateDiskAdapter(mBiosVars, FileType.BIOS_VARS, false, getMachine().getBiosVars());
+        mBootMenu.setChecked(getMachine().getBootMenu() == 1);
         updateBiosTypeVisibility(biosType);
         if (getMachine().getAppend() != null)
             mAppend.setText(getMachine().getAppend());

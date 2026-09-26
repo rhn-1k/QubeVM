@@ -239,6 +239,7 @@
     <string name="bios_type_label">BIOS type</string>
     <string name="bios_code_label">Code</string>
     <string name="bios_vars_label">Vars</string>
+    <string name="boot_menu_label">Boot Menu</string>
 
     <!-- Boot section -->
     <string name="section_boot">Boot</string>

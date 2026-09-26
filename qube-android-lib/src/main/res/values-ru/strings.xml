@@ -238,6 +238,7 @@
     <string name="bios_type_label">Тип BIOS</string>
     <string name="bios_code_label">Code</string>
     <string name="bios_vars_label">Vars</string>
+    <string name="boot_menu_label">Меню загрузки</string>
 
     <!-- Boot section -->
     <string name="section_boot">Загрузка</string>

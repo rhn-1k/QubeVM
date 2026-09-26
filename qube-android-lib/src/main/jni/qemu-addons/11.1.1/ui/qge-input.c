@@ -39,8 +39,7 @@ static void qube_input_send_qcode(QemuConsole *con, int qcode, int down)
     qemu_input_event_send_key_number(con, num, down);
 }
 
-// Some Android keyboards send shifted keysyms without the shift event.
-// QEMU's X11 keysym table requires explicit shift, so synthesize it here.
+// Some keys from android keyboards need SHIFT
 static bool qube_input_needs_shift(uint32_t sym)
 {
     return (sym >= 123 && sym <= 126)
@@ -112,8 +111,7 @@ void qube_input_send_pointer(int x, int y, int button_mask, int width, int heigh
     bql_unlock();
 }
 
-// dx/dy are relative deltas from the trackpad, queued as REL so PS/2 handles them,
-// usb-tablet stays untouched here since it only listens for ABS
+// dx/dy are relative deltas from the trackpad, queued as REL so PS/2 handles them
 void qube_input_send_pointer_rel(int dx, int dy, int button_mask)
 {
     static const int buttons[] = {

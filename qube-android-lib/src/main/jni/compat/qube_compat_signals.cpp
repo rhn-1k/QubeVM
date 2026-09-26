@@ -1,4 +1,4 @@
-// Qube: Need this to fix the issues with KVM for Android
+// QUBE: Need this to fix the issues with KVM for Android
 //Original/Modified: https://android.googlesource.com/platform/bionic/+/0c11611/libc/bionic/signalfd.cpp
 /*
  * Copyright (C) 2013 The Android Open Source Project
@@ -46,7 +46,7 @@ int sigtimedwait(const sigset_t* set, siginfo_t* info, const timespec* timeout) 
     };
     in_set.bionic = *set;
 
-    //XXX Qube:__rt_gigtimedwait seems not supported for Android 64bit so we use the syscall
+    //XXX QUBE:__rt_gigtimedwait seems not supported for Android 64bit so we use the syscall
     //return __rt_sigtimedwait(&in_set.bionic, info, timeout, sizeof(in_set));
     return syscall(__NR_rt_sigtimedwait, &in_set.bionic, info, timeout, sizeof(in_set));
 }

@@ -30,6 +30,7 @@ public class Machine extends Observable {
     private int enableMTTCG;
     private int enableKVM;
     private int prio;
+    private int bootMenu;
     private int disableACPI = 0;
     private int disableHPET = 0;
     private int disableFdBootChk = 0;
@@ -223,6 +224,18 @@ public class Machine extends Observable {
             this.prio = prio;
             setChanged();
             notifyChanged(MachineProperty.PRIO, prio);
+        }
+    }
+
+    public int getBootMenu() {
+        return bootMenu;
+    }
+
+    void setBootMenu(int bootMenu) {
+        if (this.bootMenu != bootMenu) {
+            this.bootMenu = bootMenu;
+            setChanged();
+            notifyChanged(MachineProperty.BOOT_MENU, bootMenu);
         }
     }
 

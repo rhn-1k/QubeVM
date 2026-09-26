@@ -27,7 +27,7 @@ import java.util.Observer;
 public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatabase, Observer {
     private static final String TAG = "MachineOpenHelper";
 
-    private static final int DATABASE_VERSION = 25;
+    private static final int DATABASE_VERSION = 26;
     private static final String DATABASE_NAME = "QUBE";
     private static final String MACHINE_TABLE_NAME = "machines";
 
@@ -48,7 +48,8 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             + MachineProperty.BIOS_CODE.name() + " TEXT, " + MachineProperty.BIOS_VARS.name() + " TEXT, "
             + MachineProperty.TCG_BUFFER.name() + " INTEGER, "
             + MachineProperty.DNS.name() + " TEXT, "
-            + MachineProperty.SHARED_FOLDER_TYPE.name() + " TEXT "
+            + MachineProperty.SHARED_FOLDER_TYPE.name() + " TEXT, "
+            + MachineProperty.BOOT_MENU.name() + " INTEGER "
             + ");";
 
     private static MachineOpenHelper sInstance;
@@ -174,6 +175,9 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         if (newVersion >= 25 && oldVersion <= 24) {
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.SHARED_FOLDER_TYPE + " TEXT;");
         }
+        if (newVersion >= 26 && oldVersion <= 25) {
+            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.BOOT_MENU + " INTEGER;");
+        }
     }
 
     public synchronized int insertMachine(Machine machine) {
@@ -231,6 +235,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         stateValues.put(MachineProperty.BIOS_VARS.name(), machine.getBiosVars());
         stateValues.put(MachineProperty.TCG_BUFFER.name(), machine.getTcgBuffer());
         stateValues.put(MachineProperty.DNS.name(), machine.getDns());
+        stateValues.put(MachineProperty.BOOT_MENU.name(), machine.getBootMenu());
 
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -291,7 +296,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
                 + MachineProperty.HOSTFWD + " , " + MachineProperty.GUESTFWD + " , " + MachineProperty.UI + ", " + MachineProperty.DISABLE_TSC + ", "
                 + MachineProperty.MOUSE + ", " + MachineProperty.KEYBOARD + ", " + MachineProperty.ENABLE_MTTCG + ", " + MachineProperty.ENABLE_KVM + ", "
                 + MachineProperty.HDA_INTERFACE + ", " + MachineProperty.HDB_INTERFACE + ", " + MachineProperty.HDC_INTERFACE + ", " + MachineProperty.HDD_INTERFACE + ", "
-                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " "
+                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " , " + MachineProperty.BOOT_MENU + " "
                 + " from " + MACHINE_TABLE_NAME
                 + " where " + MachineProperty.STATUS + " = " + Config.STATUS_CREATED
                 + " and " + MachineProperty.MACHINE_NAME + "=\"" + machine + "\"" + ";";
@@ -364,6 +369,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             myMachine.setTcgBuffer(cur.getInt(50));
             myMachine.setDns(cur.getString(51));
             myMachine.setSharedFolderType(cur.getString(52));
+            myMachine.setBootMenu(cur.getInt(53));
         }
         cur.close();
 

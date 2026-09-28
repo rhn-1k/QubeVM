@@ -43,7 +43,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -51,6 +50,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.max2idea.android.qube.utils.ToolbarUtils;
 
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileUtils;
@@ -133,21 +133,7 @@ public class QubeQGEActivity extends AppCompatActivity
     }
 
     public void setupToolBar() {
-        Toolbar tb = findViewById(R.id.toolbar);
-        setSupportActionBar(tb);
-
-        // Get the ActionBar here to configure the way it behaves.
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayShowHomeEnabled(false); // hide app icon
-            ab.setDisplayHomeAsUpEnabled(false);
-            ab.setDisplayShowCustomEnabled(true); // enable overriding the
-            ab.setDisplayShowTitleEnabled(true); // disable the default title
-            ab.setTitle(getApplicationInfo().loadLabel(getPackageManager()));
-            if (!QubeSettingsManager.getAlwaysShowMenuToolbar(this)) {
-                ab.hide();
-            }
-        }
+        ToolbarUtils.setup(this, ToolbarUtils.config().hideIfMenuToolbarSettingOff(true));
     }
 
     @Override

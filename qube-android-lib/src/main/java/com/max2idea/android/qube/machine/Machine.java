@@ -709,6 +709,10 @@ public class Machine extends Observable {
         } else if (QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64) {
             arch = "PPC";
             machineType = "Default";
+        } else if (QubeApplication.arch == Config.Arch.m68k) {
+            arch = "m68k";
+            vga = "macfb";
+            machineType = "Default";
         }
     }
 

@@ -43,7 +43,8 @@ idea {
     excludeDirs.add(file('qube-android-lib/build'))
     excludeDirs.add(file('qube-android-arm/build'))
     excludeDirs.add(file('qube-android-ppc/build'))
-    excludeDirs.add(file('qube-android-x86/build'))
+    excludeDirs.add(file('qube-android-x86/build'))	
+    excludeDirs.add(file('qube-android-m68k/build'))
     excludeDirs.add(file('gradle'))	
   }
 }

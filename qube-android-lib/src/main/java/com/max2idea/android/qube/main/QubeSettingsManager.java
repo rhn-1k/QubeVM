@@ -14,16 +14,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -32,6 +25,8 @@ import com.qube.emu.lib.R;
 import com.max2idea.android.qube.toast.ToastUtils;
 import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineFilePaths;
+import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
+import com.max2idea.android.qube.utils.ToolbarUtils;
 
 
 
@@ -213,13 +208,10 @@ public class QubeSettingsManager extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         setupEdgeToEdgeToolbar();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.Settings);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        ToolbarUtils.setup(this, ToolbarUtils.config()
+                .homeAsUp(true)
+                .title(this, R.string.Settings)
+                .onNavigationClick(this::onBackPressed));
 
         Intent data = new Intent();
         setResult(Config.SETTINGS_RETURN_CODE, data);
@@ -232,46 +224,7 @@ public class QubeSettingsManager extends AppCompatActivity {
     }
 
     private void setupEdgeToEdgeToolbar() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        View root = findViewById(R.id.settings_root);
-        View appBar = findViewById(R.id.settings_top_app_bar);
-        View content = findViewById(R.id.settings_container);
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), root);
-        controller.setAppearanceLightStatusBars(false);
-        controller.setAppearanceLightNavigationBars(false);
-        getWindow().setNavigationBarContrastEnforced(false);
-        final int appBarLeft = appBar.getPaddingLeft();
-        final int appBarTop = appBar.getPaddingTop();
-        final int appBarRight = appBar.getPaddingRight();
-        final int appBarBottom = appBar.getPaddingBottom();
-        android.view.ViewGroup.MarginLayoutParams appBarParams =
-                (android.view.ViewGroup.MarginLayoutParams) appBar.getLayoutParams();
-        final int appBarLeftMargin = appBarParams.leftMargin;
-        final int appBarRightMargin = appBarParams.rightMargin;
-        final int contentLeft = content.getPaddingLeft();
-        final int contentTop = content.getPaddingTop();
-        final int contentRight = content.getPaddingRight();
-        final int contentBottom = content.getPaddingBottom();
-        ViewCompat.setOnApplyWindowInsetsListener(appBar, (view, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            android.view.ViewGroup.MarginLayoutParams params =
-                    (android.view.ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            params.leftMargin = appBarLeftMargin + bars.left;
-            params.rightMargin = appBarRightMargin + bars.right;
-            view.setLayoutParams(params);
-            view.setPadding(appBarLeft, appBarTop + bars.top,
-                    appBarRight, appBarBottom);
-            return insets;
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(content, (view, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(contentLeft + bars.left, contentTop,
-                    contentRight + bars.right, contentBottom + bars.bottom);
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(root);
+        EdgeToEdgeUtils.apply(this, R.id.settings_root, R.id.settings_top_app_bar, R.id.settings_container);
     }
 
     public void onPreferencesCreated() {

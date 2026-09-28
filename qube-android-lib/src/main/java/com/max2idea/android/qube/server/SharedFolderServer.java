@@ -1,3 +1,7 @@
+/*
+Copyright (C) Rhn 2026
+ */
+
 package com.max2idea.android.qube.server;
 
 import android.os.Environment;
@@ -14,10 +18,8 @@ import java.util.Map;
 import fi.iki.elonen.NanoHTTPD;
 
 /**
- * Lightweight HTTP server that shares the host's Download folder with the VM guest
- * Guests can upload files via curl -T
- * Pure Java (NanoHTTPD), no external deps
- * Accessible at 10.0.2.2 over QEMU's SLIRP networking
+ Lightweight HTTP server that shares the host's Download folder with the VM guest
+ Accessible at 10.0.2.2 over QEMU's SLIRP networking
  */
 public class SharedFolderServer extends NanoHTTPD {
 

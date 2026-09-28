@@ -24,15 +24,12 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.toast.ToastUtils;
+import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
+import com.max2idea.android.qube.utils.ToolbarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +62,10 @@ public class VirtualKeysEditorActivity extends AppCompatActivity {
         setContentView(R.layout.virtual_keys_editor);
         setupEdgeToEdgeToolbar();
 
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.pref_customize_virtual_keys);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        ToolbarUtils.setup(this, ToolbarUtils.config()
+                .homeAsUp(true)
+                .title(this, R.string.pref_customize_virtual_keys)
+                .onNavigationClick(this::onBackPressed));
 
         focusOverlay = AppCompatResources.getDrawable(this, R.drawable.focus_overlay);
 
@@ -116,46 +110,7 @@ public class VirtualKeysEditorActivity extends AppCompatActivity {
     }
 
     private void setupEdgeToEdgeToolbar() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        View screen = findViewById(R.id.virtual_keys_screen);
-        View appBar = findViewById(R.id.virtual_keys_top_app_bar);
-        View content = findViewById(R.id.editor_root);
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), screen);
-        controller.setAppearanceLightStatusBars(false);
-        controller.setAppearanceLightNavigationBars(false);
-        getWindow().setNavigationBarContrastEnforced(false);
-        final int appBarLeft = appBar.getPaddingLeft();
-        final int appBarTop = appBar.getPaddingTop();
-        final int appBarRight = appBar.getPaddingRight();
-        final int appBarBottom = appBar.getPaddingBottom();
-        android.view.ViewGroup.MarginLayoutParams appBarParams =
-                (android.view.ViewGroup.MarginLayoutParams) appBar.getLayoutParams();
-        final int appBarLeftMargin = appBarParams.leftMargin;
-        final int appBarRightMargin = appBarParams.rightMargin;
-        final int contentLeft = content.getPaddingLeft();
-        final int contentTop = content.getPaddingTop();
-        final int contentRight = content.getPaddingRight();
-        final int contentBottom = content.getPaddingBottom();
-        ViewCompat.setOnApplyWindowInsetsListener(appBar, (view, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            android.view.ViewGroup.MarginLayoutParams params =
-                    (android.view.ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            params.leftMargin = appBarLeftMargin + bars.left;
-            params.rightMargin = appBarRightMargin + bars.right;
-            view.setLayoutParams(params);
-            view.setPadding(appBarLeft, appBarTop + bars.top,
-                    appBarRight, appBarBottom);
-            return insets;
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(content, (view, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(contentLeft + bars.left, contentTop,
-                    contentRight + bars.right, contentBottom + bars.bottom);
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(screen);
+        EdgeToEdgeUtils.apply(this, R.id.virtual_keys_screen, R.id.virtual_keys_top_app_bar, R.id.editor_root);
     }
 
     @Override

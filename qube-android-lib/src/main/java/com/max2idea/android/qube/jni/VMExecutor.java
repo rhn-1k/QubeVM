@@ -98,6 +98,8 @@ class VMExecutor extends MachineExecutor {
                 return "libqemu-system-ppc.so";
             case ppc64:
                 return "libqemu-system-ppc64.so";
+            case m68k:
+                return "libqemu-system-m68k.so";
             default:
                 throw new IllegalStateException("Unexpected value: " + QubeApplication.arch);
         }
@@ -373,6 +375,10 @@ class VMExecutor extends MachineExecutor {
     }
 
     private void addGraphicsOptions(Context context, ArrayList<String> paramsList) {
+        // We don't pass graphics values for m68k because every machine has it's own
+        if (QubeApplication.arch == Config.Arch.m68k) {
+            return;
+        }
         String vga = getMachine().getVga();
         if (vga != null) {
             if (vga.equals("Default")) {
@@ -405,7 +411,7 @@ class VMExecutor extends MachineExecutor {
                 paramsList.add("-device");
                 paramsList.add(deviceStr);
 
-                // gl/virgl/venus devices need a display backend with its own GL context
+                // gl devices need a display backend with its own GL context
                 // qube-qge is that backend, see qge.c
                 String displayBackend = GraphicsCapabilities.getDisplayBackend(vga);
                 if (displayBackend != null) {

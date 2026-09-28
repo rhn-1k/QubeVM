@@ -21,7 +21,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import org.json.JSONObject;
 
-/** Small QMP client used for QEMU control commands. */
+/** A simple QMP CLient that is needed for communicating with QEMU. You can use it for
+ * screen dump for the screenshot, converting ppm to png, and change removable drives.
+  */
 public final class QmpClient {
     private static final String TAG = "QmpClient";
     private static final String REQUEST_COMMAND_MODE = "{ \"execute\": \"qmp_capabilities\" }";
@@ -153,8 +155,7 @@ public final class QmpClient {
     }
 
     public static String getScreendumpCommand(String filename) {
-        // Deliberately no "format" argument: older QEMU (<7.1) doesn't understand it.
-        // We convert PPM -> PNG ourselves right after the dump.
+        // We convert PPM -> PNG ourselves right after the dump
         return "{ \"execute\": \"screendump\", \"arguments\": { \"filename\": \""
                 + filename + "\" } }";
     }
@@ -185,7 +186,7 @@ public final class QmpClient {
         return converted ? response : null;
     }
 
-    /** Reads a binary PPM (P6) file and writes it out as a PNG file. */
+    // Reads a binary PPM (P6) file and writes it out as a PNG file
     private static boolean convertPpmToPng(File ppmFile, File pngFile) throws Exception {
         if (!ppmFile.exists()) {
             Log.e(TAG, "PPM file not found: " + ppmFile.getAbsolutePath());
@@ -235,11 +236,11 @@ public final class QmpClient {
         }
     }
 
-    /** Reads a whitespace-delimited PPM token and skips PPM comments. */
+    // Reads a whitespace-delimited PPM token and skips PPM comments
     private static String readPpmToken(BufferedInputStream input) throws Exception {
         ByteArrayOutputStream token = new ByteArrayOutputStream();
         int b;
-        // Skip leading whitespace/comments.
+        // Skip leading whitespace/comments
         while (true) {
             b = input.read();
             if (b == -1) {

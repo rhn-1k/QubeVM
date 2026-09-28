@@ -90,7 +90,7 @@ public class Config {
     public static boolean syncFilesOnClose = true;
 
     public enum Arch {
-        x86, x86_64, arm, arm64, ppc, ppc64
+        x86, x86_64, arm, arm64, ppc, ppc64, sparc, m68k
     }
 
     //Enable if you build with KVM support, needes android-21 platform

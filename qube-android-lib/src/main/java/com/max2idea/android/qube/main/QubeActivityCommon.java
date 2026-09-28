@@ -14,9 +14,10 @@ import android.os.Looper;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.qube.emu.lib.R;
-import com.max2idea.android.qube.dialog.DialogUtils;
 import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.help.Help;
 import com.max2idea.android.qube.install.Installer;
@@ -101,20 +102,21 @@ public final class QubeActivityCommon {
     }
 
     public static void tapNotSupported(final Activity activity, final String userId) {
-        activity.runOnUiThread(() -> DialogUtils.UIAlert(
-                activity,
-                activity.getString(R.string.tapUserId) + ": " + (userId == null ? "" : userId),
-                activity.getString(R.string.tapNotSupportInstructions),
-                0,
-                true,
-                true,
-                R.drawable.error_24px,
-                activity.getString(android.R.string.ok),
-                null,
-                null,
-                null,
-                null,
-                null));
+        activity.runOnUiThread(() -> {
+            TextView textView = new TextView(activity);
+            textView.setPadding(20, 20, 20, 20);
+            textView.setText(activity.getString(R.string.tapNotSupportInstructions));
+            ScrollView scrollView = new ScrollView(activity);
+            scrollView.addView(textView);
+            AlertDialog dialog = new MaterialAlertDialogBuilder(activity)
+                    .setTitle(activity.getString(R.string.tapUserId) + ": " + (userId == null ? "" : userId))
+                    .setIcon(R.drawable.error_24px)
+                    .setView(scrollView)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        });
     }
 
     public static void promptTap(final Activity activity, final String userId) {
@@ -122,21 +124,24 @@ public final class QubeActivityCommon {
         };
         DialogInterface.OnClickListener helpListener = (dialog, which) ->
                 goToURL(activity, Config.NetworkLink);
-        activity.runOnUiThread(() -> DialogUtils.UIAlert(
-                activity,
-                activity.getString(R.string.TapDeviceFound),
-                activity.getString(R.string.tunDeviceWarning) + ": "
-                        + (userId == null ? "" : userId) + "\n",
-                16,
-                false,
-                true,
-                R.drawable.settings_ethernet_24px,
-                activity.getString(android.R.string.ok),
-                okListener,
-                null,
-                null,
-                activity.getString(R.string.TAPHelp),
-                helpListener));
+        activity.runOnUiThread(() -> {
+            TextView textView = new TextView(activity);
+            textView.setPadding(20, 20, 20, 20);
+            textView.setTextSize(16);
+            textView.setText(activity.getString(R.string.tunDeviceWarning) + ": "
+                    + (userId == null ? "" : userId) + "\n");
+            ScrollView scrollView = new ScrollView(activity);
+            scrollView.addView(textView);
+            AlertDialog dialog = new MaterialAlertDialogBuilder(activity)
+                    .setTitle(activity.getString(R.string.TapDeviceFound))
+                    .setIcon(R.drawable.settings_ethernet_24px)
+                    .setView(scrollView)
+                    .setPositiveButton(activity.getString(android.R.string.ok), okListener)
+                    .setNeutralButton(activity.getString(R.string.TAPHelp), helpListener)
+                    .create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        });
     }
 
     public static void goToURL(Context context, String url) {
@@ -150,20 +155,23 @@ public final class QubeActivityCommon {
         };
         DialogInterface.OnClickListener helpListener = (dialog, which) ->
                 goToURL(activity, Config.NetworkLink);
-        activity.runOnUiThread(() -> DialogUtils.UIAlert(
-                activity,
-                activity.getString(R.string.network),
-                activity.getString(R.string.externalNetworkWarning),
-                16,
-                false,
-                true,
-                R.drawable.settings_ethernet_24px,
-                activity.getString(android.R.string.ok),
-                okListener,
-                null,
-                null,
-                activity.getString(R.string.faq),
-                helpListener));
+        activity.runOnUiThread(() -> {
+            TextView textView = new TextView(activity);
+            textView.setPadding(20, 20, 20, 20);
+            textView.setTextSize(16);
+            textView.setText(activity.getString(R.string.externalNetworkWarning));
+            ScrollView scrollView = new ScrollView(activity);
+            scrollView.addView(textView);
+            AlertDialog dialog = new MaterialAlertDialogBuilder(activity)
+                    .setTitle(activity.getString(R.string.network))
+                    .setIcon(R.drawable.settings_ethernet_24px)
+                    .setView(scrollView)
+                    .setPositiveButton(activity.getString(android.R.string.ok), okListener)
+                    .setNeutralButton(activity.getString(R.string.faq), helpListener)
+                    .create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        });
     }
 
     public static void showChangelog(final Activity activity) {

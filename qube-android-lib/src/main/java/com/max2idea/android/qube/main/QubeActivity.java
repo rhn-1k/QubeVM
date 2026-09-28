@@ -45,26 +45,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ScrollView;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.core.widget.NestedScrollView;
+
+import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
+import com.max2idea.android.qube.utils.ToolbarUtils;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.qube.emu.lib.BuildConfig;
 import com.qube.emu.lib.R;
-import com.max2idea.android.qube.dialog.DialogUtils;
 import com.max2idea.android.qube.files.FileInstaller;
 import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.help.Help;
@@ -925,12 +921,10 @@ public class QubeActivity extends AppCompatActivity
                     }
                 };
 
-        DialogUtils.UIAlert(QubeActivity.this, getString(R.string.EnableKVM),
-                getString(R.string.EnableKVMWarning),
-                16, false, true, R.drawable.info_24px,
-                getString(android.R.string.ok),
-                okListener, getString(android.R.string.cancel),
-                cancelListener, getString(R.string.KVMHelp), helpListener);
+        showKvmStyleDialog(getString(R.string.EnableKVM), getString(R.string.EnableKVMWarning),
+                getString(android.R.string.ok), okListener,
+                getString(android.R.string.cancel), cancelListener,
+                getString(R.string.KVMHelp), helpListener);
     }
 
     private void promptEnableMTTCG() {
@@ -955,12 +949,10 @@ public class QubeActivity extends AppCompatActivity
                         QubeActivityCommon.goToURL(QubeActivity.this, Config.CpuLink);
                     }
                 };
-        DialogUtils.UIAlert(QubeActivity.this, getString(R.string.enableMTTCG),
-                getString(R.string.enableMTTCGWarning),
-                16, false, true, R.drawable.info_24px,
+        showKvmStyleDialog(getString(R.string.enableMTTCG), getString(R.string.enableMTTCGWarning),
                 getString(android.R.string.ok), okListener,
-                getString(android.R.string.cancel)
-                , cancelListener, getString(R.string.mttcgHelp), helpListener);
+                getString(android.R.string.cancel), cancelListener,
+                getString(R.string.mttcgHelp), helpListener);
     }
 
     private void promptMultiCPU(final String cpuNum) {
@@ -982,14 +974,36 @@ public class QubeActivity extends AppCompatActivity
                         QubeActivityCommon.goToURL(QubeActivity.this, Config.CpuLink);
                     }
                 };
-        DialogUtils.UIAlert(QubeActivity.this, getString(R.string.multipleVCPU),
+        showKvmStyleDialog(getString(R.string.multipleVCPU),
                 getString(R.string.multipleVCPUWarning)
                         + ((QubeApplication.arch == Config.Arch.x86_64) ?
                         getString(R.string.disableTSCInstructions) : "")
                         + " " + getString(R.string.DoYouWantToContinue),
-                16, false, true, R.drawable.info_24px,
                 getString(android.R.string.ok), okListener,
-                getString(android.R.string.cancel), cancelListener, getString(R.string.vCPUHelp), helpListener);
+                getString(android.R.string.cancel), cancelListener,
+                getString(R.string.vCPUHelp), helpListener);
+    }
+
+    private void showKvmStyleDialog(String title, String body,
+                                     String okTitle, DialogInterface.OnClickListener okListener,
+                                     String cancelTitle, DialogInterface.OnClickListener cancelListener,
+                                     String helpTitle, DialogInterface.OnClickListener helpListener) {
+        TextView textView = new TextView(this);
+        textView.setPadding(20, 20, 20, 20);
+        textView.setTextSize(16);
+        textView.setText(body);
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.addView(textView);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setIcon(R.drawable.info_24px)
+                .setView(scrollView)
+                .setPositiveButton(okTitle, okListener)
+                .setNegativeButton(cancelTitle, cancelListener)
+                .setNeutralButton(helpTitle, helpListener)
+                .create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     private void setupNonRemovableDiskListeners() {
@@ -1211,54 +1225,7 @@ public class QubeActivity extends AppCompatActivity
     }
 
     private void setupEdgeToEdge() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        View root = findViewById(R.id.main_layout);
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), root);
-        controller.setAppearanceLightStatusBars(false);
-        controller.setAppearanceLightNavigationBars(false);
-        getWindow().setNavigationBarContrastEnforced(false);
-        View appBar = findViewById(R.id.top_app_bar);
-        final int appBarLeftPadding = appBar.getPaddingLeft();
-        final int appBarTopPadding = appBar.getPaddingTop();
-        final int appBarRightPadding = appBar.getPaddingRight();
-        final int appBarBottomPadding = appBar.getPaddingBottom();
-        android.view.ViewGroup.MarginLayoutParams appBarParams =
-                (android.view.ViewGroup.MarginLayoutParams) appBar.getLayoutParams();
-        final int appBarLeftMargin = appBarParams.leftMargin;
-        final int appBarRightMargin = appBarParams.rightMargin;
-        ViewCompat.setOnApplyWindowInsetsListener(appBar, (view, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            android.view.ViewGroup.MarginLayoutParams params =
-                    (android.view.ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            params.leftMargin = appBarLeftMargin + bars.left;
-            params.rightMargin = appBarRightMargin + bars.right;
-            view.setLayoutParams(params);
-            view.setPadding(
-                    appBarLeftPadding,
-                    appBarTopPadding + bars.top,
-                    appBarRightPadding,
-                    appBarBottomPadding
-            );
-            return insets;
-        });
-        NestedScrollView scrollView = findViewById(R.id.scroll_view);
-        final int leftPadding = scrollView.getPaddingLeft();
-        final int topPadding = scrollView.getPaddingTop();
-        final int rightPadding = scrollView.getPaddingRight();
-        final int bottomPadding = scrollView.getPaddingBottom();
-        ViewCompat.setOnApplyWindowInsetsListener(scrollView, (view, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(
-                    leftPadding + bars.left,
-                    topPadding,
-                    rightPadding + bars.right,
-                    bottomPadding + bars.bottom
-            );
-            return insets;
-        });
-        ViewCompat.requestApplyInsets(root);
+        EdgeToEdgeUtils.apply(this, R.id.main_layout, R.id.top_app_bar, R.id.scroll_view);
     }
 
     private void requestNotificationPermissionIfNeeded() {
@@ -1497,17 +1464,7 @@ public class QubeActivity extends AppCompatActivity
     }
 
     public void setupToolbar() {
-        Toolbar tb = findViewById(R.id.toolbar);
-        setSupportActionBar(tb);
-
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayShowHomeEnabled(false);
-            ab.setDisplayHomeAsUpEnabled(false);
-            ab.setDisplayShowCustomEnabled(true);
-            ab.setDisplayShowTitleEnabled(true);
-            ab.setTitle(getApplicationInfo().loadLabel(getPackageManager()));
-        }
+        ToolbarUtils.setup(this, ToolbarUtils.config());
     }
 
     public void checkUpdate() {
@@ -1929,7 +1886,7 @@ public class QubeActivity extends AppCompatActivity
         QubeActivityCommon.promptResetVM(this, viewListener);
     }
 
-    /// Smooth collapse transition animation
+    // Smooth collapse transition animation
     public void toggleSectionVisibility(View view) {
         final boolean expanding = view.getVisibility() != View.VISIBLE;
 
@@ -1944,6 +1901,12 @@ public class QubeActivity extends AppCompatActivity
 
     public void setupWidgets() {
         setupSections();
+        // We hide the graphics section for m68k because each machine has it's own integrated graphics card
+        if (QubeApplication.arch == Config.Arch.m68k) {
+            View graphicsSection = findViewById(R.id.graphicssectionl);
+            if (graphicsSection != null)
+                graphicsSection.setVisibility(View.GONE);
+        }
         mScrollView = findViewById(R.id.scroll_view);
         mFormContent = findViewById(R.id.form_content);
         mStatus = findViewById(R.id.statusVal);

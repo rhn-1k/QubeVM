@@ -14,11 +14,14 @@ import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.qube.emu.lib.R;
-import com.max2idea.android.qube.dialog.DialogUtils;
 import com.max2idea.android.qube.machine.Machine.FileType;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
@@ -658,21 +661,19 @@ public class FileUtils {
     }
 
     public static void showFileNotSupported(Activity context) {
-        DialogUtils.UIAlert(
-            context,
-            context.getString(R.string.Error),
-            context.getString(R.string.FilePathNotSupportedWarning),
-            0,
-            true,
-            true,
-            R.drawable.error_24px,
-            context.getString(android.R.string.ok),
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+        TextView textView = new TextView(context);
+        textView.setPadding(20, 20, 20, 20);
+        textView.setText(context.getString(R.string.FilePathNotSupportedWarning));
+        ScrollView scrollView = new ScrollView(context);
+        scrollView.addView(textView);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(context)
+                .setTitle(context.getString(R.string.Error))
+                .setIcon(R.drawable.error_24px)
+                .setView(scrollView)
+                .setPositiveButton(android.R.string.ok, null)
+                .create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     public static void saveLogToFile(final Activity activity, final String logFileDestDir) {

@@ -47,6 +47,9 @@ public class ArchDefinitions {
             case ppc64:
                 networkCards.addAll(commonNetworkCards);
                 break;
+            case m68k:
+                networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_nic_cards)));
+                break;
         }
         return networkCards;
     }
@@ -137,6 +140,10 @@ public class ArchDefinitions {
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.ppc_cpu)));
                 break;
+            case m68k:
+                arrList.add("Default");
+                arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_cpu)));
+                break;
         }
 
         if (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64 || QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64)
@@ -160,6 +167,10 @@ public class ArchDefinitions {
             case ppc64:
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.ppc_machine_types)));
+                break;
+            case m68k:
+                arrList.add("Default");
+                arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_machine_types)));
                 break;
         }
         return arrList;

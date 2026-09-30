@@ -4,25 +4,19 @@ Copyright (C) Rhn 2026
  */
 package com.max2idea.android.qube.qmp;
 
-import android.graphics.Bitmap;
 import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
 import android.util.Log;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import org.json.JSONObject;
 
 /** A simple QMP CLient that is needed for communicating with QEMU. You can use it for
- * screen dump for the screenshot, converting ppm to png, and change removable drives.
+ * changing removable drives, power and reset.
   */
 public final class QmpClient {
     private static final String TAG = "QmpClient";
@@ -152,115 +146,5 @@ public final class QmpClient {
 
     public static String getStateCommand() {
         return "{ \"execute\": \"query-status\" }";
-    }
-
-    public static String getScreendumpCommand(String filename) {
-        // We convert PPM -> PNG ourselves right after the dump
-        return "{ \"execute\": \"screendump\", \"arguments\": { \"filename\": \""
-                + filename + "\" } }";
-    }
-
-     // Asks QEMU to dump the current display contents and converts the result to PNG
-    public static String screendump(String pngFilename) {
-        File ppmFile = new File(pngFilename + ".tmp.ppm");
-        String response = sendCommand(getScreendumpCommand(ppmFile.getAbsolutePath()));
-        if (response == null) {
-            return null;
-        }
-        if (response.contains("\"error\"")) {
-            Log.w(TAG, "screendump error: " + response);
-            ppmFile.delete();
-            return null;
-        }
-        boolean converted = false;
-        try {
-            converted = convertPpmToPng(ppmFile, new File(pngFilename));
-        } catch (Exception ex) {
-            Log.e(TAG, "PPM to PNG conversion failed: " + ex.getMessage());
-            if (Config.debugQmp) {
-                ex.printStackTrace();
-            }
-        } finally {
-            ppmFile.delete();
-        }
-        return converted ? response : null;
-    }
-
-    // Reads a binary PPM (P6) file and writes it out as a PNG file
-    private static boolean convertPpmToPng(File ppmFile, File pngFile) throws Exception {
-        if (!ppmFile.exists()) {
-            Log.e(TAG, "PPM file not found: " + ppmFile.getAbsolutePath());
-            return false;
-        }
-        try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(ppmFile))) {
-            String magic = readPpmToken(input);
-            if (!"P6".equals(magic)) {
-                Log.e(TAG, "Unsupported PPM magic number: " + magic);
-                return false;
-            }
-            int width = Integer.parseInt(readPpmToken(input));
-            int height = Integer.parseInt(readPpmToken(input));
-            int maxVal = Integer.parseInt(readPpmToken(input));
-            if (maxVal < 1 || maxVal > 255) {
-                Log.e(TAG, "Unsupported PPM maxval: " + maxVal);
-                return false;
-            }
-            int pixelCount = width * height;
-            byte[] rgb = new byte[pixelCount * 3];
-            int offset = 0;
-            byte[] buffer = new byte[8192];
-            while (offset < rgb.length) {
-                int read = input.read(buffer, 0, Math.min(buffer.length, rgb.length - offset));
-                if (read == -1) {
-                    Log.e(TAG, "Unexpected end of PPM pixel data");
-                    return false;
-                }
-                System.arraycopy(buffer, 0, rgb, offset, read);
-                offset += read;
-            }
-            int[] pixels = new int[pixelCount];
-            int rgbIndex = 0;
-            for (int i = 0; i < pixelCount; i++) {
-                int r = rgb[rgbIndex] & 0xFF;
-                int g = rgb[rgbIndex + 1] & 0xFF;
-                int b = rgb[rgbIndex + 2] & 0xFF;
-                rgbIndex += 3;
-                pixels[i] = 0xFF000000 | (r << 16) | (g << 8) | b;
-            }
-            Bitmap bitmap = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
-            try (FileOutputStream output = new FileOutputStream(pngFile)) {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
-            }
-            bitmap.recycle();
-            return true;
-        }
-    }
-
-    // Reads a whitespace-delimited PPM token and skips PPM comments
-    private static String readPpmToken(BufferedInputStream input) throws Exception {
-        ByteArrayOutputStream token = new ByteArrayOutputStream();
-        int b;
-        // Skip leading whitespace/comments
-        while (true) {
-            b = input.read();
-            if (b == -1) {
-                throw new IllegalStateException("Unexpected end of PPM header");
-            }
-            if (b == '#') {
-                while (b != -1 && b != '\n') {
-                    b = input.read();
-                }
-                continue;
-            }
-            if (!Character.isWhitespace((char) b)) {
-                break;
-            }
-        }
-        // Read the token itself.
-        while (b != -1 && !Character.isWhitespace((char) b)) {
-            token.write(b);
-            b = input.read();
-        }
-        return token.toString("US-ASCII");
     }
 }

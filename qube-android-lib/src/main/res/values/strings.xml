@@ -155,6 +155,7 @@
     <string name="SendText">Send Text</string>
     <string name="Send">Send</string>
     <string name="GoToWiki">Online Wiki</string>
+    <string name="Discord">Discord</string>
     <string name="DoNotShowAgain">Do not Show Again</string>
     <string name="GenNewVersion">Get New Version</string>
     <string name="Cancel">Cancel</string>

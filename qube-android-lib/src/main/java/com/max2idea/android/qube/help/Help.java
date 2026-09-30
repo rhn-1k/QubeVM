@@ -62,6 +62,13 @@ public class Help {
                                 if (onDismiss != null) onDismiss.run();
                             }
                         })
+                .setNeutralButton(activity.getString(R.string.Discord),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                NetworkUtils.openURL(activity, Config.discordLink);
+                                if (onDismiss != null) onDismiss.run();
+                            }
+                        })
                 .show();
     }
 

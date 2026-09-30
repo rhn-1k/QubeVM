@@ -30,8 +30,8 @@
 
         <activity
             android:name="com.max2idea.android.qube.main.QubeQGEActivity"
+            android:process=":vm"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize"
-            android:label="@string/app_name"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -47,6 +47,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <service
             android:name="com.max2idea.android.qube.machine.MachineService"
+            android:process=":vm"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync"

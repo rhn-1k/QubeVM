@@ -6,20 +6,18 @@ package com.max2idea.android.qube.jni;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Bundle;
+import android.os.Process;
 import android.util.Log;
 import android.view.Gravity;
 
 import com.qube.emu.lib.BuildConfig;
 import com.qube.emu.lib.R;
-import com.max2idea.android.qube.files.FileInstaller;
 import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.machine.GraphicsCapabilities;
-import com.max2idea.android.qube.machine.Machine;
 import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineExecutor;
 import com.max2idea.android.qube.machine.MachineProperty;
+import com.max2idea.android.qube.machine.VmProcess;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
 import com.max2idea.android.qube.main.QubeSettingsManager;
@@ -32,6 +30,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -49,6 +50,8 @@ class VMExecutor extends MachineExecutor {
     private static final String DEFAULT_UEFI = "Default";
     //TODO: make this a proper singleton but the views should not be able to access it
     private static VMExecutor mInstance;
+    private final AtomicBoolean stopping = new AtomicBoolean(false);
+    private final CountDownLatch exitLatch = new CountDownLatch(1);
 
     VMExecutor(MachineController machineController) {
         super(machineController);
@@ -84,30 +87,9 @@ class VMExecutor extends MachineExecutor {
         return null;
     }
 
-    private String getQemuLibrary() {
-        switch (QubeApplication.arch) {
-            case x86:
-                return "libqemu-system-i386.so";
-            case x86_64:
-                return "libqemu-system-x86_64.so";
-            case arm:
-                return "libqemu-system-arm.so";
-            case arm64:
-                return "libqemu-system-aarch64.so";
-            case ppc:
-                return "libqemu-system-ppc.so";
-            case ppc64:
-                return "libqemu-system-ppc64.so";
-            case m68k:
-                return "libqemu-system-m68k.so";
-            default:
-                throw new IllegalStateException("Unexpected value: " + QubeApplication.arch);
-        }
-    }
-
     private String[] prepareParams(Context context) throws Exception {
         ArrayList<String> paramsList = new ArrayList<>();
-        paramsList.add(getQemuLibrary());
+        paramsList.add(VmProcess.qemuLibrary());
         addUIOptions(context, paramsList);
         addCpuBoardOptions(paramsList);
         addDrives(paramsList);
@@ -732,10 +714,10 @@ class VMExecutor extends MachineExecutor {
     public void startService() {
         Intent i = new Intent(Config.ACTION_START, null, QubeApplication.getInstance(),
                 MachineController.getInstance().getServiceClass());
-        Bundle b = new Bundle();
-        i.putExtras(b);
+        i.putExtras(VmProcess.snapshot());
         Log.d(TAG, "Starting VM service");
         QubeApplication.getInstance().startService(i);
+        VmProcess.attach(QubeApplication.getInstance());
     }
 
     /**
@@ -751,13 +733,15 @@ class VMExecutor extends MachineExecutor {
             printParams(params);
 
             QmpClient.setExternal(QubeSettingsManager.getEnableExternalQMP(QubeApplication.getInstance()));
-            String libFilename = getQemuLibrary();
+            String libFilename = VmProcess.qemuLibrary();
             res = start(Config.storagedir, QubeApplication.getBasefileDir(),
                     libFilename, FileUtils.getNativeLibDir(QubeApplication.getInstance()) + "/" + libFilename,
                     params);
         } catch (Exception ex) {
             ToastUtils.toastLong(QubeApplication.getInstance(), ex.getMessage());
             return res;
+        } finally {
+            exitLatch.countDown();
         }
         return res;
     }
@@ -767,14 +751,34 @@ class VMExecutor extends MachineExecutor {
             @Override
             public void run() {
                 if (restart != 0) {
+                    QmpClient.setExternal(QubeSettingsManager.getEnableExternalQMP(QubeApplication.getInstance()));
                     QmpClient.sendCommand(QmpClient.getResetCommand());
-                } else {
-                    //XXX: Qmp command only halts the VM but doesn't exit so we use force close
-//            QmpClient.sendCommand(QmpClient.powerDown());
-                    stop(restart);
+                    return;
                 }
+                if (!VmProcess.isVmProcess()) {
+                    VmProcess.requestRemoteStop(QubeApplication.getInstance());
+                    return;
+                }
+                if (!stopping.compareAndSet(false, true)) {
+                    return;
+                }
+                stop(0);
+                if (awaitExit(Config.STOP_GRACE_MS)) {
+                    return;
+                }
+                Log.w(TAG, "VM did not exit within " + Config.STOP_GRACE_MS + "ms, killing process");
+                Process.killProcess(Process.myPid());
             }
-        }).start();
+        }, "QubeStop").start();
+    }
+
+    private boolean awaitExit(long timeoutMs) {
+        try {
+            return exitLatch.await(timeoutMs, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
     }
 
     @Override

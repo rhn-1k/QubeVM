@@ -39,6 +39,7 @@ public class Config {
 
     public static final int STATUS_CREATED = 1000;
     public static final String ACTION_START = "com.max2idea.android.qube.action.STARTVM";
+    public static final String ACTION_STOP = "com.max2idea.android.qube.action.STOPVM";
 
     // GUI Options
     public static final int MAX_CPU_NUM = 8;
@@ -64,6 +65,7 @@ public class Config {
     public static final String toolsLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/advanced.md";
     public static final String NetworkLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/video-audio-network.md#network";
     public static final String newVersionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
+    public static final String discordLink = "https://discord.gg/MrbJ9QNXNJ";
 
     public static final boolean enableKeyboardLayoutOption = true;
     public static final boolean enableMouseOption = true;
@@ -75,6 +77,9 @@ public class Config {
 
     public static final int EXIT_SUCCESS = 1;
     public static final int EXIT_UNKNOWN = 2;
+
+    // How long to wait for qemu to exit gracefully before killing the vm process
+    public static final long STOP_GRACE_MS = 10000;
 
     // Enabling or disabling sound in the QGE build
     public static boolean enableQGESound = true;
@@ -99,10 +104,6 @@ public class Config {
     //Some OSes don't like emulated multi cores for QEMU 2.9.1 you can disable here
     // thought there is also the Disable TSC feature so you don't have to do it here
     public static boolean enableSMPOnlyOnKVM = false;
-    //set to true if you need to debug native library loading
-    public static boolean loadNativeLibsEarly = false;
-    //XXX: QEMU 3.1.0+ needs the libraries to be loaded from the main thread
-    public static boolean loadNativeLibsMainThread = true;
     public static String wakeLockTag = "qube:wakelock";
     public static String wifiLockTag = "qube:wifilock";
 

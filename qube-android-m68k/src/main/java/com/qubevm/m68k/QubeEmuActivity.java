@@ -21,9 +21,4 @@ public class QubeEmuActivity extends QubeActivity {
         super.onCreate(bundle);
         Logger.setupLogFile("/qube/qube-m68k-log.txt");
     }
-
-    @Override
-    protected void loadQEMULib() {
-        System.loadLibrary("qemu-system-m68k");
-    }
 }

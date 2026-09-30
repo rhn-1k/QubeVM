@@ -154,6 +154,7 @@
     <string name="SendText">Отправить текст</string>
     <string name="Send">Отправить</string>
     <string name="GoToWiki">Онлайн Wiki</string>
+    <string name="Discord">Discord</string>
     <string name="DoNotShowAgain">Больше не показывать</string>
     <string name="GenNewVersion">Получить новую версию</string>
     <string name="Cancel">Отмена</string>

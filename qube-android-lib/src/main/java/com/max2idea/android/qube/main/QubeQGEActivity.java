@@ -60,9 +60,9 @@ import com.max2idea.android.qube.machine.Machine;
 import com.max2idea.android.qube.machine.MachineAction;
 import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineProperty;
+import com.max2idea.android.qube.machine.VmProcess;
 import com.max2idea.android.qube.screen.ScreenUtils;
 import com.max2idea.android.qube.toast.ToastUtils;
-import com.max2idea.android.qube.qmp.QmpClient;
 import com.max2idea.android.qube.server.SharedFolderServer;
 import com.max2idea.android.qube.utils.ClipboardUtils;
 import com.max2idea.android.qube.jni.QubeGfx;
@@ -70,6 +70,8 @@ import com.max2idea.android.qube.jni.QubeAudio;
 import com.max2idea.android.qube.jni.QubeInput;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -85,7 +87,8 @@ public class QubeQGEActivity extends AppCompatActivity
 
     public static boolean toggleKeyboardFlag = true;
     public static boolean isResizing = false;
-    public static boolean pendingStop;
+    public static final String EXTRA_PENDING_STOP = "qube.pendingStop";
+    private boolean pendingStop;
     private static boolean machineRunning;
 
     public static MouseMode mouseMode = MouseMode.Trackpad;
@@ -233,7 +236,7 @@ public class QubeQGEActivity extends AppCompatActivity
         } else if (item.getItemId() == R.id.itemSendText) {
             promptSendText();
         } else if (item.getItemId() == R.id.itemScreenshot) {
-            takeScreenshotQMP();
+            takeScreenshot();
         } else if (item.getItemId() == R.id.itemShareFolder) {
             showShareFolderDialog();
         }
@@ -293,8 +296,9 @@ public class QubeQGEActivity extends AppCompatActivity
         });
     }
 
-    // Screenshot using QMP
-    private void takeScreenshotQMP() {
+    // Screenshot using frameBitmap
+    // because QMP screendump doesn't have native support for virtio
+    private void takeScreenshot() {
         final String baseDir = Config.storagedir + "/" + Config.screenshotDir;
         final File dir = new File(baseDir);
         if (!dir.exists() && !dir.mkdirs()) {
@@ -311,12 +315,28 @@ public class QubeQGEActivity extends AppCompatActivity
         final String filename = machineName + "_" + timestamp + ".png";
         final String fullPath = baseDir + "/" + filename;
 
-        // QmpClient.screendump() does blocking socket I/O so it
+        final Bitmap frame = (frameBitmap == null || frameBitmap.isRecycled())
+                ? null : frameBitmap.copy(Bitmap.Config.ARGB_8888, false);
+        if (frame == null) {
+            ToastUtils.toastShort(this, getString(R.string.screenshot_failed));
+            return;
+        }
+
+        // Saving the PNG does blocking file I/O so it
         // must never run on the UI thread or it can ANR the app
         screenshotExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                final String result = QmpClient.screendump(fullPath);
+                String saved = null;
+                try (FileOutputStream out = new FileOutputStream(fullPath)) {
+                    if (frame.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                        saved = fullPath;
+                    }
+                } catch (IOException e) {
+                    Log.w(TAG, "screenshot save failed", e);
+                }
+                frame.recycle();
+                final String result = saved;
 
                 if (result != null) {
                     // Save the picture as media so it can be shown on phone gallery
@@ -539,8 +559,17 @@ public class QubeQGEActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        VmProcess.prepare(getIntent().getExtras());
+        // XXX: If VM stopped but app not removed from recents, it reloads this activity
+        // forward to main instead
+        if (savedInstanceState != null && !machineRunning) {
+            super.onCreate(savedInstanceState);
+            finish();
+            return;
+        }
+        pendingStop = getIntent().getBooleanExtra(EXTRA_PENDING_STOP, false);
         // Stop the system from also auto-resizing/panning for the IME, since we
-        // position virtual_keys_container ourselves in applyKeyboardInset().
+        // position virtual_keys_container ourselves in applyKeyboardInset()
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setupScreen();
         super.onCreate(savedInstanceState);

@@ -76,6 +76,7 @@ import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineController.MachineStatus;
 import com.max2idea.android.qube.machine.MachineFilePaths;
 import com.max2idea.android.qube.machine.MachineProperty;
+import com.max2idea.android.qube.machine.VmProcess;
 import com.max2idea.android.qube.server.SharedFolderServer;
 import com.max2idea.android.qube.utils.ClipboardUtils;
 import com.max2idea.android.qube.network.NetworkUtils;
@@ -120,7 +121,6 @@ public class QubeActivity extends AppCompatActivity
     // disk mapping
     private static final Hashtable<FileType, DiskInfo> diskMapping = new Hashtable<>();
 
-    private static boolean libLoaded;
     public View parent;
     private boolean machineLoaded;
     private FileType browseFileType = null;
@@ -266,6 +266,7 @@ public class QubeActivity extends AppCompatActivity
                     } else if (status_changed == MachineStatus.Ready || status_changed == MachineStatus.Stopped) {
                         mStatus.setImageResource(R.drawable.power_settings_new_24px);
                         mStatusText.setText(R.string.Stopped);
+                        mMachine.setEnabled(true);
                         if (getMachine() != null) {
                             unlockRemovableDevices(true);
                             enableRemovableDiskValues(true);
@@ -1219,7 +1220,6 @@ public class QubeActivity extends AppCompatActivity
         requestNotificationPermissionIfNeeded();
         checkUpdate();
         checkLog();
-        checkAndLoadLibs();
         restore();
         setupListeners();
     }
@@ -1272,14 +1272,6 @@ public class QubeActivity extends AppCompatActivity
         }, 1000);
     }
 
-    private void checkAndLoadLibs() {
-        if (Config.loadNativeLibsEarly)
-            if (Config.loadNativeLibsMainThread)
-                setupNativeLibs();
-            else
-                setupNativeLibsAsync();
-    }
-
     private void clearNotifications() {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
@@ -1309,18 +1301,6 @@ public class QubeActivity extends AppCompatActivity
         spinner.setTag(fileType);
 
         diskMapping.put(fileType, new DiskInfo(spinner, enableCheckBox, dbColName));
-    }
-
-    private void setupNativeLibsAsync() {
-
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                setupNativeLibs();
-            }
-        });
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
-
     }
 
     private void createListeners() {
@@ -1358,14 +1338,8 @@ public class QubeActivity extends AppCompatActivity
 
         mStart.setOnClickListener(new OnClickListener() {
             public void onClick(View view) {
-                if (!Config.loadNativeLibsEarly && Config.loadNativeLibsMainThread) {
-                    setupNativeLibs();
-                }
                 Thread thread = new Thread(new Runnable() {
                     public void run() {
-                        if (!Config.loadNativeLibsEarly && !Config.loadNativeLibsMainThread) {
-                            setupNativeLibs();
-                        }
                         onStartButton();
                     }
                 });
@@ -1423,44 +1397,6 @@ public class QubeActivity extends AppCompatActivity
             }
         });
         t.start();
-    }
-
-    //XXX: this needs to be called from the main thread otherwise
-    //  qemu crashes when it is started later
-    public void setupNativeLibs() {
-        if (libLoaded)
-            return;
-        // Compatibility lib
-        System.loadLibrary("compat-qube");
-
-        // Glib deps
-        System.loadLibrary("compat-musl");
-
-        // Glib for qemu
-        System.loadLibrary("glib-2.0");
-
-        // Pixman for qemu
-        System.loadLibrary("pixman-1");
-
-        // VirGL for qemu
-        try {
-            System.loadLibrary("epoxy");
-            System.loadLibrary("virglrenderer");
-        // If not found (disabled) skip
-        } catch (UnsatisfiedLinkError e) {
-        }
-
-        //Qube needed for vmexecutor
-        System.loadLibrary("qube");
-
-        // qemu arch specific lib
-        loadQEMULib();
-
-        libLoaded = true;
-    }
-
-    protected void loadQEMULib() {
-
     }
 
     public void setupToolbar() {
@@ -1829,15 +1765,18 @@ public class QubeActivity extends AppCompatActivity
 
     public void startVNC() {
         if (getMachine().getRenderer() == 0) {
-            startQGE();
+            startQGE(false);
         } else {
             startExternalVNC();
         }
     }
 
     // Start QGE display wrapper if selected
-    public void startQGE() {
+    public void startQGE(boolean stopPending) {
         Intent intent = new Intent(QubeActivity.this, QubeQGEActivity.class);
+        intent.putExtras(VmProcess.snapshot());
+        intent.putExtra(QubeQGEActivity.EXTRA_PENDING_STOP, stopPending);
+        VmProcess.attach(getApplicationContext());
         startActivityForResult(intent, Config.QGE_REQUEST_CODE);
     }
 
@@ -1870,8 +1809,7 @@ public class QubeActivity extends AppCompatActivity
             if (getMachine() != null && getMachine().getRenderer() == 1)
                 QubeActivityCommon.promptStopVM(this, viewListener);
             else {
-                QubeQGEActivity.pendingStop = true;
-                startQGE();
+                startQGE(true);
             }
         } else {
             ToastUtils.toastShort(QubeActivity.this, getString(R.string.vmNotRunning));
@@ -1901,12 +1839,6 @@ public class QubeActivity extends AppCompatActivity
 
     public void setupWidgets() {
         setupSections();
-        // We hide the graphics section for m68k because each machine has it's own integrated graphics card
-        if (QubeApplication.arch == Config.Arch.m68k) {
-            View graphicsSection = findViewById(R.id.graphicssectionl);
-            if (graphicsSection != null)
-                graphicsSection.setVisibility(View.GONE);
-        }
         mScrollView = findViewById(R.id.scroll_view);
         mFormContent = findViewById(R.id.form_content);
         mStatus = findViewById(R.id.statusVal);
@@ -1981,6 +1913,28 @@ public class QubeActivity extends AppCompatActivity
         mBiosVars = findViewById(R.id.biosvarsval);
         mBootMenu = findViewById(R.id.bootmenuval);
 
+        // UEFI isn't available for some architectures
+        if (QubeApplication.arch == Config.Arch.ppc
+                || QubeApplication.arch == Config.Arch.ppc64
+                || QubeApplication.arch == Config.Arch.m68k) {
+            View biosTypeRow = findViewById(R.id.biostypel);
+            if (biosTypeRow != null)
+                biosTypeRow.setVisibility(View.GONE);
+        }
+
+        // Boot menu is x86 option only, hiding it from others
+        if (QubeApplication.arch == Config.Arch.ppc
+                || QubeApplication.arch == Config.Arch.ppc64
+                || QubeApplication.arch == Config.Arch.arm
+                || QubeApplication.arch == Config.Arch.arm64
+                || QubeApplication.arch == Config.Arch.m68k) {
+            View bootMenuLabel = findViewById(R.id.bootmenul);
+            if (bootMenuLabel != null)
+                bootMenuLabel.setVisibility(View.GONE);
+            if (mBootMenu != null)
+                mBootMenu.setVisibility(View.GONE);
+        }
+
         //boot
         mBootDevices = findViewById(R.id.bootfromval);
         mKernel = findViewById(R.id.kernelval);
@@ -1992,6 +1946,13 @@ public class QubeActivity extends AppCompatActivity
         mVGAConfigInfo = findViewById(R.id.vgacfgInfo);
         mUIInfo = findViewById(R.id.uiInfo);
 
+        // We hide the graphics section for m68k because each machine has it's own integrated graphics card
+        if (QubeApplication.arch == Config.Arch.m68k) {
+            View graphicsSection = findViewById(R.id.graphicssectionl);
+            if (graphicsSection != null)
+                graphicsSection.setVisibility(View.GONE);
+        }
+
         mEnableVenus = findViewById(R.id.venusaccelval);
         mEnableVenusInfo = findViewById(R.id.venusaccelInfo);
         View mVenusRow = findViewById(R.id.venusaccell);
@@ -2001,7 +1962,7 @@ public class QubeActivity extends AppCompatActivity
             if (mVenusRow != null)
                 mVenusRow.setVisibility(View.GONE);
         } else {
-        // Starts disabled, called once a virtio GL device is selected
+        // Starts disabled, called once a GL device is selected
         mEnableVenus.setEnabled(false);
         mEnableVenus.setAlpha(0.4f);
         mEnableVenus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -2197,10 +2158,6 @@ public class QubeActivity extends AppCompatActivity
             });
 
             mBiosSectionDetails = findViewById(R.id.biossectionDetails);
-            View biosSection = findViewById(R.id.biosSectionl);
-            // We hide UEFI/Bios on PowerPC because it's limited to handle them
-            if (QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64)
-                biosSection.setVisibility(View.GONE);
             mBiosSectionDetails.setVisibility(View.GONE);
             mBiosSectionSummary = findViewById(R.id.biossectionsummaryStr);
             View mBiosSectionHeader = findViewById(R.id.biosheaderl);
@@ -2395,7 +2352,10 @@ public class QubeActivity extends AppCompatActivity
         String biosType = getMachine().getBiosType();
         if (biosType == null || biosType.trim().isEmpty())
             biosType = "Default";
-        String text = getString(R.string.bios_type_label) + ": " + biosType;
+        String text = null;
+        View biosTypeRow = findViewById(R.id.biostypel);
+        if (biosTypeRow != null && biosTypeRow.getVisibility() == View.VISIBLE)
+            text = getString(R.string.bios_type_label) + ": " + biosType;
         if ("UEFI".equalsIgnoreCase(biosType)) {
             text = appendDriveFilename(getMachine().getBiosCode(), text,
                     getString(R.string.bios_code_label), false);
@@ -3335,6 +3295,14 @@ public class QubeActivity extends AppCompatActivity
             case MachineLoaded:
                 loadMachine();
                 break;
+            case VmCrashed:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Logger.promptShowLog(QubeActivity.this);
+                    }
+                });
+                break;
         }
         runOnUiThread(new Runnable() {
             @Override
@@ -3343,6 +3311,7 @@ public class QubeActivity extends AppCompatActivity
             }
         });
     }
+
 
 
     private void updateFavAdapters() {

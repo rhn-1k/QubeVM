@@ -1,15 +1,25 @@
+* QubeVM v7.1.2 (pre-release)
+- Refactored VM shutdown mechanism
+- Initial m68k machine support (beta)
+- New bios boot menu feature (x86 only)
+- Added Discord server link
+- Fixed Screenshot doesn't work when using a GL device
+- Fixed visual bugs in app ui
+
+
 * QubeVM v7.1.1
 - Main interface redesign
 - Improved cursor trackpad movement
 - Expanded x86 machines support
 - New x86 drive interfaces (piix3-ide, piix4-ide)
-- New x86 Video Display device (isa-cirrus-vga)
+- New x86 video display device (isa-cirrus-vga)
 - New x86 network cards (e1000e, ne2k_isa)
 - Fixed white flash issue when opening keyboard via virtual keys keyboard button (Samsung keyboard only)
 
+
 * QubeVM v7.1.0
 - Using latest ndk (r30)
-- improved keyboard typing latency
+- Improved keyboard typing latency
 - Using latest NDK optimizations for binaries
 - Removed SVM (nested virtualization)
 - Made DNS changes applies to current vm only

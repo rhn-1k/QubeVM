@@ -1,4 +1,4 @@
-#### QEMU 11.1.1 version-specific options
+#### QEMU 11.1.2 version-specific options
 #### Based on actual ./configure --help output
 
 WARNING_FLAGS = -Wno-redundant-decls -Wno-unused-variable \

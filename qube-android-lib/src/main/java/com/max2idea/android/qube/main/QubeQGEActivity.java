@@ -60,7 +60,6 @@ import com.max2idea.android.qube.machine.Machine;
 import com.max2idea.android.qube.machine.MachineAction;
 import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineProperty;
-import com.max2idea.android.qube.machine.VmProcess;
 import com.max2idea.android.qube.screen.ScreenUtils;
 import com.max2idea.android.qube.toast.ToastUtils;
 import com.max2idea.android.qube.server.SharedFolderServer;
@@ -87,8 +86,7 @@ public class QubeQGEActivity extends AppCompatActivity
 
     public static boolean toggleKeyboardFlag = true;
     public static boolean isResizing = false;
-    public static final String EXTRA_PENDING_STOP = "qube.pendingStop";
-    private boolean pendingStop;
+    public static boolean pendingStop;
     private static boolean machineRunning;
 
     public static MouseMode mouseMode = MouseMode.Trackpad;
@@ -110,7 +108,7 @@ public class QubeQGEActivity extends AppCompatActivity
     QubeQGESurface mSurface;
     private static QubeQGEActivity mSingleton;
     private Bitmap frameBitmap;
-    // Qube: frame pull is straight from qemu, see startGfxLoop()
+    // Frame pull is straight from qemu, see startGfxLoop()
     private int lastGfxGeneration = -1;
     private boolean gfxLoopRunning = false;
     // nativeSetRefreshRate() becomes no-op if called before QEMU loads
@@ -164,9 +162,6 @@ public class QubeQGEActivity extends AppCompatActivity
             }
         }
     }
-
-
-
 
     @Override
     protected void onPause() {
@@ -352,7 +347,7 @@ public class QubeQGEActivity extends AppCompatActivity
                     public void run() {
                         if (result != null) {
                             ToastUtils.toastShort(QubeQGEActivity.this,
-                                    getString(R.string.screenshot_saved) + " " + fullPath);
+                                    getString(R.string.screenshot_saved) + " " + filename);
                         } else {
                             ToastUtils.toastShort(QubeQGEActivity.this, getString(R.string.screenshot_failed));
                         }
@@ -559,17 +554,8 @@ public class QubeQGEActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        VmProcess.prepare(getIntent().getExtras());
-        // XXX: If VM stopped but app not removed from recents, it reloads this activity
-        // forward to main instead
-        if (savedInstanceState != null && !machineRunning) {
-            super.onCreate(savedInstanceState);
-            finish();
-            return;
-        }
-        pendingStop = getIntent().getBooleanExtra(EXTRA_PENDING_STOP, false);
         // Stop the system from also auto-resizing/panning for the IME, since we
-        // position virtual_keys_container ourselves in applyKeyboardInset()
+        // position virtual_keys_container ourselves in applyKeyboardInset().
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setupScreen();
         super.onCreate(savedInstanceState);

@@ -45,9 +45,13 @@ android {
         }
     }
 
+    // Naming apk on host ABI(s) the native libs were built for
+    // if not found, name the apk to unknown
+    def hostArch = new File(projectDir, 'src/main/jniLibs').list()?.sort()?.join('+') ?: 'unknown'
+
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "qube-ppc-q${rootProject.ext.qemuVersion}-android-${variant.buildType.name}.apk"
+            outputFileName = "qube-ppc-q${rootProject.ext.qemuVersion}-android-${hostArch}-${variant.buildType.name}.apk"
         }
     }
 }

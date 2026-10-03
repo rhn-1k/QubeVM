@@ -697,6 +697,12 @@ public class Machine extends Observable {
         return enableCDROM || enableFDA || enableFDB || enableSD;
     }
 
+    // nographic means headless, so no display, no QGE and no VNC
+    // m68k ignores the vga option so we ignore it
+    public static boolean isNoGraphic(String vga) {
+        return "nographic".equals(vga) && QubeApplication.arch != Config.Arch.m68k;
+    }
+
     void setDefaults() {
         if (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64) {
             arch = "x86";
@@ -706,6 +712,8 @@ public class Machine extends Observable {
             arch = "ARM";
             machineType = "virt";
             cpu = "Default";
+            vga = "ramfb";
+            biosType = "UEFI";
         } else if (QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64) {
             arch = "PPC";
             machineType = "Default";

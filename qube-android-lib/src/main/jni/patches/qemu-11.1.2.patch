@@ -1,6 +1,6 @@
-diff -ru --no-dereference qemu-11.1.1/Makefile qemu-11.1.1-work/Makefile
---- qemu-11.1.1/Makefile	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/Makefile	2026-09-15 02:44:48.592184846 +0000
+diff -ru --no-dereference qemu-11.1.2/Makefile qemu-11.1.2-work/Makefile
+--- qemu-11.1.2/Makefile	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/Makefile	2026-09-30 06:34:07.571004079 +0300
 @@ -180,7 +180,8 @@
  
  SUBDIR_MAKEFLAGS=$(if $(V),,--no-print-directory --quiet)
@@ -11,9 +11,9 @@ diff -ru --no-dereference qemu-11.1.1/Makefile qemu-11.1.1-work/Makefile
  
  all: recurse-all
  
-diff -ru --no-dereference qemu-11.1.1/accel/kvm/kvm-all.c qemu-11.1.1-work/accel/kvm/kvm-all.c
---- qemu-11.1.1/accel/kvm/kvm-all.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/accel/kvm/kvm-all.c	2026-09-15 02:44:48.593791960 +0000
+diff -ru --no-dereference qemu-11.1.2/accel/kvm/kvm-all.c qemu-11.1.2-work/accel/kvm/kvm-all.c
+--- qemu-11.1.2/accel/kvm/kvm-all.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/accel/kvm/kvm-all.c	2026-09-30 06:34:07.575004079 +0300
 @@ -2928,7 +2928,12 @@
      QLIST_INIT(&s->kvm_parked_vcpus);
      s->fd = qemu_open_old(s->device ?: "/dev/kvm", O_RDWR);
@@ -27,9 +27,9 @@ diff -ru --no-dereference qemu-11.1.1/accel/kvm/kvm-all.c qemu-11.1.1-work/accel
          ret = -errno;
          goto err;
      }
-diff -ru --no-dereference qemu-11.1.1/audio/audio.c qemu-11.1.1-work/audio/audio.c
---- qemu-11.1.1/audio/audio.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/audio/audio.c	2026-09-15 02:44:48.594744671 +0000
+diff -ru --no-dereference qemu-11.1.2/audio/audio.c qemu-11.1.2-work/audio/audio.c
+--- qemu-11.1.2/audio/audio.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/audio/audio.c	2026-09-30 06:34:07.575004079 +0300
 @@ -220,6 +220,8 @@
          CASE(SPICE, spice, );
  #endif
@@ -71,9 +71,9 @@ diff -ru --no-dereference qemu-11.1.1/audio/audio.c qemu-11.1.1-work/audio/audio
  
      case AUDIODEV_DRIVER__MAX:
          break;
-diff -ru --no-dereference qemu-11.1.1/audio/audio_template.h qemu-11.1.1-work/audio/audio_template.h
---- qemu-11.1.1/audio/audio_template.h	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/audio/audio_template.h	2026-09-15 02:44:48.595026495 +0000
+diff -ru --no-dereference qemu-11.1.2/audio/audio_template.h qemu-11.1.2-work/audio/audio_template.h
+--- qemu-11.1.2/audio/audio_template.h	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/audio/audio_template.h	2026-09-30 06:34:07.579004079 +0300
 @@ -388,6 +388,9 @@
  #endif
      case AUDIODEV_DRIVER_WAV:
@@ -84,9 +84,9 @@ diff -ru --no-dereference qemu-11.1.1/audio/audio_template.h qemu-11.1.1-work/au
  
      case AUDIODEV_DRIVER__MAX:
          break;
-diff -ru --no-dereference qemu-11.1.1/audio/meson.build qemu-11.1.1-work/audio/meson.build
---- qemu-11.1.1/audio/meson.build	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/audio/meson.build	2026-09-15 02:44:48.595143903 +0000
+diff -ru --no-dereference qemu-11.1.2/audio/meson.build qemu-11.1.2-work/audio/meson.build
+--- qemu-11.1.2/audio/meson.build	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/audio/meson.build	2026-09-30 06:34:07.579004079 +0300
 @@ -4,6 +4,7 @@
    'audio-be.c',
    'audio-mixeng-be.c',
@@ -95,9 +95,9 @@ diff -ru --no-dereference qemu-11.1.1/audio/meson.build qemu-11.1.1-work/audio/m
    'noaudio.c',
    'wavaudio.c',
  ))
-diff -ru --no-dereference qemu-11.1.1/configure qemu-11.1.1-work/configure
---- qemu-11.1.1/configure	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/configure	2026-09-15 02:44:48.595353322 +0000
+diff -ru --no-dereference qemu-11.1.2/configure qemu-11.1.2-work/configure
+--- qemu-11.1.2/configure	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/configure	2026-09-30 06:34:07.583004079 +0300
 @@ -746,6 +746,15 @@
    ;;
    --wasm64-32bit-address-limit)
@@ -114,9 +114,27 @@ diff -ru --no-dereference qemu-11.1.1/configure qemu-11.1.1-work/configure
    # everything else has the same name in configure and meson
    --*) meson_option_parse "$opt" "$optarg"
    ;;
-diff -ru --no-dereference qemu-11.1.1/hw/arm/fsl-imx8mm.c qemu-11.1.1-work/hw/arm/fsl-imx8mm.c
---- qemu-11.1.1/hw/arm/fsl-imx8mm.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/hw/arm/fsl-imx8mm.c	2026-09-15 02:44:48.595750672 +0000
+diff -ru --no-dereference qemu-11.1.2/fsdev/9p-marshal.h qemu-11.1.2-work/fsdev/9p-marshal.h
+--- qemu-11.1.2/fsdev/9p-marshal.h	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/fsdev/9p-marshal.h	2026-09-30 06:34:07.651004079 +0300
+@@ -1,6 +1,14 @@
+ #ifndef QEMU_9P_MARSHAL_H
+ #define QEMU_9P_MARSHAL_H
+ 
++#ifdef __ANDROID__
++// QUBE: Android NDK sys/stat.h defines these timestamp names as macros
++// so undefine them before QEMU's 9P struct uses them as field names
++#undef st_atime_nsec
++#undef st_mtime_nsec
++#undef st_ctime_nsec
++#endif
++
+ #include "p9array.h"
+ 
+ typedef struct V9fsString {
+diff -ru --no-dereference qemu-11.1.2/hw/arm/fsl-imx8mm.c qemu-11.1.2-work/hw/arm/fsl-imx8mm.c
+--- qemu-11.1.2/hw/arm/fsl-imx8mm.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/hw/arm/fsl-imx8mm.c	2026-09-30 06:34:07.587004079 +0300
 @@ -370,7 +370,8 @@
  
      /* UARTs */
@@ -187,9 +205,9 @@ diff -ru --no-dereference qemu-11.1.1/hw/arm/fsl-imx8mm.c qemu-11.1.1-work/hw/ar
              hwaddr addr;
              unsigned int irq;
          } wdog_table[FSL_IMX8MM_NUM_WDTS] = {
-diff -ru --no-dereference qemu-11.1.1/hw/arm/fsl-imx8mp.c qemu-11.1.1-work/hw/arm/fsl-imx8mp.c
---- qemu-11.1.1/hw/arm/fsl-imx8mp.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/hw/arm/fsl-imx8mp.c	2026-09-15 02:44:48.596012478 +0000
+diff -ru --no-dereference qemu-11.1.2/hw/arm/fsl-imx8mp.c qemu-11.1.2-work/hw/arm/fsl-imx8mp.c
+--- qemu-11.1.2/hw/arm/fsl-imx8mp.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/hw/arm/fsl-imx8mp.c	2026-09-30 06:34:07.587004079 +0300
 @@ -676,7 +676,8 @@
  
      /* FlexCANs */
@@ -200,9 +218,9 @@ diff -ru --no-dereference qemu-11.1.1/hw/arm/fsl-imx8mp.c qemu-11.1.1-work/hw/ar
              hwaddr addr;
              unsigned int irq;
          } flexcan_table[FSL_IMX8MP_NUM_CANS] = {
-diff -ru --no-dereference qemu-11.1.1/hw/display/vga.c qemu-11.1.1-work/hw/display/vga.c
---- qemu-11.1.1/hw/display/vga.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/hw/display/vga.c	2026-09-15 02:44:48.596405393 +0000
+diff -ru --no-dereference qemu-11.1.2/hw/display/vga.c qemu-11.1.2-work/hw/display/vga.c
+--- qemu-11.1.2/hw/display/vga.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/hw/display/vga.c	2026-09-30 06:34:07.591004079 +0300
 @@ -1489,6 +1489,11 @@
  {
      memory_region_set_log(&s->vram, false, DIRTY_MEMORY_VGA);
@@ -237,9 +255,9 @@ diff -ru --no-dereference qemu-11.1.1/hw/display/vga.c qemu-11.1.1-work/hw/displ
      g_free(snap);
      memset(s->invalidated_y_table, 0, sizeof(s->invalidated_y_table));
  }
-diff -ru --no-dereference qemu-11.1.1/hw/display/virtio-gpu-gl.c qemu-11.1.1-work/hw/display/virtio-gpu-gl.c
---- qemu-11.1.1/hw/display/virtio-gpu-gl.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/hw/display/virtio-gpu-gl.c	2026-09-15 02:44:48.596921358 +0000
+diff -ru --no-dereference qemu-11.1.2/hw/display/virtio-gpu-gl.c qemu-11.1.2-work/hw/display/virtio-gpu-gl.c
+--- qemu-11.1.2/hw/display/virtio-gpu-gl.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/hw/display/virtio-gpu-gl.c	2026-09-30 06:34:07.591004079 +0300
 @@ -144,6 +144,11 @@
  
  #if !defined(CONFIG_WIN32)
@@ -252,9 +270,9 @@ diff -ru --no-dereference qemu-11.1.1/hw/display/virtio-gpu-gl.c qemu-11.1.1-wor
          map = qemu_ram_mmap(-1, b->conf.hostmem, qemu_real_host_page_size(),
                              0, 0);
          if (map == MAP_FAILED) {
-diff -ru --no-dereference qemu-11.1.1/hw/input/ps2.c qemu-11.1.1-work/hw/input/ps2.c
---- qemu-11.1.1/hw/input/ps2.c	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/hw/input/ps2.c	2026-09-15 02:54:15.201127522 +0000
+diff -ru --no-dereference qemu-11.1.2/hw/input/ps2.c qemu-11.1.2-work/hw/input/ps2.c
+--- qemu-11.1.2/hw/input/ps2.c	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/hw/input/ps2.c	2026-09-30 06:34:07.591004079 +0300
 @@ -287,11 +287,60 @@
      q->cwptr = -1;
  }
@@ -361,9 +379,9 @@ diff -ru --no-dereference qemu-11.1.1/hw/input/ps2.c qemu-11.1.1-work/hw/input/p
  }
  
  static void ps2_mouse_reset_hold(Object *obj, ResetType type)
-diff -ru --no-dereference qemu-11.1.1/hw/input/trace-events qemu-11.1.1-work/hw/input/trace-events
---- qemu-11.1.1/hw/input/trace-events	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/hw/input/trace-events	2026-09-15 02:44:48.597384138 +0000
+diff -ru --no-dereference qemu-11.1.2/hw/input/trace-events qemu-11.1.2-work/hw/input/trace-events
+--- qemu-11.1.2/hw/input/trace-events	2026-08-27 15:23:31.000000000 +0300
++++ qemu-11.1.2-work/hw/input/trace-events	2026-09-30 06:34:07.595004079 +0300
 @@ -41,6 +41,8 @@
  ps2_write_mouse(void *opaque, int val) "%p val %d"
  ps2_kbd_reset(void *opaque) "%p"
@@ -373,9 +391,9 @@ diff -ru --no-dereference qemu-11.1.1/hw/input/trace-events qemu-11.1.1-work/hw/
  
  # hid.c
  hid_kbd_queue_full(void) "queue full"
-diff -ru --no-dereference qemu-11.1.1/include/hw/input/ps2.h qemu-11.1.1-work/include/hw/input/ps2.h
---- qemu-11.1.1/include/hw/input/ps2.h	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/include/hw/input/ps2.h	2026-09-15 02:54:23.651050604 +0000
+diff -ru --no-dereference qemu-11.1.2/include/hw/input/ps2.h qemu-11.1.2-work/include/hw/input/ps2.h
+--- qemu-11.1.2/include/hw/input/ps2.h	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/include/hw/input/ps2.h	2026-09-30 06:34:07.599004079 +0300
 @@ -75,6 +75,12 @@
      int ledstate;
      bool need_high_bit;
@@ -397,9 +415,9 @@ diff -ru --no-dereference qemu-11.1.1/include/hw/input/ps2.h qemu-11.1.1-work/in
 +void ps2_kbd_drain_overflow(PS2KbdState *kbd);
 +
  #endif /* HW_PS2_H */
-diff -ru --no-dereference qemu-11.1.1/include/qemu/osdep.h qemu-11.1.1-work/include/qemu/osdep.h
---- qemu-11.1.1/include/qemu/osdep.h	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/include/qemu/osdep.h	2026-09-15 02:44:48.597642753 +0000
+diff -ru --no-dereference qemu-11.1.2/include/qemu/osdep.h qemu-11.1.2-work/include/qemu/osdep.h
+--- qemu-11.1.2/include/qemu/osdep.h	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/include/qemu/osdep.h	2026-09-30 06:34:07.599004079 +0300
 @@ -109,6 +109,12 @@
  #include <stddef.h>
  #include <stdbool.h>
@@ -426,9 +444,9 @@ diff -ru --no-dereference qemu-11.1.1/include/qemu/osdep.h qemu-11.1.1-work/incl
  
  ssize_t readv(int fd, const struct iovec *iov, int iov_cnt);
  ssize_t writev(int fd, const struct iovec *iov, int iov_cnt);
-diff -ru --no-dereference qemu-11.1.1/meson.build qemu-11.1.1-work/meson.build
---- qemu-11.1.1/meson.build	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/meson.build	2026-09-15 02:44:48.598729621 +0000
+diff -ru --no-dereference qemu-11.1.2/meson.build qemu-11.1.2-work/meson.build
+--- qemu-11.1.2/meson.build	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/meson.build	2026-09-30 06:34:07.603004079 +0300
 @@ -1056,17 +1056,27 @@
  # You should also check if any of the glib.version() checks
  # below can also be removed.
@@ -714,9 +732,9 @@ diff -ru --no-dereference qemu-11.1.1/meson.build qemu-11.1.1-work/meson.build
    subdir('tests')
  endif
  if gtk.found()
-diff -ru --no-dereference qemu-11.1.1/meson_options.txt qemu-11.1.1-work/meson_options.txt
---- qemu-11.1.1/meson_options.txt	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/meson_options.txt	2026-09-15 02:44:48.600083121 +0000
+diff -ru --no-dereference qemu-11.1.2/meson_options.txt qemu-11.1.2-work/meson_options.txt
+--- qemu-11.1.2/meson_options.txt	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/meson_options.txt	2026-09-30 06:34:07.607004079 +0300
 @@ -385,3 +385,7 @@
         description: 'Rust support')
  option('strict_rust_lints', type: 'boolean', value: false,
@@ -725,9 +743,9 @@ diff -ru --no-dereference qemu-11.1.1/meson_options.txt qemu-11.1.1-work/meson_o
 +# QUBE: build qemu-system-* as shared library (.so) for Android JNI
 +option('qube_android_so', type: 'boolean', value: false,
 +       description: 'Build emulator targets as shared libraries for Android (Qube)')
-diff -ru --no-dereference qemu-11.1.1/monitor/hmp.c qemu-11.1.1-work/monitor/hmp.c
---- qemu-11.1.1/monitor/hmp.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/monitor/hmp.c	2026-09-15 02:44:48.600268062 +0000
+diff -ru --no-dereference qemu-11.1.2/monitor/hmp.c qemu-11.1.2-work/monitor/hmp.c
+--- qemu-11.1.2/monitor/hmp.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/monitor/hmp.c	2026-09-30 06:34:07.611004079 +0300
 @@ -84,7 +84,8 @@
                                     monitor_hmp_get_readline,
                                     monitor_hmp_set_readline);
@@ -738,9 +756,9 @@ diff -ru --no-dereference qemu-11.1.1/monitor/hmp.c qemu-11.1.1-work/monitor/hmp
      moncls->accept_input = monitor_hmp_accept_input;
  
      ucc->complete = monitor_hmp_complete;
-diff -ru --no-dereference qemu-11.1.1/monitor/monitor-internal.h qemu-11.1.1-work/monitor/monitor-internal.h
---- qemu-11.1.1/monitor/monitor-internal.h	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/monitor/monitor-internal.h	2026-09-15 02:44:48.600425975 +0000
+diff -ru --no-dereference qemu-11.1.2/monitor/monitor-internal.h qemu-11.1.2-work/monitor/monitor-internal.h
+--- qemu-11.1.2/monitor/monitor-internal.h	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/monitor/monitor-internal.h	2026-09-30 06:34:07.611004079 +0300
 @@ -110,7 +110,8 @@
       * If non-NULL, the monitor is able to print messages
       * for attention of the client user
@@ -751,9 +769,9 @@ diff -ru --no-dereference qemu-11.1.1/monitor/monitor-internal.h qemu-11.1.1-wor
          G_GNUC_PRINTF(2, 0);
      /*
       * If non-NULL, the monitor is able to send event
-diff -ru --no-dereference qemu-11.1.1/monitor/monitor.c qemu-11.1.1-work/monitor/monitor.c
---- qemu-11.1.1/monitor/monitor.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/monitor/monitor.c	2026-09-15 02:44:48.600556399 +0000
+diff -ru --no-dereference qemu-11.1.2/monitor/monitor.c qemu-11.1.2-work/monitor/monitor.c
+--- qemu-11.1.2/monitor/monitor.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/monitor/monitor.c	2026-09-30 06:34:07.615004079 +0300
 @@ -280,11 +280,13 @@
      }
  
@@ -770,9 +788,9 @@ diff -ru --no-dereference qemu-11.1.1/monitor/monitor.c qemu-11.1.1-work/monitor
  }
  
  int monitor_printf(Monitor *mon, const char *fmt, ...)
-diff -ru --no-dereference qemu-11.1.1/qapi/audio.json qemu-11.1.1-work/qapi/audio.json
---- qemu-11.1.1/qapi/audio.json	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/qapi/audio.json	2026-09-15 02:44:48.600721417 +0000
+diff -ru --no-dereference qemu-11.1.2/qapi/audio.json qemu-11.1.2-work/qapi/audio.json
+--- qemu-11.1.2/qapi/audio.json	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/qapi/audio.json	2026-09-30 06:34:07.615004079 +0300
 @@ -484,7 +484,8 @@
              { 'name': 'sdl', 'if': 'CONFIG_AUDIO_SDL' },
              { 'name': 'sndio', 'if': 'CONFIG_AUDIO_SNDIO' },
@@ -793,9 +811,9 @@ diff -ru --no-dereference qemu-11.1.1/qapi/audio.json qemu-11.1.1-work/qapi/audi
  
  ##
  # @query-audiodevs:
-diff -ru --no-dereference qemu-11.1.1/qapi/ui.json qemu-11.1.1-work/qapi/ui.json
---- qemu-11.1.1/qapi/ui.json	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/qapi/ui.json	2026-09-15 02:44:48.600921919 +0000
+diff -ru --no-dereference qemu-11.1.2/qapi/ui.json qemu-11.1.2-work/qapi/ui.json
+--- qemu-11.1.2/qapi/ui.json	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/qapi/ui.json	2026-09-30 06:34:07.619004079 +0300
 @@ -1517,6 +1517,8 @@
  #
  # @dbus: Start a D-Bus service for the display.  (Since 7.0)
@@ -815,9 +833,9 @@ diff -ru --no-dereference qemu-11.1.1/qapi/ui.json qemu-11.1.1-work/qapi/ui.json
      { 'name': 'curses', 'if': 'CONFIG_CURSES' },
      { 'name': 'cocoa', 'if': 'CONFIG_COCOA' },
      { 'name': 'spice-app', 'if': 'CONFIG_SPICE' },
-diff -ru --no-dereference qemu-11.1.1/system/vl.c qemu-11.1.1-work/system/vl.c
---- qemu-11.1.1/system/vl.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/system/vl.c	2026-09-15 02:44:48.601229060 +0000
+diff -ru --no-dereference qemu-11.1.2/system/vl.c qemu-11.1.2-work/system/vl.c
+--- qemu-11.1.2/system/vl.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/system/vl.c	2026-09-30 06:34:07.623004079 +0300
 @@ -3862,6 +3862,13 @@
          qmp_x_exit_preconfig(&error_fatal);
      }
@@ -832,9 +850,9 @@ diff -ru --no-dereference qemu-11.1.1/system/vl.c qemu-11.1.1-work/system/vl.c
      accel_setup_post(current_machine);
      if (migrate_mode() != MIG_MODE_CPR_EXEC) {
          os_setup_post();
-diff -ru --no-dereference qemu-11.1.1/target/i386/cpu.c qemu-11.1.1-work/target/i386/cpu.c
---- qemu-11.1.1/target/i386/cpu.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/target/i386/cpu.c	2026-09-15 02:54:26.783685091 +0000
+diff -ru --no-dereference qemu-11.1.2/target/i386/cpu.c qemu-11.1.2-work/target/i386/cpu.c
+--- qemu-11.1.2/target/i386/cpu.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/target/i386/cpu.c	2026-09-30 06:34:07.631004079 +0300
 @@ -428,7 +428,8 @@
      unsigned long level, base_level, next_level;
      uint32_t num_threads_next_level, offset_next_level;
@@ -845,9 +863,9 @@ diff -ru --no-dereference qemu-11.1.1/target/i386/cpu.c qemu-11.1.1-work/target/
  
      /*
       * Find the No.(count + 1) topology level in avail_cpu_topo bitmap.
-diff -ru --no-dereference qemu-11.1.1/tests/qtest/meson.build qemu-11.1.1-work/tests/qtest/meson.build
---- qemu-11.1.1/tests/qtest/meson.build	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/tests/qtest/meson.build	2026-09-15 02:44:48.602034764 +0000
+diff -ru --no-dereference qemu-11.1.2/tests/qtest/meson.build qemu-11.1.2-work/tests/qtest/meson.build
+--- qemu-11.1.2/tests/qtest/meson.build	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/tests/qtest/meson.build	2026-09-30 06:34:07.635004079 +0300
 @@ -37,7 +37,7 @@
  
  qtests_pci = \
@@ -857,9 +875,9 @@ diff -ru --no-dereference qemu-11.1.1/tests/qtest/meson.build qemu-11.1.1-work/t
  
  qtests_cxl = \
    (config_all_devices.has_key('CONFIG_CXL') ? ['cxl-test'] : [])
-diff -ru --no-dereference qemu-11.1.1/ui/meson.build qemu-11.1.1-work/ui/meson.build
---- qemu-11.1.1/ui/meson.build	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/ui/meson.build	2026-09-15 02:44:48.602257424 +0000
+diff -ru --no-dereference qemu-11.1.2/ui/meson.build qemu-11.1.2-work/ui/meson.build
+--- qemu-11.1.2/ui/meson.build	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/ui/meson.build	2026-09-30 06:34:07.635004079 +0300
 @@ -59,6 +59,8 @@
    'ui-hmp-cmds.c',
    'ui-qmp-cmds.c',
@@ -869,9 +887,9 @@ diff -ru --no-dereference qemu-11.1.1/ui/meson.build qemu-11.1.1-work/ui/meson.b
  ))
  system_ss.add(ui)
  system_ss.add(when: pixman, if_true: files('console-vc.c'), if_false: files('console-vc-stubs.c'))
-diff -ru --no-dereference qemu-11.1.1/ui/vnc.c qemu-11.1.1-work/ui/vnc.c
---- qemu-11.1.1/ui/vnc.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/ui/vnc.c	2026-09-15 02:44:48.602541998 +0000
+diff -ru --no-dereference qemu-11.1.2/ui/vnc.c qemu-11.1.2-work/ui/vnc.c
+--- qemu-11.1.2/ui/vnc.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/ui/vnc.c	2026-09-30 06:34:07.643004079 +0300
 @@ -2012,6 +2012,40 @@
      return QKeyCode_str(qemu_input_key_number_to_qcode(keycode));
  }
@@ -924,9 +942,9 @@ diff -ru --no-dereference qemu-11.1.1/ui/vnc.c qemu-11.1.1-work/ui/vnc.c
      do_key_event(vs, down, keycode, sym);
  }
  
-diff -ru --no-dereference qemu-11.1.1/util/coroutine-sigaltstack.c qemu-11.1.1-work/util/coroutine-sigaltstack.c
---- qemu-11.1.1/util/coroutine-sigaltstack.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/util/coroutine-sigaltstack.c	2026-09-15 02:44:48.603406777 +0000
+diff -ru --no-dereference qemu-11.1.2/util/coroutine-sigaltstack.c qemu-11.1.2-work/util/coroutine-sigaltstack.c
+--- qemu-11.1.2/util/coroutine-sigaltstack.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/util/coroutine-sigaltstack.c	2026-09-30 06:34:07.647004079 +0300
 @@ -21,9 +21,8 @@
   * License along with this library; if not, see <http://www.gnu.org/licenses/>.
   */
@@ -1185,22 +1203,25 @@ diff -ru --no-dereference qemu-11.1.1/util/coroutine-sigaltstack.c qemu-11.1.1-w
      return s && s->current->caller;
  }
 -
-diff -ru --no-dereference qemu-11.1.1/util/meson.build qemu-11.1.1-work/util/meson.build
---- qemu-11.1.1/util/meson.build	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/util/meson.build	2026-09-15 02:44:48.603526237 +0000
-@@ -82,6 +82,9 @@
+diff -ru --no-dereference qemu-11.1.2/util/meson.build qemu-11.1.2-work/util/meson.build
+--- qemu-11.1.2/util/meson.build	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/util/meson.build	2026-09-30 06:34:21.835004080 +0300
+@@ -82,6 +82,12 @@
    util_ss.add(files('main-loop.c'))
    util_ss.add(files('qemu-coroutine.c', 'qemu-coroutine-lock.c', 'qemu-coroutine-io.c'))
    util_ss.add(files(f'coroutine-@coroutine_backend@.c'))
 +  if (coroutine_backend == 'ucontext' or coroutine_backend == 'sigaltstack') and host_machine.cpu_family() == 'aarch64'
 +    util_ss.add(files('coroutine-swap-arm64.S'))
 +  endif
++  if (coroutine_backend == 'ucontext' or coroutine_backend == 'sigaltstack') and host_machine.cpu_family() == 'x86_64'
++    util_ss.add(files('coroutine-swap-x86_64.S'))
++  endif
    util_ss.add(files('thread-pool.c', 'qemu-timer.c'))
    util_ss.add(files('qemu-sockets.c'))
  endif
-diff -ru --no-dereference qemu-11.1.1/util/mmap-alloc.c qemu-11.1.1-work/util/mmap-alloc.c
---- qemu-11.1.1/util/mmap-alloc.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/util/mmap-alloc.c	2026-09-15 02:44:48.603641043 +0000
+diff -ru --no-dereference qemu-11.1.2/util/mmap-alloc.c qemu-11.1.2-work/util/mmap-alloc.c
+--- qemu-11.1.2/util/mmap-alloc.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/util/mmap-alloc.c	2026-09-30 06:34:07.647004079 +0300
 @@ -10,9 +10,11 @@
   * later.  See the COPYING file in the top-level directory.
   */
@@ -1215,9 +1236,9 @@ diff -ru --no-dereference qemu-11.1.1/util/mmap-alloc.c qemu-11.1.1-work/util/mm
  #define MAP_SYNC              0x0
  #define MAP_SHARED_VALIDATE   0x0
  #endif /* CONFIG_LINUX */
-diff -ru --no-dereference qemu-11.1.1/util/oslib-posix.c qemu-11.1.1-work/util/oslib-posix.c
---- qemu-11.1.1/util/oslib-posix.c	2026-08-27 12:23:32.000000000 +0000
-+++ qemu-11.1.1-work/util/oslib-posix.c	2026-09-15 02:44:48.603784070 +0000
+diff -ru --no-dereference qemu-11.1.2/util/oslib-posix.c qemu-11.1.2-work/util/oslib-posix.c
+--- qemu-11.1.2/util/oslib-posix.c	2026-08-27 15:23:32.000000000 +0300
++++ qemu-11.1.2-work/util/oslib-posix.c	2026-09-30 06:34:07.647004079 +0300
 @@ -989,6 +989,23 @@
      static int sequence;
      mode_t mode;
@@ -1248,21 +1269,3 @@ diff -ru --no-dereference qemu-11.1.1/util/oslib-posix.c qemu-11.1.1-work/util/o
      return fd;
 +#endif /* __ANDROID__ */
  }
-diff -ru --no-dereference qemu-11.1.1/fsdev/9p-marshal.h qemu-11.1.1-work/fsdev/9p-marshal.h
---- qemu-11.1.1/fsdev/9p-marshal.h	2026-08-27 12:23:31.000000000 +0000
-+++ qemu-11.1.1-work/fsdev/9p-marshal.h	2026-09-17 05:55:07.879583584 +0000
-@@ -1,6 +1,14 @@
- #ifndef QEMU_9P_MARSHAL_H
- #define QEMU_9P_MARSHAL_H
- 
-+#ifdef __ANDROID__
-+// QUBE: Android NDK sys/stat.h defines these timestamp names as macros
-+// so undefine them before QEMU's 9P struct uses them as field names
-+#undef st_atime_nsec
-+#undef st_mtime_nsec
-+#undef st_ctime_nsec
-+#endif
-+
- #include "p9array.h"
- 
- typedef struct V9fsString {

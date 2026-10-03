@@ -20,7 +20,8 @@ public final class GraphicsCapabilities {
                 vga.equals("ati-vga") ||
                 vga.equals("cirrus-vga") ||
                 vga.equals("isa-cirrus-vga") ||
-                vga.equals("bochs-display")
+                vga.equals("bochs-display") ||
+                vga.equals("ramfb")
         );
     }
 

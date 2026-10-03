@@ -28,7 +28,6 @@ public class MachineController {
     private final Class<MachineService> serviceClass;
     private final IMachineDatabase machineDatabase;
     private Machine machine;
-    private volatile boolean remoteRunning;
 
     private MachineController() {
         machineExecutor = MachineExecutorFactory.createMachineExecutor(this, MachineExecutorFactory.MachineExecutorType.QEMU);
@@ -47,8 +46,6 @@ public class MachineController {
     public MachineStatus getCurrStatus() {
         if(getMachine() ==null)
             return MachineStatus.Stopped;
-        else if (!VmProcess.isVmProcess())
-            return remoteRunning ? MachineStatus.Running : MachineStatus.Ready;
         else if (MachineService.getService() == null)
             return MachineController.MachineStatus.Ready;
         else if (MachineService.getService().qubeThread != null)
@@ -79,22 +76,6 @@ public class MachineController {
 
     void removeOnEventListeners() {
         onEventListeners.clear();
-    }
-
-    // The vm process is gone. If it never reported a normal stop, it crashed.
-    void remoteGone() {
-        boolean crashed = remoteRunning;
-        setRemoteRunning(false);
-        if (crashed)
-            notifyEventListeners(Event.VmCrashed, null);
-    }
-
-    void setRemoteRunning(boolean running) {
-        if (remoteRunning == running) {
-            return;
-        }
-        remoteRunning = running;
-        notifyMachineStatusChangeListeners(machine, getCurrStatus(), null);
     }
 
     void stopvm() {
@@ -239,7 +220,7 @@ public class MachineController {
     }
 
     public enum Event {
-        MachineCreated, MachineCreateFailed, MachineLoaded, MachineFullscreen, VmCrashed
+        MachineCreated, MachineCreateFailed, MachineLoaded, MachineFullscreen
     }
 
     public interface OnMachineStatusChangeListener {

@@ -14,15 +14,11 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Messenger;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -30,14 +26,10 @@ import androidx.core.app.NotificationCompat;
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.main.Config;
+import com.max2idea.android.qube.main.QubeActivity;
 import com.max2idea.android.qube.main.QubeSettingsManager;
 import com.max2idea.android.qube.network.NetworkUtils;
 import com.max2idea.android.qube.toast.ToastUtils;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /** MachineService is responsible only for owning and starting the thread that executes the jni part
  * This implementation is needed for Android to make sure that the process is started from a
@@ -53,20 +45,6 @@ public class MachineService extends Service {
     private Notification mNotification;
     private WifiLock mWifiLock;
     private WakeLock mWakeLock;
-    // UI process clients that get the run state pushed to them
-    private final Set<Messenger> clients = new HashSet<>();
-    private final Messenger messenger = new Messenger(new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message message) {
-            if (message.what == VmProcess.MSG_REGISTER && message.replyTo != null) {
-                synchronized (clients) {
-                    clients.add(message.replyTo);
-                }
-                // client may bind after the VM already started
-                sendState(message.replyTo, qubeThread != null);
-            }
-        }
-    });
 
     public static MachineService getService() {
         return service;
@@ -79,46 +57,13 @@ public class MachineService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        return messenger.getBinder();
-    }
-
-    private void sendState(Messenger client, boolean running) {
-        try {
-            client.send(Message.obtain(null, VmProcess.MSG_STATE, running ? 1 : 0, 0));
-        } catch (RemoteException e) {
-            synchronized (clients) {
-                clients.remove(client);
-            }
-        }
-    }
-
-    private void publishState(boolean running) {
-        List<Messenger> snapshot;
-        synchronized (clients) {
-            snapshot = new ArrayList<>(clients);
-        }
-        for (Messenger client : snapshot) {
-            sendState(client, running);
-        }
+        return null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // null intent = Android re-delivering a start left over from a dead vm process
-        if (intent == null)
-            return START_NOT_STICKY;
-
         final String action = intent.getAction();
         final Bundle b = intent.getExtras();
-
-        // Stop comes from the UI process since qubeThread lives here
-        if (Config.ACTION_STOP.equals(action)) {
-            if (qubeThread != null)
-                MachineController.getInstance().stopvm();
-            return START_NOT_STICKY;
-        }
-
-        VmProcess.prepare(b);
 
         if (qubeThread != null)
             return START_NOT_STICKY;
@@ -167,7 +112,6 @@ public class MachineService extends Service {
 
         // notify we started
         MachineController.getInstance().onServiceStarted();
-        publishState(true);
 
         //set the exit code before we start
         QubeSettingsManager.setExitCode(service, Config.EXIT_UNKNOWN);
@@ -183,8 +127,6 @@ public class MachineService extends Service {
                 Log.d(TAG, res);
                 //set the exit code
                 QubeSettingsManager.setExitCode(service, Config.EXIT_SUCCESS);
-                // tell the UI this is a normal exit, not a crash
-                publishState(false);
             }
             try {
                 Thread.sleep(2000);

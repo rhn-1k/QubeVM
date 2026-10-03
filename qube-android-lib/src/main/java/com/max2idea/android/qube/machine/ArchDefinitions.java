@@ -74,6 +74,7 @@ public class ArchDefinitions {
         }
 
         if (QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64) {
+            vgaValues.add("ramfb");
             vgaValues.add("virtio-gpu-pci");
             vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_DEVICE);
             vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_PCI);

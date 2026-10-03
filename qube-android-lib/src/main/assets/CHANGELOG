@@ -1,10 +1,13 @@
-* QubeVM v7.1.2 (pre-release)
-- Refactored VM shutdown mechanism
+* QubeVM v7.1.2
+- Rebased with QEMU 11.1.2
+- Initial x86_64 host architecture support
 - Initial m68k machine support (beta)
-- New bios boot menu feature (x86 only)
+- New BIOS boot menu feature (x86 only)
 - Added Discord server link
-- Fixed Screenshot doesn't work when using a GL device
-- Fixed visual bugs in app ui
+- Fixed screenshot not working when using a GL video card
+- Fixed visual bugs in the app UI
+- Fixed drive filenames containing commas making the VM unbootable
+- Fixed removable drive changing issue when using piix ide interfaces
 
 
 * QubeVM v7.1.1
@@ -12,7 +15,7 @@
 - Improved cursor trackpad movement
 - Expanded x86 machines support
 - New x86 drive interfaces (piix3-ide, piix4-ide)
-- New x86 video display device (isa-cirrus-vga)
+- New x86 video card device (isa-cirrus-vga)
 - New x86 network cards (e1000e, ne2k_isa)
 - Fixed white flash issue when opening keyboard via virtual keys keyboard button (Samsung keyboard only)
 
@@ -25,7 +28,7 @@
 - Made DNS changes applies to current vm only
 - Now Shared Folder supports virtio-9p interface (click on the icon to change it)
 - Added more CPUs
-- Fixed crash when using some CPUs (thanks to Rickozzzz for reporting)
+- Fixed crash with some CPUs (thanks to Rickozzzz for reporting)
 - Fixed cursor jumps to random places when gestures mode is being used
 - Fixed cursor stays toggled on first touch
 - Android 11+ is required
@@ -43,7 +46,7 @@
 
 
 * QubeVM v7.0.8
-- Rebased on QEMU 11.1.1
+- Rebased with QEMU 11.1.1
 - Optimized QEMU
 - Removed OS selection pop-up on VM creation
 - qcow2 disk limit raised to 256GB
@@ -104,7 +107,7 @@
 
 * QubeVM v7.0.2
 - Qube now supports virglrenderer for Acceleration
-- Added new video display: virtio-vga-gl
+- Added new video card: virtio-vga-gl
 - Added Venus Accelerator (VirGL Vulkan-based Acceleration)
 - New modern look for main settings
 - Added info buttons in the Graphics section for more details

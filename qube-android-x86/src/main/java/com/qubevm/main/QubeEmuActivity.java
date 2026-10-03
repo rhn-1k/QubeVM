@@ -23,4 +23,13 @@ public class QubeEmuActivity extends QubeActivity {
         super.onCreate(bundle);
         Logger.setupLogFile("/qube/qube-x86-log.txt");
     }
+
+    @Override
+    protected void loadQEMULib() {
+        try {
+            System.loadLibrary("qemu-system-i386");
+        } catch (Error ex) {
+            System.loadLibrary("qemu-system-x86_64");
+        }
+    }
 }

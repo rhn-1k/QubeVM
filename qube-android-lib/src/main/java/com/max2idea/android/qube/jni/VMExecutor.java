@@ -6,18 +6,20 @@ package com.max2idea.android.qube.jni;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Process;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 
 import com.qube.emu.lib.BuildConfig;
 import com.qube.emu.lib.R;
+import com.max2idea.android.qube.files.FileInstaller;
 import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.machine.GraphicsCapabilities;
+import com.max2idea.android.qube.machine.Machine;
 import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineExecutor;
 import com.max2idea.android.qube.machine.MachineProperty;
-import com.max2idea.android.qube.machine.VmProcess;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
 import com.max2idea.android.qube.main.QubeSettingsManager;
@@ -30,9 +32,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -50,8 +49,6 @@ class VMExecutor extends MachineExecutor {
     private static final String DEFAULT_UEFI = "Default";
     //TODO: make this a proper singleton but the views should not be able to access it
     private static VMExecutor mInstance;
-    private final AtomicBoolean stopping = new AtomicBoolean(false);
-    private final CountDownLatch exitLatch = new CountDownLatch(1);
 
     VMExecutor(MachineController machineController) {
         super(machineController);
@@ -87,9 +84,30 @@ class VMExecutor extends MachineExecutor {
         return null;
     }
 
+    private String getQemuLibrary() {
+        switch (QubeApplication.arch) {
+            case x86:
+                return "libqemu-system-i386.so";
+            case x86_64:
+                return "libqemu-system-x86_64.so";
+            case arm:
+                return "libqemu-system-arm.so";
+            case arm64:
+                return "libqemu-system-aarch64.so";
+            case ppc:
+                return "libqemu-system-ppc.so";
+            case ppc64:
+                return "libqemu-system-ppc64.so";
+            case m68k:
+                return "libqemu-system-m68k.so";
+            default:
+                throw new IllegalStateException("Unexpected value: " + QubeApplication.arch);
+        }
+    }
+
     private String[] prepareParams(Context context) throws Exception {
         ArrayList<String> paramsList = new ArrayList<>();
-        paramsList.add(VmProcess.qemuLibrary());
+        paramsList.add(getQemuLibrary());
         addUIOptions(context, paramsList);
         addCpuBoardOptions(paramsList);
         addDrives(paramsList);
@@ -105,7 +123,9 @@ class VMExecutor extends MachineExecutor {
     }
 
     private void addUIOptions(Context context, ArrayList<String> paramsList) {
-        if (getMachine().getRenderer() == 1) {
+        if (Machine.isNoGraphic(getMachine().getVga())) {
+            // Headless, no display backend and no VNC server to open
+        } else if (getMachine().getRenderer() == 1) {
             paramsList.add("-vnc");
             String vncHost = Config.defaultVNCHost;
             if (QubeSettingsManager.getEnableExternalVNC(context)) {
@@ -462,10 +482,10 @@ class VMExecutor extends MachineExecutor {
         String code = resolveUefiFirmware(getMachine().getBiosCode(), false);
         if (code != null) {
             paramsList.add("-drive");
-            paramsList.add("if=pflash,unit=0,format=raw,readonly=on,file=" + code);
+            paramsList.add("if=pflash,unit=0,format=raw,readonly=on,file=" + qemuOpt(code));
         }
         paramsList.add("-drive");
-        paramsList.add("if=pflash,unit=1,format=raw,file=" + vars);
+        paramsList.add("if=pflash,unit=1,format=raw,file=" + qemuOpt(vars));
     }
 
     // Resolve Default UEFI settings to the shared bundled Code/Vars files
@@ -517,6 +537,12 @@ class VMExecutor extends MachineExecutor {
         return getDriveFilePath(getMachine().getKernel());
     }
 
+    // QEMU splits option strings on ',' so a literal comma must be ",,"
+    // only for -drive/-fsdev values
+    private static String qemuOpt(String path) {
+        return path == null ? null : path.replace(",", ",,");
+    }
+
     public String getDriveFilePath(String driveFilePath) {
         if (driveFilePath == null || driveFilePath.trim().isEmpty()
                 || driveFilePath.equals("None"))
@@ -557,7 +583,7 @@ class VMExecutor extends MachineExecutor {
                 paramsList.add("-drive");
                 String param = "if=none,id=" + driveId;
                 param += ",media=disk";
-                param += ",file=" + imagePath;
+                param += ",file=" + qemuOpt(imagePath);
                 if (cache != null && !cache.equals("default"))
                     param += ",cache=" + cache;
                 paramsList.add(param);
@@ -573,7 +599,7 @@ class VMExecutor extends MachineExecutor {
             param += hdInterface;
             param += ",media=disk";
             if (!imagePath.equals("")) {
-                param += ",file=" + imagePath;
+                param += ",file=" + qemuOpt(imagePath);
             }
             if(cache != null && !cache.equals("default"))
                 param += ",cache=" + cache;
@@ -612,7 +638,7 @@ class VMExecutor extends MachineExecutor {
         driveParams += ",format=raw";
         driveParams += ",file=fat:";
         driveParams += "rw:"; //Always Read/Write
-        driveParams += realPath;
+        driveParams += qemuOpt(realPath);
         paramsList.add(driveParams);
     }
 
@@ -622,7 +648,7 @@ class VMExecutor extends MachineExecutor {
         //XXX: virtfs doesn't need to image/sync additional step
         String fsdevParams = "local";
         fsdevParams += ",id=" + SHARED_FOLDER_FSDEV_ID;
-        fsdevParams += ",path=" + realPath;
+        fsdevParams += ",path=" + qemuOpt(realPath);
         // TODO: add an option using security_model=passthrough for rooted users
         // since it has real permission control instead of using mapped-file metadata shadow file
         fsdevParams += ",security_model=mapped-file";
@@ -646,14 +672,14 @@ class VMExecutor extends MachineExecutor {
                     paramsList.add(cdInterface + ",id=" + ctrlId);
                 }
                 paramsList.add("-drive");
-                String cdParam = "if=none,id=cd0,media=cdrom";
+                String cdParam = "if=none,id=" + cdDeviceName + ",media=cdrom";
                 if (!cdImagePath.equals("")) {
-                    cdParam += ",file=" + cdImagePath;
+                    cdParam += ",file=" + qemuOpt(cdImagePath);
                 }
                 paramsList.add(cdParam);
                 // id matches cdDeviceName so QMP media change/eject keeps working
                 paramsList.add("-device");
-                paramsList.add("ide-cd,drive=cd0,bus=" + ctrlId + ".1,unit=0,id=" + cdDeviceName);
+                paramsList.add("ide-cd,drive=" + cdDeviceName + ",bus=" + ctrlId + ".1,unit=0");
             } else {
                 paramsList.add("-drive"); //empty
                 String param = "index=2";
@@ -661,7 +687,7 @@ class VMExecutor extends MachineExecutor {
                 param += cdInterface;
                 param += ",media=cdrom";
                 if (!cdImagePath.equals("")) {
-                    param += ",file=" + cdImagePath;
+                    param += ",file=" + qemuOpt(cdImagePath);
                 }
                 paramsList.add(param);
             }
@@ -672,7 +698,7 @@ class VMExecutor extends MachineExecutor {
             paramsList.add("-drive"); //empty
             String param = "index=0,if=floppy";
             if (!fdaImagePath.equals("")) {
-                param += ",file=" + fdaImagePath;
+                param += ",file=" + qemuOpt(fdaImagePath);
             }
             paramsList.add(param);
         }
@@ -682,7 +708,7 @@ class VMExecutor extends MachineExecutor {
             paramsList.add("-drive"); //empty
             String param = "index=1,if=floppy";
             if (!fdbImagePath.equals("")) {
-                param += ",file=" + fdbImagePath;
+                param += ",file=" + qemuOpt(fdbImagePath);
             }
             paramsList.add(param);
         }
@@ -714,10 +740,10 @@ class VMExecutor extends MachineExecutor {
     public void startService() {
         Intent i = new Intent(Config.ACTION_START, null, QubeApplication.getInstance(),
                 MachineController.getInstance().getServiceClass());
-        i.putExtras(VmProcess.snapshot());
+        Bundle b = new Bundle();
+        i.putExtras(b);
         Log.d(TAG, "Starting VM service");
         QubeApplication.getInstance().startService(i);
-        VmProcess.attach(QubeApplication.getInstance());
     }
 
     /**
@@ -733,15 +759,13 @@ class VMExecutor extends MachineExecutor {
             printParams(params);
 
             QmpClient.setExternal(QubeSettingsManager.getEnableExternalQMP(QubeApplication.getInstance()));
-            String libFilename = VmProcess.qemuLibrary();
+            String libFilename = getQemuLibrary();
             res = start(Config.storagedir, QubeApplication.getBasefileDir(),
                     libFilename, FileUtils.getNativeLibDir(QubeApplication.getInstance()) + "/" + libFilename,
                     params);
         } catch (Exception ex) {
             ToastUtils.toastLong(QubeApplication.getInstance(), ex.getMessage());
             return res;
-        } finally {
-            exitLatch.countDown();
         }
         return res;
     }
@@ -751,34 +775,14 @@ class VMExecutor extends MachineExecutor {
             @Override
             public void run() {
                 if (restart != 0) {
-                    QmpClient.setExternal(QubeSettingsManager.getEnableExternalQMP(QubeApplication.getInstance()));
                     QmpClient.sendCommand(QmpClient.getResetCommand());
-                    return;
+                } else {
+                    //XXX: Qmp command only halts the VM but doesn't exit so we use force close
+//            QmpClient.sendCommand(QmpClient.powerDown());
+                    stop(restart);
                 }
-                if (!VmProcess.isVmProcess()) {
-                    VmProcess.requestRemoteStop(QubeApplication.getInstance());
-                    return;
-                }
-                if (!stopping.compareAndSet(false, true)) {
-                    return;
-                }
-                stop(0);
-                if (awaitExit(Config.STOP_GRACE_MS)) {
-                    return;
-                }
-                Log.w(TAG, "VM did not exit within " + Config.STOP_GRACE_MS + "ms, killing process");
-                Process.killProcess(Process.myPid());
             }
-        }, "QubeStop").start();
-    }
-
-    private boolean awaitExit(long timeoutMs) {
-        try {
-            return exitLatch.await(timeoutMs, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
-        }
+        }).start();
     }
 
     @Override

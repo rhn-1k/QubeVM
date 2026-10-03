@@ -6,8 +6,8 @@ QEMU_CONFIG_DIR=$(QUBE_JNI_ROOT)/android-config
 ifeq ($(USE_QEMU_VERSION),7.2.22)
 include $(QEMU_CONFIG_DIR)/android-qemu-config-7.2.22.mak
 
-else ifeq ($(USE_QEMU_VERSION),11.1.1)
-include $(QEMU_CONFIG_DIR)/android-qemu-config-11.1.1.mak
+else ifeq ($(USE_QEMU_VERSION),11.1.2)
+include $(QEMU_CONFIG_DIR)/android-qemu-config-11.1.2.mak
 else
 $(error Unsupported QEMU version = $(USE_QEMU_VERSION))
 endif
@@ -55,7 +55,7 @@ VNC +=  --enable-vnc
 VNC += --disable-vnc-jpeg
 #VNC += --enable-vnc-png
 # vnc-png renamed to png in QEMU 7.x (handled in version-specific mak)
-ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.1),)
+ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.2),)
 else
 VNC += --disable-vnc-png
 endif
@@ -93,7 +93,7 @@ MISC += --disable-vde --disable-netmap --disable-cap-ng
 MISC += --disable-guest-agent --disable-pie
 MISC += --disable-rbd --disable-lzo  --disable-snappy
 # xfsctl was removed in QEMU 6+; only pass for older versions
-ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.1),)
+ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.2),)
 else
 MISC += --disable-xfsctl
 endif
@@ -118,7 +118,7 @@ NUMA = --disable-numa
 #VHOST
 #VHOST
 # vhost-scsi was removed in QEMU 7.x+ (now covered by vhost-kernel in version-specific mak)
-ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.1),)
+ifneq ($(filter $(USE_QEMU_VERSION),7.2.22 11.1.2),)
 VHOST = --disable-vhost-net
 else
 VHOST = --disable-vhost-net --disable-vhost-scsi

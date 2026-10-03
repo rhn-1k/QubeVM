@@ -24,4 +24,13 @@ public class QubeEmuActivity extends QubeActivity {
         super.onCreate(bundle);
         Logger.setupLogFile("/qube/qube-ppc-log.txt");
     }
+
+    @Override
+    protected void loadQEMULib() {
+        try {
+            System.loadLibrary("qemu-system-ppc");
+        } catch (Error ex) {
+            System.loadLibrary("qemu-system-ppc64");
+        }
+    }
 }

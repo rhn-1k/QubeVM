@@ -51,11 +51,11 @@ https://github.com/rhn-1k/QubeVM
     # Note: if some of these file links don't download with wget use your browser to download them
 
     ##### Get QEMU
-    # Current versions supported by qube is 11.1.1 and 7.2.22
-    # We will use 11.1.1 as an example in this guide
-    wget https://download.qemu.org/qemu-11.1.1.tar.xz
-    tar -xJf qemu-11.1.1.tar.xz
-    mv qemu-11.1.1 qemu
+    # Current versions supported by qube is 11.1.2 and 7.2.22
+    # We will use 11.1.2 as an example in this guide
+    wget https://download.qemu.org/qemu-11.1.2.tar.xz
+    tar -xJf qemu-11.1.2.tar.xz
+    mv qemu-11.1.2 qemu
 
     ##### GET glib
     wget https://download.gnome.org/sources/glib/2.88/glib-2.88.3.tar.xz
@@ -104,9 +104,9 @@ https://github.com/rhn-1k/QubeVM
 
 6. Apply patches
 
-    ### Apply patch for QEMU 11.1.1:
+    ### Apply patch for QEMU 11.1.2:
     cd ./qube-android-lib/src/main/jni/qemu/
-    patch -p1 < ../patches/qemu-11.1.1.patch
+    patch -p1 < ../patches/qemu-11.1.2.patch
 
     ### Apply glib patch for QubeVM:
     cd ./qube-android-lib/src/main/jni/glib/
@@ -137,10 +137,10 @@ https://github.com/rhn-1k/QubeVM
         cd qube-android-lib/src/main/jni
         
     Make sure you update file android-qube-config.mak with the NDK folder to your installation folder.
-    QEMU 11.1.1 requires clang, built with Android NDK r30:
+    QEMU 11.1.2 requires clang, built with Android NDK r30:
     NDK_ROOT = /home/dev/tools/ndk/android-ndk-r30
 
-    The rest of the configuration is for specifying the right QEMU version: USE_QEMU_VERSION=11.1.1
+    The rest of the configuration is for specifying the right QEMU version: USE_QEMU_VERSION=11.1.2
     the host architecture (android device): BUILD_HOST
     and the emulator guest architecture: BUILD_GUEST
     
@@ -153,7 +153,7 @@ https://github.com/rhn-1k/QubeVM
 
         # Instead of editing android-qube-config.mak you can also supply the variables on the command line.
         # For example:
-            export USE_QEMU_VERSION=11.1.1
+            export USE_QEMU_VERSION=11.1.2
             export BUILD_HOST=<EABI>
             export BUILD_GUEST=<GUEST_ARCH>
             export NDK_TOOLCHAIN_VERSION=clang
@@ -180,26 +180,26 @@ https://github.com/rhn-1k/QubeVM
 
         Examples:
         1) To build QubeVM x86 Emulator for ARM64 phones type:
-            export USE_QEMU_VERSION=11.1.1
+            export USE_QEMU_VERSION=11.1.2
             export BUILD_HOST=arm64-v8a
             export BUILD_GUEST=x86_64-softmmu
             make qube
 
         2) To build QubeVM ARM Emulator for ARM64 phones type:
-            export USE_QEMU_VERSION=11.1.1
+            export USE_QEMU_VERSION=11.1.2
             export BUILD_HOST=arm64-v8a
             export BUILD_GUEST=aarch64-softmmu
             make qube
 
         3) To build QubeVM ARM Emulator for ARM64 phones for debugging type:
             export NDK_DEBUG=1
-            export USE_QEMU_VERSION=11.1.1
+            export USE_QEMU_VERSION=11.1.2
             export BUILD_HOST=arm64-v8a
             export BUILD_GUEST=aarch64-softmmu
             make qube
 
         4) To build multiple QubeVM emulators for ARM64 phones type:
-            export USE_QEMU_VERSION=11.1.1
+            export USE_QEMU_VERSION=11.1.2
             export BUILD_HOST=arm64-v8a
             export BUILD_GUEST=x86_64-softmmu,aarch64-softmmu
             make qube

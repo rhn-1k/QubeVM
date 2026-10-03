@@ -181,7 +181,6 @@ power7
 power7+
 power8
 power8e
-power8nvl
 power9
 powerquicc
 powerquicc-ii

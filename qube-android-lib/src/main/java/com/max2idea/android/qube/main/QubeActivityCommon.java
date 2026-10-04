@@ -137,7 +137,7 @@ public final class QubeActivityCommon {
                     .setIcon(R.drawable.settings_ethernet_24px)
                     .setView(scrollView)
                     .setPositiveButton(activity.getString(android.R.string.ok), okListener)
-                    .setNeutralButton(activity.getString(R.string.TAPHelp), helpListener)
+                    .setNeutralButton(activity.getString(R.string.help), helpListener)
                     .create();
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();

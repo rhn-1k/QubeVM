@@ -923,10 +923,10 @@ public class QubeActivity extends AppCompatActivity
                     }
                 };
 
-        showKvmStyleDialog(getString(R.string.EnableKVM), getString(R.string.EnableKVMWarning),
+        PromptDialogHelper(getString(R.string.EnableKVM), getString(R.string.EnableKVMWarning),
                 getString(android.R.string.ok), okListener,
                 getString(android.R.string.cancel), cancelListener,
-                getString(R.string.KVMHelp), helpListener);
+                getString(R.string.help), helpListener);
     }
 
     private void promptEnableMTTCG() {
@@ -951,10 +951,10 @@ public class QubeActivity extends AppCompatActivity
                         QubeActivityCommon.goToURL(QubeActivity.this, Config.CpuLink);
                     }
                 };
-        showKvmStyleDialog(getString(R.string.enableMTTCG), getString(R.string.enableMTTCGWarning),
+        PromptDialogHelper(getString(R.string.enableMTTCG), getString(R.string.enableMTTCGWarning),
                 getString(android.R.string.ok), okListener,
                 getString(android.R.string.cancel), cancelListener,
-                getString(R.string.mttcgHelp), helpListener);
+                getString(R.string.help), helpListener);
     }
 
     private void promptMultiCPU(final String cpuNum) {
@@ -976,17 +976,17 @@ public class QubeActivity extends AppCompatActivity
                         QubeActivityCommon.goToURL(QubeActivity.this, Config.CpuLink);
                     }
                 };
-        showKvmStyleDialog(getString(R.string.multipleVCPU),
+        PromptDialogHelper(getString(R.string.multipleVCPU),
                 getString(R.string.multipleVCPUWarning)
                         + ((QubeApplication.arch == Config.Arch.x86_64) ?
                         getString(R.string.disableTSCInstructions) : "")
                         + " " + getString(R.string.DoYouWantToContinue),
                 getString(android.R.string.ok), okListener,
                 getString(android.R.string.cancel), cancelListener,
-                getString(R.string.vCPUHelp), helpListener);
+                getString(R.string.help), helpListener);
     }
 
-    private void showKvmStyleDialog(String title, String body,
+    private void PromptDialogHelper(String title, String body,
                                      String okTitle, DialogInterface.OnClickListener okListener,
                                      String cancelTitle, DialogInterface.OnClickListener cancelListener,
                                      String helpTitle, DialogInterface.OnClickListener helpListener) {
@@ -1000,11 +1000,11 @@ public class QubeActivity extends AppCompatActivity
                 .setTitle(title)
                 .setIcon(R.drawable.info_24px)
                 .setView(scrollView)
+                .setCancelable(false)
                 .setPositiveButton(okTitle, okListener)
                 .setNegativeButton(cancelTitle, cancelListener)
                 .setNeutralButton(helpTitle, helpListener)
                 .create();
-        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 

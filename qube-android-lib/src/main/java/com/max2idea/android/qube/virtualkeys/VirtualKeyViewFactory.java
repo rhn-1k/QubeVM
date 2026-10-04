@@ -3,7 +3,7 @@ This is a ported code from the AVNC project
 Copyright (C) Gaurav Ujjwal 2020
 Copyright (C) Rhn 2026
 */
-package com.max2idea.android.qube.main;
+package com.max2idea.android.qube.virtualkeys;
 
 import android.content.Context;
 import android.view.Gravity;

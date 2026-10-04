@@ -12,7 +12,7 @@
     <string name="drives">Drives</string>
     <string name="share_folder_server">Shared Folder Server</string>
     <string name="share_folder_stopped_title">Shared Folder Server isn\'t running</string>
-    <string name="share_folder_stopped_desc">Shared Folder Server is a feature that allows you to share your files by opening an HTTP server, allows VM to access device\'s Download folder, it detects the new files directly, unlike normal Shared Folder (vvfat), vvfat needs to reboot the VM to take affect and see the new files</string>
+    <string name="share_folder_stopped_desc">Shared Folder Server is a feature that allows you to share your files by opening an HTTP server, allows VM to access device\'s Download folder, it detects the new files directly, unlike normal Shared Folder (vvfat), vvfat needs to reboot the VM to take effect and see the new files</string>
     <string name="share_folder_running_title">Shared Folder Server is running</string>
     <string name="share_folder_running_desc">Shared Folder Server is hosted at:</string>
     <string name="share_folder_start_error">Could not start the sharing server. The port may already be in use</string>
@@ -56,7 +56,6 @@
     <string name="open">Open</string>
     <string name="enableMTTCG">Enable MTTCG</string>
     <string name="enableMTTCGWarning">Enabling MTTCG requires a phone with multi cores cpu.\nIf you don\'t know what this is press Cancel.\n\nIf you experience app crashing or freezing disable this option. Do you want to continue?</string>
-    <string name="mttcgHelp">Help</string>
     <string name="tcgBufferLabel">TCG Buffer</string>
     <string name="failToCreateMachineDirError">Could not create internal machine directory</string>
     <string name="chooseDirToCreateImage">Choose a directory to create your image</string>
@@ -69,7 +68,6 @@
     <string name="multipleVCPUWarning">Warning! Setting Multiple Virtual CPUs will NOT result in additional performance unless you use KVM or MTTCG. Your device might even be slow or the Guest OS might hang so it is advised to use 1 CPU. \n\n</string>
     <string name="disableTSCInstructions">If your guest OS is not able to boot check option \'Disable TSC\' and restart the VM.</string>
     <string name="DoYouWantToContinue">Do you want to continue?</string>
-    <string name="vCPUHelp">Help</string>
     <string name="Auto">Auto</string>
     <string name="Landscape">Landscape</string>
     <string name="LandscapeReverse">Landscape Reverse</string>
@@ -95,7 +93,6 @@
     <string name="Exit">Exit</string>
     <string name="TapDeviceFound">TAP Device found</string>
     <string name="tunDeviceWarning">Warning! Make sure device /dev/net/tun has appropriate permissions\nUser ID</string>
-    <string name="TAPHelp">Help</string>
     <!-- Summary for log errors -->
     <string name="SomethingWentWrong">Something went wrong</string>
     <string name="CopySummary">Copy</string>
@@ -149,7 +146,6 @@
     <string name="CHANGELOG">CHANGELOG</string>
     <string name="WriteAccess">Write Access</string>
     <string name="FilePathNotSupportedWarning">File path is not supported. Make sure you choose a file/directory from your internal storage or external sd card. Root and Download Directories are not supported.</string>
-    <string name="KVMHelp">Help</string>
     <string name="FullAccessWarning">Please allow access to your device\'s storage, without it, the app will not work</string>
     <string name="OkIUnderstand">Allow</string>
     <string name="SendText">Send Text</string>

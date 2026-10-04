@@ -55,6 +55,7 @@ import com.max2idea.android.qube.utils.ToolbarUtils;
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.keyboard.KeyboardUtils;
+import com.max2idea.android.qube.virtualkeys.VirtualKeys;
 import com.max2idea.android.qube.log.Logger;
 import com.max2idea.android.qube.machine.Machine;
 import com.max2idea.android.qube.machine.MachineAction;

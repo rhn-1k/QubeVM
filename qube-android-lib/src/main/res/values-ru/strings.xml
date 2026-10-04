@@ -57,7 +57,6 @@
     <string name="open">Открыть</string>
     <string name="enableMTTCG">Включить MTTCG</string>
     <string name="enableMTTCGWarning">Для включения MTTCG требуется телефон с многоядерным процессором.\nЕсли вы не знаете, что это такое, нажмите Отмена.\n\nЕсли приложение зависает или вылетает, отключите эту опцию. Продолжить?</string>
-    <string name="mttcgHelp">Помощь</string>
     <string name="tcgBufferLabel">Буфер TCG</string>
     <string name="failToCreateMachineDirError">Не удалось создать внутренний каталог машины</string>
     <string name="chooseDirToCreateImage">Выберите каталог для создания образа</string>
@@ -70,7 +69,6 @@
     <string name="multipleVCPUWarning">Внимание! Настройка нескольких виртуальных процессоров НЕ приведёт к повышению производительности, если вы не используете KVM или MTTCG. Ваше устройство может замедлиться, либо гостевая ОС может зависнуть, поэтому рекомендуется использовать 1 CPU. \n\n</string>
     <string name="disableTSCInstructions">Если ваша гостевая ОС не может загрузиться, включите опцию «Отключить TSC» и перезапустите ВМ.</string>
     <string name="DoYouWantToContinue">Хотите продолжить?</string>
-    <string name="vCPUHelp">Помощь</string>
     <string name="Auto">Авто</string>
     <string name="Landscape">Альбомная</string>
     <string name="LandscapeReverse">Альбомная перевёрнутая</string>
@@ -96,7 +94,6 @@
     <string name="Exit">Выход</string>
     <string name="TapDeviceFound">Устройство TAP найдено</string>
     <string name="tunDeviceWarning">Внимание! Убедитесь, что устройство /dev/net/tun имеет соответствующие права\nUser ID</string>
-    <string name="TAPHelp">Помощь</string>
     <string name="SomethingWentWrong">Что-то пошло не так</string>
     <string name="UnknownErrorCause">ВМ неожиданно остановилась, точную причину определить не удалось.</string>
     <string name="AllowExternalVNCConnections">Разрешить внешние VNC-подключения</string>
@@ -148,7 +145,6 @@
     <string name="CHANGELOG">СПИСОК ИЗМЕНЕНИЙ</string>
     <string name="WriteAccess">Доступ на запись</string>
     <string name="FilePathNotSupportedWarning">Путь к файлу не поддерживается. Убедитесь, что выбираете файл/каталог из внутреннего хранилища или внешней SD-карты. Корневой каталог и папка Загрузки не поддерживаются.</string>
-    <string name="KVMHelp">Помощь</string>
     <string name="FullAccessWarning">Пожалуйста, разрешите доступ к памяти устройства, без этого приложение не сможет работать</string>
     <string name="OkIUnderstand">Разрешить</string>
     <string name="SendText">Отправить текст</string>

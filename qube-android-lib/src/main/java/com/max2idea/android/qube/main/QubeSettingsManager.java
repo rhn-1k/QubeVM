@@ -27,8 +27,7 @@ import com.max2idea.android.qube.machine.MachineController;
 import com.max2idea.android.qube.machine.MachineFilePaths;
 import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
 import com.max2idea.android.qube.utils.ToolbarUtils;
-
-
+import com.max2idea.android.qube.virtualkeys.VirtualKeysEditorActivity;
 
 public class QubeSettingsManager extends AppCompatActivity {
     private static final String TAG = "QubeSettingsManager";

@@ -11,8 +11,10 @@ import com.max2idea.android.qube.install.Installer;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * A simple utility class to retrieved often long architecture attribute lists
@@ -97,7 +99,19 @@ public class ArchDefinitions {
 
     public static ArrayList<String> getKeyboardValues(Context context) {
         ArrayList<String> arrList = new ArrayList<>();
-        arrList.add("en-us");
+        // same assets the installer copies to the base dir, read from here
+        // since the spinner is filled before the first launch install runs
+        try {
+            for (String name : context.getAssets().list("roms/keymaps")) {
+                // meson.build is copied along with the keymaps
+                // we don't need it
+                if (!name.equals("meson.build"))
+                    arrList.add(name);
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        Collections.sort(arrList);
         return arrList;
     }
 

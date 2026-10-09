@@ -744,7 +744,7 @@ public class Machine extends Observable {
         if (this.keyboard == null || !this.keyboard.equals(keyboard)) {
             this.keyboard = keyboard;
             setChanged();
-            notifyChanged(MachineProperty.MOUSE, mouse);
+            notifyChanged(MachineProperty.KEYBOARD, keyboard);
         }
     }
 

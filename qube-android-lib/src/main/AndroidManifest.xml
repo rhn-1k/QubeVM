@@ -40,7 +40,7 @@
             android:label="@string/Settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.max2idea.android.qube.main.VirtualKeysEditorActivity"
+            android:name="com.max2idea.android.qube.virtualkeys.VirtualKeysEditorActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize"
             android:label="@string/pref_customize_virtual_keys"
             android:theme="@style/AppTheme.NoActionBar" />

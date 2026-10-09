@@ -37,11 +37,17 @@ from a desktop-first design.
 QubeVM makes uses of the native android virtual keyboard events which are
 forwarded to the virtual machine. You can enable the android virtual
 keyboard by pressing on the little keyboard icon on the QubeVM toolbar.
-Currently only US Keyboard layout is supported though you can try using
-another layout by entering the following option in the advanced
-parameters (QubeVM bottom main screen). For example if you want to use
-the German keyboard layout enter in extra parameters:
-*-k de*
+The keyboard layout can be chosen in the Keyboard option of the main
+screen. The same layout must also be set inside the guest operating
+system, otherwise the typed characters will not match. With the QGE
+interface the layout can be changed while the VM is running, the guest
+layout still has to be switched inside the guest. The QGE toolbar has a
+Keyboard Layout button with a globe icon that opens a searchable list of
+the layouts, the choice stays in sync with the Keyboard option of the
+main screen.
+
+The available layouts are the keymaps shipped with the QEMU build, listed
+by their QEMU names such as de, fr, ru or en-gb.
 
 ## Mouse
 

@@ -1,7 +1,7 @@
 /*
 Copyright (C) Rhn 2026
  */
-package com.max2idea.android.qube.main;
+package com.max2idea.android.qube.keyboard;
 
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -26,12 +26,12 @@ public class KeySymMap {
         return 0;
     }
 
-    // Latin-1 codepoints map 1:1 onto their keysym below 0x100, everything above
-    // that is handled via the 0x01000000 Unicode keysym range (RFC/X11 convention).
-    private static long unicodeToKeysym(int unicodeChar) {
+    // Latin-1 is its own keysym,
+    // the rest goes to the legacy keysyms the qemu keymaps use
+    public static long unicodeToKeysym(int unicodeChar) {
         if (unicodeChar < 0x100)
             return unicodeChar;
-        return 0x01000000L | unicodeChar;
+        return UnicodeKeysyms.get(unicodeChar);
     }
 
     private static long fixedKeysym(int keyCode) {

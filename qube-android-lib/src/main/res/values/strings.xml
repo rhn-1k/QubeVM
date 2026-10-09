@@ -327,5 +327,8 @@
     <string name="summary_initrd">initrd</string>
     <string name="summary_append">append</string>
     <string name="summary_video_card">Video Card</string>
+    <string name="keyboard_layout">Keyboard Layout</string>
+    <string name="keyboard_layout_search">Search layouts</string>
+    <string name="keyboard_layout_empty">No layouts found</string>
 
 </resources>

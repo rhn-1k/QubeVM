@@ -326,5 +326,8 @@
     <string name="summary_initrd">initrd</string>
     <string name="summary_append">append</string>
     <string name="summary_video_card">Видеокарта</string>
+    <string name="keyboard_layout">Раскладка клавиатуры</string>
+    <string name="keyboard_layout_search">Поиск раскладок</string>
+    <string name="keyboard_layout_empty">Раскладки не найдены</string>
 
 </resources>

@@ -66,7 +66,6 @@ public class Config {
     public static final String newVersionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
     public static final String discordLink = "https://discord.gg/MrbJ9QNXNJ";
 
-    public static final boolean enableKeyboardLayoutOption = true;
     public static final boolean enableMouseOption = true;
 
     // Debug

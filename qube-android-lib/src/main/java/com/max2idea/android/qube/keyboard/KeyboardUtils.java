@@ -9,8 +9,11 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.max2idea.android.qube.jni.QubeInput;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeActivity;
+import com.max2idea.android.qube.toast.ToastUtils;
+import com.qube.emu.lib.R;
 
 public class KeyboardUtils {
     private static final String TAG = "KeyboardUtils";
@@ -35,5 +38,13 @@ public class KeyboardUtils {
         if (view != null) {
             inputMgr.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    // takes the BQL so it stays off the UI thread
+    public static void setRunningLayout(final Activity activity, final String layout) {
+        new Thread(() -> {
+            if (!QubeInput.nativeSetKeyboardLayout(layout))
+                activity.runOnUiThread(() -> ToastUtils.toastLong(activity, activity.getString(R.string.Error) + ": " + layout));
+        }).start();
     }
 }

@@ -14,6 +14,7 @@ Copyright (C) Rhn 2026
 #include "system/system.h"
 #include "qapi/error.h"
 #include "qemu/main-loop.h"
+#include "qemu/error-report.h"
 
 static QemuConsole *qube_input_con;
 static kbd_layout_t *qube_input_kbd_layout;
@@ -29,61 +30,102 @@ void qube_input_init(QemuConsole *con)
     qube_input_ready = 1;
 }
 
+// switches the layout of the running vm, false when the keymap can't be loaded
+bool qube_input_set_layout(const char *name)
+{
+    Error *err = NULL;
+    kbd_layout_t *layout;
+
+    if (!qube_input_ready) {
+        return false;
+    }
+    layout = kbd_layout_new(name2keysym, name, &err);
+    if (!layout) {
+        error_report_err(err);
+        return false;
+    }
+    bql_lock();
+    kbd_layout_free(qube_input_kbd_layout);
+    qube_input_kbd_layout = layout;
+    bql_unlock();
+    return true;
+}
+
+// keycode is the keymap scancode with the modifier flags already masked off
+static void qube_input_send_number(int keycode, bool down)
+{
+    qemu_input_event_send_key_number(qube_input_con, keycode, down);
+}
+
 // send_key_qcode is gone in qemu 11.x, only send_key_number remains
-static void qube_input_send_qcode(QemuConsole *con, int qcode, int down)
+static void qube_input_send_qcode(int qcode, bool down)
 {
     unsigned int lnx = qcode < (int)qemu_input_map_qcode_to_linux_len
                         ? qemu_input_map_qcode_to_linux[qcode] : 0;
     unsigned int num = lnx < qemu_input_map_linux_to_qnum_len
                         ? qemu_input_map_linux_to_qnum[lnx] : 0;
-    qemu_input_event_send_key_number(con, num, down);
+    qube_input_send_number(num, down);
 }
 
-// Some keys from android keyboards need SHIFT
-static bool qube_input_needs_shift(uint32_t sym)
-{
-    return (sym >= 123 && sym <= 126)
-        || (sym >= 33 && sym <= 38)
-        || (sym >= 40 && sym < 44)
-        || (sym >= 62 && sym <= 64)
-        || (sym >= 94 && sym <= 95)
-        || sym == 58 || sym == 60;
-}
+// shift as Android left it, so a layout entry can override it
+static bool qube_input_shift_held;
 
 // sym is an X11 keysym from Java KeySymMap, translated to QKeyCode via the shared keyboard layout
 void qube_input_send_key(uint32_t sym, int down)
 {
-    uint32_t lsym = sym;
+    int code;
     int keycode;
+    bool shift;
 
     if (!qube_input_ready) {
         return;
     }
-    if (lsym >= 'A' && lsym <= 'Z') {
-        lsym = lsym - 'A' + 'a';
-    }
-    keycode = keysym2scancode(qube_input_kbd_layout, lsym & 0xFFFF,
-                               NULL, down) & SCANCODE_KEYMASK;
 
     // need the BQL ourselves, called from an Android thread not the qemu main loop
+    // the layout is only used under it since it can be swapped from another thread
     bql_lock();
-    if (qube_input_needs_shift(sym)) {
-        if (sym == 60) {
-            keycode = keysym2scancode(qube_input_kbd_layout, ',', NULL, down)
-                      & SCANCODE_KEYMASK;
-        }
-        if (down) {
-            qube_input_send_qcode(qube_input_con, Q_KEY_CODE_SHIFT, true);
-        }
-        qemu_input_event_send_key_number(qube_input_con, keycode, down);
-        if (!down) {
-            qube_input_send_qcode(qube_input_con, Q_KEY_CODE_SHIFT, false);
-        }
+    code = keysym2scancode(qube_input_kbd_layout, sym, NULL, down);
+    keycode = code & SCANCODE_KEYMASK;
+    // keysym not in the active layout, nothing to send
+    if (!keycode) {
         bql_unlock();
         return;
     }
 
-    qemu_input_event_send_key_number(qube_input_con, keycode, down);
+    // Shift_L and Shift_R are only tracked and passed through
+    if (sym == 0xFFE1 || sym == 0xFFE2) {
+        qube_input_shift_held = down;
+        qube_input_send_number(keycode, down);
+        bql_unlock();
+        return;
+    }
+
+    // press what the layout entry needs before the key
+    shift = code & SCANCODE_SHIFT;
+    if (down) {
+        if (shift != qube_input_shift_held) {
+            qube_input_send_qcode(Q_KEY_CODE_SHIFT, shift);
+        }
+        if (code & SCANCODE_ALTGR) {
+            qube_input_send_qcode(Q_KEY_CODE_ALT_R, true);
+        }
+        if (code & SCANCODE_CTRL) {
+            qube_input_send_qcode(Q_KEY_CODE_CTRL, true);
+        }
+    }
+    qube_input_send_number(keycode, down);
+    // release in reverse order and give shift back to what Android had
+    if (!down) {
+        if (code & SCANCODE_CTRL) {
+            qube_input_send_qcode(Q_KEY_CODE_CTRL, false);
+        }
+        if (code & SCANCODE_ALTGR) {
+            qube_input_send_qcode(Q_KEY_CODE_ALT_R, false);
+        }
+        if (shift != qube_input_shift_held) {
+            qube_input_send_qcode(Q_KEY_CODE_SHIFT, qube_input_shift_held);
+        }
+    }
     bql_unlock();
 }
 

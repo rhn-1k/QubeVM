@@ -1,5 +1,6 @@
 // Qube Graphics Engine input bridge, JNI side
 #include <jni.h>
+#include <stdbool.h>
 #include <dlfcn.h>
 #include "qube_compat.h"
 
@@ -9,10 +10,12 @@ extern void *handle;
 typedef void (*qube_input_send_key_t)(uint32_t sym, int down);
 typedef void (*qube_input_send_pointer_t)(int x, int y, int button_mask, int width, int height);
 typedef void (*qube_input_send_pointer_rel_t)(int dx, int dy, int button_mask);
+typedef bool (*qube_input_set_layout_t)(const char *name);
 
 static qube_input_send_key_t qube_input_send_key_fn = NULL;
 static qube_input_send_pointer_t qube_input_send_pointer_fn = NULL;
 static qube_input_send_pointer_rel_t qube_input_send_pointer_rel_fn = NULL;
+static qube_input_set_layout_t qube_input_set_layout_fn = NULL;
 static int qube_input_syms_resolved = 0;
 
 static int resolve_qube_input_syms(void) {
@@ -28,6 +31,8 @@ static int resolve_qube_input_syms(void) {
 	// present on supported qemu versions, resolved as optional so a missing symbol
 	// just no-ops the rel entrypoint instead of crashing on an unexpected qemu build
 	qube_input_send_pointer_rel_fn = (qube_input_send_pointer_rel_t) dlsym(handle, "qube_input_send_pointer_rel");
+	// optional the same way
+	qube_input_set_layout_fn = (qube_input_set_layout_t) dlsym(handle, "qube_input_set_layout");
 	qube_input_syms_resolved = 1;
 	if (!qube_input_send_key_fn || !qube_input_send_pointer_fn) {
 		LOGE("Cannot resolve qube_input symbols: %s\n", dlerror());
@@ -58,4 +63,15 @@ JNIEXPORT void JNICALL Java_com_max2idea_android_qube_jni_QubeInput_nativeSendPo
 		return;
 	}
 	qube_input_send_pointer_rel_fn(dx, dy, buttonMask);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_max2idea_android_qube_jni_QubeInput_nativeSetKeyboardLayout(
+		JNIEnv* env, jclass clazz, jstring layout) {
+	if (!resolve_qube_input_syms() || !qube_input_set_layout_fn) {
+		return JNI_FALSE;
+	}
+	const char *name = (*env)->GetStringUTFChars(env, layout, 0);
+	bool loaded = qube_input_set_layout_fn(name);
+	(*env)->ReleaseStringUTFChars(env, layout, name);
+	return loaded ? JNI_TRUE : JNI_FALSE;
 }

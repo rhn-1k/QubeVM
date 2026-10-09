@@ -808,7 +808,10 @@ public class QubeActivity extends AppCompatActivity
                 if (getMachine() == null)
                     return;
                 String keyboardCfg = (String) ((ArrayAdapter<?>) mKeyboard.getAdapter()).getItem(position);
+                boolean changed = !keyboardCfg.equals(getMachine().getKeyboard());
                 notifyFieldChange(MachineProperty.KEYBOARD, keyboardCfg);
+                if (changed && MachineController.getInstance().isRunning())
+                    KeyboardUtils.setRunningLayout(QubeActivity.this, keyboardCfg);
             }
 
             public void onNothingSelected(AdapterView<?> parentView) {
@@ -1727,12 +1730,14 @@ public class QubeActivity extends AppCompatActivity
     }
 
     private void enableNonRemovableDeviceOptions(boolean flag) {
-        if (MachineController.getInstance().isRunning())
+        boolean running = MachineController.getInstance().isRunning();
+        if (running)
             flag = false;
 
         //ui, not used when headless
         mUI.setEnabled(flag && !Machine.isNoGraphic(getSelectedVga()));
-        mKeyboard.setEnabled(Config.enableKeyboardLayoutOption && flag);
+        // the layout can be switched live on QGE
+        mKeyboard.setEnabled(flag || running && getMachine().getRenderer() == 0);
         mMouse.setEnabled(Config.enableMouseOption && flag);
 
         // Enable everything except removable devices
@@ -3033,8 +3038,6 @@ public class QubeActivity extends AppCompatActivity
         keyboardAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         mKeyboard.setAdapter(keyboardAdapter);
         mKeyboard.invalidate();
-        //TODO: for now we use only English keyboard, add more layouts
-        mKeyboard.setSelection(0);
     }
 
     private void populateMouse() {
@@ -3399,6 +3402,9 @@ public class QubeActivity extends AppCompatActivity
                     if (property == MachineProperty.UI) {
 
                         mSoundCard.setEnabled(getMachine().getRenderer() != 1);
+                    } else if (property == MachineProperty.KEYBOARD) {
+                        // changed from the QGE dialog
+                        SpinnerAdapter.setDiskAdapterValue(mKeyboard, getMachine().getKeyboard());
                     }
                 }
                 updateSummary();

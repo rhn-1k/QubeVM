@@ -22,7 +22,6 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +53,8 @@ import com.max2idea.android.qube.utils.ToolbarUtils;
 
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileUtils;
+import com.max2idea.android.qube.keyboard.KeySymMap;
+import com.max2idea.android.qube.keyboard.KeyboardLayoutDialog;
 import com.max2idea.android.qube.keyboard.KeyboardUtils;
 import com.max2idea.android.qube.virtualkeys.VirtualKeys;
 import com.max2idea.android.qube.log.Logger;
@@ -219,6 +220,8 @@ public class QubeQGEActivity extends AppCompatActivity
                     toggleKeyboardFlag = KeyboardUtils.showKeyboard(QubeQGEActivity.this, toggleKeyboardFlag, mSurface);
                 }
             }, 500);
+        } else if (item.getItemId() == R.id.itemKeyboardLayout) {
+            promptKeyboardLayout();
         } else if (item.getItemId() == R.id.itemVolume) {
             promptVolume();
         } else if (item.getItemId() == R.id.itemHideToolbar) {
@@ -393,6 +396,13 @@ public class QubeQGEActivity extends AppCompatActivity
         }
     }
 
+    private void promptKeyboardLayout() {
+        new KeyboardLayoutDialog(this, MachineController.getInstance().getMachine().getKeyboard(), layout -> {
+            notifyFieldChange(MachineProperty.KEYBOARD, layout);
+            KeyboardUtils.setRunningLayout(this, layout);
+        }).show();
+    }
+
     private void promptMouseMode() {
         String[] items = {
                 getString(R.string.TrackpadDescr),
@@ -539,17 +549,13 @@ public class QubeQGEActivity extends AppCompatActivity
         }
     }
 
+    // each character goes straight to a keysym,
+    // KeyCharacterMap has no Cyrillic and would drop it
     private void sendText(String string) {
-        KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
-        KeyEvent[] keyEvents = keyCharacterMap.getEvents(string.toCharArray());
-        if (keyEvents == null)
-            return;
-        for (KeyEvent keyEvent : keyEvents) {
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                sendKeyEvent(keyEvent, keyEvent.getKeyCode(), true);
-            } else if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
-                sendKeyEvent(keyEvent, keyEvent.getKeyCode(), false);
-            }
+        for (int i = 0; i < string.length(); i += Character.charCount(string.codePointAt(i))) {
+            long keysym = KeySymMap.unicodeToKeysym(string.codePointAt(i));
+            sendKeysym(keysym, true);
+            sendKeysym(keysym, false);
         }
     }
 
@@ -1154,6 +1160,17 @@ public class QubeQGEActivity extends AppCompatActivity
                     if (keysym != 0)
                         QubeInput.nativeSendKeyEvent(keysym, down);
                 }
+            }
+        });
+    }
+
+    // same executor as the key events so the order is kept
+    private void sendKeysym(final long keysym, final boolean down) {
+        keyEventsExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                if (machineRunning)
+                    QubeInput.nativeSendKeyEvent(keysym, down);
             }
         });
     }

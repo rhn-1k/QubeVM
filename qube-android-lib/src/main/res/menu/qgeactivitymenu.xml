@@ -11,6 +11,10 @@
         android:icon="@drawable/keyboard_mini_24px"
         android:title="@string/toggle_virtual_keys" />
     <item
+        android:id="@+id/itemKeyboardLayout"
+        android:icon="@drawable/language_24px"
+        android:title="@string/keyboard_layout" />
+    <item
         android:id="@+id/itemMouse"
         android:icon="@drawable/mouse_24px"
         android:title="@string/center_mouse" />

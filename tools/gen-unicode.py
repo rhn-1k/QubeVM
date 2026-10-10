@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (C) Rhn 2026
 # Regenerates UnicodeKeysyms.java, the unicode to legacy X11 keysym table used by KeySymMap.
-# Usage is python3 tools/gen-unicode.py 11.1.2 and more qemu versions can follow, needs network.
+# Usage: python3 tools/gen-unicode.py (qemu version)
 import argparse
 import os
 import re

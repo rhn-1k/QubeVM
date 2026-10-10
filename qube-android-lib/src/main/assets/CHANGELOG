@@ -1,3 +1,15 @@
+* QubeVM v7.1.3
+- Added support for multi keyboard layouts (guest os should have the same language applied)
+- New Input devices (virtio-mouse-pci, virtio-mouse-device, virtio-tablet-pci, virtio-tablet-device)
+- New drives interface (nvme, achi)
+- Added USB storage drive support
+- Updated UEFI to latest version
+- New x86 video cards (ati-vga, bochs-display)
+- New soundcard (ich9-intel-hda)
+- Fixed an issue making the vm unbootable on Arm version
+- Fixed keyboard inputs isn't being sent to VM on Arm version
+
+
 * QubeVM v7.1.2
 - Rebased with QEMU 11.1.2
 - Initial x86_64 host architecture support

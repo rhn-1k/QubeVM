@@ -160,13 +160,16 @@ public class QubeActivity extends AppCompatActivity
     private Spinner mCD;
     private Spinner mFDA;
     private Spinner mFDB;
+    private Spinner mUSB;
     private MaterialSwitch mCDenable;
     private MaterialSwitch mFDAenable;
     private MaterialSwitch mFDBenable;
+    private MaterialSwitch mUSBenable;
     private ImageView mCDOptions;
     private TextView mCDStr;
     private TextView mFDAStr;
     private TextView mFDBStr;
+    private TextView mUSBStr;
 
     // misc
     private Spinner mRamSize;
@@ -304,6 +307,7 @@ public class QubeActivity extends AppCompatActivity
         disableRemovableDiskListener(mCDenable, mCD);
         disableRemovableDiskListener(mFDAenable, mFDA);
         disableRemovableDiskListener(mFDBenable, mFDB);
+        disableRemovableDiskListener(mUSBenable, mUSB);
     }
 
     private void disableRemovableDiskListener(MaterialSwitch enableDrive, Spinner spinner) {
@@ -315,6 +319,7 @@ public class QubeActivity extends AppCompatActivity
         enableRemovableDiskListener(mCD, mCDenable, mCDOptions, MachineProperty.CDROM, FileType.CDROM);
         enableRemovableDiskListener(mFDA, mFDAenable, null, MachineProperty.FDA, FileType.FDA);
         enableRemovableDiskListener(mFDB, mFDBenable, null, MachineProperty.FDB, FileType.FDB);
+        enableRemovableDiskListener(mUSB, mUSBenable, null, MachineProperty.USB, FileType.USB);
     }
 
     private void enableRemovableDiskListener(final Spinner spinner, final MaterialSwitch driveEnable,
@@ -346,6 +351,7 @@ public class QubeActivity extends AppCompatActivity
                         if (spinner == mCD) label = mCDStr;
                         else if (spinner == mFDA) label = mFDAStr;
                         else if (spinner == mFDB) label = mFDBStr;
+                        else if (spinner == mUSB) label = mUSBStr;
                         setRemovableDriveRowEnabled(label, spinner, isChecked, true);
                         notifyFieldChange(MachineProperty.DRIVE_ENABLED, new Object[]{driveName, isChecked});
                         triggerUpdateSpinner(spinner);
@@ -592,6 +598,7 @@ public class QubeActivity extends AppCompatActivity
                 notifyFieldChange(MachineProperty.VGA, vgacfg);
                 mUI.setEnabled(!Machine.isNoGraphic(vgacfg)
                         && !MachineController.getInstance().isRunning());
+                mKeyboard.setEnabled(!Machine.isNoGraphic(vgacfg));
                 if (GraphicsCapabilities.isVirglGpu(vgacfg)) {
                     enforceQGEForVirgl();
                 }
@@ -1058,7 +1065,10 @@ public class QubeActivity extends AppCompatActivity
 
         final String[] items = machineDriveName == MachineProperty.SHARED_FOLDER
                 ? new String[] { "vvfat", "virtio9p" }
-                : new String[] { "ide", "scsi", "virtio", "piix3-ide", "piix4-ide" };
+                // cdrom has no nvme, it would show up as a plain disk instead of a real CD drive
+                : machineDriveName == MachineProperty.CDROM
+                ? new String[] { "ide", "virtio","ahci", "piix3-ide", "piix4-ide" }
+                : new String[] { "ide", "virtio", "ahci", "nvme", "piix3-ide", "piix4-ide" };
         final AlertDialog.Builder mBuilder = new MaterialAlertDialogBuilder(this);
         String driveTitle = machineDriveName == MachineProperty.SHARED_FOLDER
                 ? getString(R.string.SharedFolder)
@@ -1301,6 +1311,7 @@ public class QubeActivity extends AppCompatActivity
         addDiskMapping(FileType.CDROM, mCD, mCDenable, MachineProperty.CDROM);
         addDiskMapping(FileType.FDA, mFDA, mFDAenable, MachineProperty.FDA);
         addDiskMapping(FileType.FDB, mFDB, mFDBenable, MachineProperty.FDB);
+        addDiskMapping(FileType.USB, mUSB, mUSBenable, MachineProperty.USB);
 
         addDiskMapping(FileType.KERNEL, mKernel, null, MachineProperty.KERNEL);
         addDiskMapping(FileType.INITRD, mInitrd, null, MachineProperty.INITRD);
@@ -1524,6 +1535,7 @@ public class QubeActivity extends AppCompatActivity
         populateDiskAdapter(mCD, FileType.CDROM, false);
         populateDiskAdapter(mFDA, FileType.FDA, false);
         populateDiskAdapter(mFDB, FileType.FDB, false);
+        populateDiskAdapter(mUSB, FileType.USB, false);
 
         //bios
         populateDiskAdapter(mBios, FileType.BIOS, false);
@@ -1653,6 +1665,7 @@ public class QubeActivity extends AppCompatActivity
         mCDenable.setEnabled(flag);
         mFDAenable.setEnabled(flag);
         mFDBenable.setEnabled(flag);
+        mUSBenable.setEnabled(flag);
         mCDOptions.setEnabled(flag);
     }
 
@@ -1715,6 +1728,7 @@ public class QubeActivity extends AppCompatActivity
         setRemovableDriveRowEnabled(mCDStr, mCD, flag && mCDenable.isChecked(), false);
         setRemovableDriveRowEnabled(mFDAStr, mFDA, flag && mFDAenable.isChecked(), false);
         setRemovableDriveRowEnabled(mFDBStr, mFDB, flag && mFDBenable.isChecked(), false);
+        setRemovableDriveRowEnabled(mUSBStr, mUSB, flag && mUSBenable.isChecked(), false);
     }
 
     // Fades label and spinner
@@ -1736,8 +1750,9 @@ public class QubeActivity extends AppCompatActivity
 
         //ui, not used when headless
         mUI.setEnabled(flag && !Machine.isNoGraphic(getSelectedVga()));
-        // the layout can be switched live on QGE
-        mKeyboard.setEnabled(flag || running && getMachine().getRenderer() == 0);
+        // the layout can be switched seamlessly on QGE, disabled when headless
+        mKeyboard.setEnabled(!Machine.isNoGraphic(getSelectedVga())
+                && (flag || running && getMachine().getRenderer() == 0));
         mMouse.setEnabled(Config.enableMouseOption && flag);
 
         // Enable everything except removable devices
@@ -1823,7 +1838,7 @@ public class QubeActivity extends AppCompatActivity
         //XXX: make sure that bios files are installed in case we ran out of space in the last run
         FileInstaller.installFiles(QubeActivity.this, false);
 
-        startVNC();
+        startVM();
     }
 
     private void createMachineDir(String dir) throws Exception {
@@ -1838,11 +1853,14 @@ public class QubeActivity extends AppCompatActivity
         return getMachine() != null && Machine.isNoGraphic(getMachine().getVga());
     }
 
-    public void startVNC() {
-        if (getMachine().getRenderer() == 0) {
+    public void startVM() {
+        if (isNoGraphic()) {
+            // Headless, just start the VM without display
+            notifyAction(MachineAction.START_VM, null);
+        } else if (getMachine().getRenderer() == 0) {
             startQGE();
         } else {
-            startExternalVNC();
+            startWithVNC();
         }
     }
 
@@ -1853,7 +1871,7 @@ public class QubeActivity extends AppCompatActivity
     }
 
     // Start VNC host if selected
-    public void startExternalVNC() {
+    public void startWithVNC() {
         if (QubeSettingsManager.getEnableExternalVNC(this)) {
             // VNC external connections
             QubeActivityCommon.promptVNCServer(this,
@@ -1870,6 +1888,7 @@ public class QubeActivity extends AppCompatActivity
                 && FileUtils.fileValid(getMachine().getHddImagePath())
                 && FileUtils.fileValid(getMachine().getFdaImagePath())
                 && FileUtils.fileValid(getMachine().getFdbImagePath())
+                && FileUtils.fileValid(getMachine().getUsbImagePath())
                 && FileUtils.fileValid(getMachine().getCdImagePath())
                 && FileUtils.fileValid(getMachine().getKernel())
                 && FileUtils.fileValid(getMachine().getInitRd());
@@ -1878,7 +1897,7 @@ public class QubeActivity extends AppCompatActivity
     private void onStopButton(boolean exitApp) {
         KeyboardUtils.hideKeyboard(this, mScrollView);
         if (MachineController.getInstance().isRunning()) {
-            if (getMachine() != null && getMachine().getRenderer() == 1)
+            if (isNoGraphic() || (getMachine() != null && getMachine().getRenderer() == 1))
                 QubeActivityCommon.promptStopVM(this, viewListener);
             else {
                 QubeQGEActivity.pendingStop = true;
@@ -1964,6 +1983,7 @@ public class QubeActivity extends AppCompatActivity
         mCD = findViewById(R.id.cdromimgval);
         mFDA = findViewById(R.id.floppyimgval);
         mFDB = findViewById(R.id.floppybimgval);
+        mUSB = findViewById(R.id.usbimgval);
         mCDOptions = findViewById(R.id.cdromoptions);
         if (!Config.enableEmulatedFloppy) {
             LinearLayout mFDALayout = findViewById(R.id.floppyimgl);
@@ -1974,9 +1994,11 @@ public class QubeActivity extends AppCompatActivity
         mCDenable = findViewById(R.id.cdromimgcheck);
         mFDAenable = findViewById(R.id.floppyimgcheck);
         mFDBenable = findViewById(R.id.floppybimgcheck);
+        mUSBenable = findViewById(R.id.usbimgcheck);
         mCDStr = findViewById(R.id.cdromimgstr);
         mFDAStr = findViewById(R.id.floppyimgstr);
         mFDBStr = findViewById(R.id.floppybimgstr);
+        mUSBStr = findViewById(R.id.usbimgstr);
 
         //bios
         mBiosType = findViewById(R.id.biostypeval);
@@ -2327,8 +2349,10 @@ public class QubeActivity extends AppCompatActivity
         if (clear || getMachine() == null || mMachine.getSelectedItemPosition() < 2)
             mUISectionSummary.setText("");
         else {
-            boolean isVNC = getMachine().getRenderer() == 1;
-            String text = getString(R.string.display) + ": " + (isVNC ? "VNC" : "QGE");
+            boolean headless = isNoGraphic();
+            boolean isVNC = !headless && getMachine().getRenderer() == 1;
+            String text = getString(R.string.display) + ": "
+                    + (headless ? "nographic" : (isVNC ? "VNC" : "QGE"));
             if (isVNC) {
                 text += ", " + getString(R.string.server);
                 text += ": " + NetworkUtils.getVNCAddress(this) + ":" + Config.defaultVNCPort;
@@ -2396,6 +2420,7 @@ public class QubeActivity extends AppCompatActivity
             String text = null;
 
             text = appendDriveFilename(getMachine().getCdImagePath(), text, getString(R.string.summary_cdrom), true);
+            text = appendDriveFilename(getMachine().getUsbImagePath(), text, getString(R.string.summary_usb), true);
             text = appendDriveFilename(getMachine().getFdaImagePath(), text, getString(R.string.summary_fda), true);
             text = appendDriveFilename(getMachine().getFdbImagePath(), text, getString(R.string.summary_fdb), true);
 
@@ -2562,6 +2587,7 @@ public class QubeActivity extends AppCompatActivity
 
         mFDAenable.setChecked(getMachine().getFdaImagePath() != null);
         mFDBenable.setChecked(getMachine().getFdbImagePath() != null);
+        mUSBenable.setChecked(getMachine().getUsbImagePath() != null);
         mCDenable.setChecked(getMachine().getCdImagePath() != null);
 
         changeStatus(MachineController.getInstance().getCurrStatus());
@@ -2617,6 +2643,9 @@ public class QubeActivity extends AppCompatActivity
         // Floppy
         seMachineDriveValue(FileType.FDA, getMachine().getFdaImagePath());
         seMachineDriveValue(FileType.FDB, getMachine().getFdbImagePath());
+
+        // USB drive
+        seMachineDriveValue(FileType.USB, getMachine().getUsbImagePath());
 
         // HDD
         seMachineDriveValue(FileType.HDA, getMachine().getHdaImagePath());
@@ -2992,6 +3021,7 @@ public class QubeActivity extends AppCompatActivity
         bootDevicesList.add("Hard Disk");
         if (Config.enableEmulatedFloppy)
             bootDevicesList.add("Floppy");
+        bootDevicesList.add("USB");
 
         String[] arraySpinner = bootDevicesList.toArray(new String[0]);
 
@@ -3337,6 +3367,7 @@ public class QubeActivity extends AppCompatActivity
             updateDrive(FileType.CDROM, getMachine().getCdImagePath());
             updateDrive(FileType.FDA, getMachine().getFdaImagePath());
             updateDrive(FileType.FDB, getMachine().getFdbImagePath());
+            updateDrive(FileType.USB, getMachine().getUsbImagePath());
             enableRemovableDiskListeners();
         }
     }
@@ -3387,6 +3418,7 @@ public class QubeActivity extends AppCompatActivity
         mCD.getAdapter().getCount();
         mFDA.getAdapter().getCount();
         mFDB.getAdapter().getCount();
+        mUSB.getAdapter().getCount();
         mKernel.getAdapter().getCount();
         mInitrd.getAdapter().getCount();
     }

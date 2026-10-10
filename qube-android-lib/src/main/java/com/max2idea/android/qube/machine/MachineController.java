@@ -131,6 +131,9 @@ public class MachineController {
             case FDB:
                 getMachine().setFdbImagePath(value);
                 break;
+            case USB:
+                getMachine().setUsbImagePath(value);
+                break;
             case SHARED_FOLDER:
                 getMachine().setSharedFolderPath(value);
                 break;
@@ -149,7 +152,9 @@ public class MachineController {
     }
 
     public boolean isVNCEnabled() {
-        return getMachineExecutor().getMachine().getEnableVNC() == 1;
+        Machine m = getMachineExecutor().getMachine();
+        // Headless never opens a VNC server, whatever the saved UI is
+        return m.getEnableVNC() == 1 && !Machine.isNoGraphic(m.getVga());
     }
 
     String start() {

@@ -27,7 +27,7 @@ import java.util.Observer;
 public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatabase, Observer {
     private static final String TAG = "MachineOpenHelper";
 
-    private static final int DATABASE_VERSION = 26;
+    private static final int DATABASE_VERSION = 27;
     private static final String DATABASE_NAME = "QUBE";
     private static final String MACHINE_TABLE_NAME = "machines";
 
@@ -38,7 +38,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             + " TEXT, " + MachineProperty.VGA.name() + " TEXT, " + MachineProperty.SOUNDCARD.name() + " TEXT, " + MachineProperty.HDCONFIG.name() + " TEXT, " + MachineProperty.DISABLE_ACPI.name()
             + " INTEGER, " + MachineProperty.DISABLE_HPET.name() + " INTEGER, " + MachineProperty.ENABLE_USBMOUSE.name() + " INTEGER, " + MachineProperty.STATUS.name() + " TEXT, "
             + MachineProperty.LAST_UPDATED.name() + " DATE, " + MachineProperty.KERNEL.name() + " INTEGER, " + MachineProperty.INITRD.name() + " TEXT, " + MachineProperty.APPEND.name() + " TEXT, " + MachineProperty.CPUNUM.name()
-            + " INTEGER, " + MachineProperty.MACHINETYPE.name() + " TEXT, " + MachineProperty.DISABLE_FD_BOOT_CHK.name() + " INTEGER, " + MachineProperty.SD.name() + " TEXT, " + MachineProperty.SHARED_FOLDER.name() + " TEXT, " + MachineProperty.SHARED_FOLDER_MODE.name() + " INTEGER, " + MachineProperty.EXTRA_PARAMS.name() + " TEXT, "
+            + " INTEGER, " + MachineProperty.MACHINETYPE.name() + " TEXT, " + MachineProperty.DISABLE_FD_BOOT_CHK.name() + " INTEGER, " + MachineProperty.SHARED_FOLDER.name() + " TEXT, " + MachineProperty.SHARED_FOLDER_MODE.name() + " INTEGER, " + MachineProperty.EXTRA_PARAMS.name() + " TEXT, "
             + MachineProperty.HOSTFWD.name() + " TEXT, " + MachineProperty.GUESTFWD.name() + " TEXT, " + MachineProperty.UI.name() + " TEXT, " + MachineProperty.DISABLE_TSC.name() + " INTEGER, "
             + MachineProperty.MOUSE.name() + " TEXT, " + MachineProperty.KEYBOARD.name() + " TEXT, " + MachineProperty.ENABLE_MTTCG.name() + " INTEGER, " + MachineProperty.ENABLE_KVM.name() + " INTEGER , "
             + MachineProperty.HDA_INTERFACE.name() + " TEXT, " + MachineProperty.HDB_INTERFACE.name() + " TEXT, " + MachineProperty.HDC_INTERFACE.name() + " TEXT, " + MachineProperty.HDD_INTERFACE.name() + " TEXT , "
@@ -49,7 +49,8 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             + MachineProperty.TCG_BUFFER.name() + " INTEGER, "
             + MachineProperty.DNS.name() + " TEXT, "
             + MachineProperty.SHARED_FOLDER_TYPE.name() + " TEXT, "
-            + MachineProperty.BOOT_MENU.name() + " INTEGER "
+            + MachineProperty.BOOT_MENU.name() + " INTEGER, "
+            + MachineProperty.USB.name() + " TEXT "
             + ");";
 
     private static MachineOpenHelper sInstance;
@@ -109,10 +110,6 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
 
         if (newVersion >= 8 && oldVersion <= 7) {
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.ARCH + " TEXT;");
-        }
-
-        if (newVersion >= 9 && oldVersion <= 8) {
-            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.SD + " TEXT;");
         }
 
 
@@ -178,6 +175,9 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         if (newVersion >= 26 && oldVersion <= 25) {
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.BOOT_MENU + " INTEGER;");
         }
+        if (newVersion >= 27 && oldVersion <= 26) {
+            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.USB + " TEXT;");
+        }
     }
 
     public synchronized int insertMachine(Machine machine) {
@@ -202,6 +202,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         stateValues.put(MachineProperty.CDROM_INTERFACE.name(), machine.getCDInterface());
         stateValues.put(MachineProperty.FDA.name(), machine.getFdaImagePath());
         stateValues.put(MachineProperty.FDB.name(), machine.getFdbImagePath());
+        stateValues.put(MachineProperty.USB.name(), machine.getUsbImagePath());
         stateValues.put(MachineProperty.SHARED_FOLDER.name(), machine.getSharedFolderPath());
         stateValues.put(MachineProperty.SHARED_FOLDER_MODE.name(), machine.getShared_folder_mode());
         stateValues.put(MachineProperty.SHARED_FOLDER_TYPE.name(), machine.getSharedFolderType());
@@ -291,12 +292,12 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
                 + MachineProperty.HDCONFIG + " , " + MachineProperty.DISABLE_ACPI + " , " + MachineProperty.DISABLE_HPET + " , "
                 + MachineProperty.ENABLE_USBMOUSE + " , " + MachineProperty.SNAPSHOT_NAME + " , " + MachineProperty.BOOT_CONFIG + " , " + MachineProperty.KERNEL
                 + " , " + MachineProperty.INITRD + " , " + MachineProperty.APPEND + " , " + MachineProperty.CPUNUM + " , " + MachineProperty.MACHINETYPE + " , "
-                + MachineProperty.DISABLE_FD_BOOT_CHK + " , " + MachineProperty.ARCH + " , " + MachineProperty.SD + " , "
+                + MachineProperty.DISABLE_FD_BOOT_CHK + " , " + MachineProperty.ARCH + " , "
                 + MachineProperty.SHARED_FOLDER + " , " + MachineProperty.SHARED_FOLDER_MODE + " , " + MachineProperty.EXTRA_PARAMS + " , "
                 + MachineProperty.HOSTFWD + " , " + MachineProperty.GUESTFWD + " , " + MachineProperty.UI + ", " + MachineProperty.DISABLE_TSC + ", "
                 + MachineProperty.MOUSE + ", " + MachineProperty.KEYBOARD + ", " + MachineProperty.ENABLE_MTTCG + ", " + MachineProperty.ENABLE_KVM + ", "
                 + MachineProperty.HDA_INTERFACE + ", " + MachineProperty.HDB_INTERFACE + ", " + MachineProperty.HDC_INTERFACE + ", " + MachineProperty.HDD_INTERFACE + ", "
-                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " , " + MachineProperty.BOOT_MENU + " "
+                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " , " + MachineProperty.BOOT_MENU + " , " + MachineProperty.USB + " "
                 + " from " + MACHINE_TABLE_NAME
                 + " where " + MachineProperty.STATUS + " = " + Config.STATUS_CREATED
                 + " and " + MachineProperty.MACHINE_NAME + "=\"" + machine + "\"" + ";";
@@ -343,33 +344,36 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             myMachine.setDisableFdBootChk(cur.getInt(25));
             myMachine.setArch(cur.getString(26));
 
-            myMachine.setSharedFolderPath(cur.getString(28));
+            myMachine.setSharedFolderPath(cur.getString(27));
             myMachine.setShared_folder_mode(1); //hard drives are always Read/Write
-            myMachine.setExtraParams(cur.getString(30));
-            myMachine.setHostFwd(cur.getString(31));
-            myMachine.setGuestFwd(cur.getString(32));
-            myMachine.setEnableVNC(cur.getString(33).equals("VNC") ? 1 : 0);
-            myMachine.setRenderer(cur.getString(33).equals("VNC") ? 1 : 0);
-            myMachine.setDisableTSC(cur.getInt(34));
-            myMachine.setMouse(cur.getString(35));
-            myMachine.setKeyboard(cur.getString(36));
-            myMachine.setEnableMTTCG(cur.getInt(37));
-            myMachine.setEnableKVM(cur.getInt(38));
-            myMachine.setHdaInterface(cur.getString(39));
-            myMachine.setHdbInterface(cur.getString(40));
-            myMachine.setHdcInterface(cur.getString(41));
-            myMachine.setHddInterface(cur.getString(42));
-            myMachine.setCdInterface(cur.getString(43));
-            myMachine.setPrio(cur.getInt(44));
-            myMachine.setEnableVenus(cur.getInt(45));
-            myMachine.setBios(cur.getString(46));
-            myMachine.setBiosType(cur.getString(47));
-            myMachine.setBiosCode(cur.getString(48));
-            myMachine.setBiosVars(cur.getString(49));
-            myMachine.setTcgBuffer(cur.getInt(50));
-            myMachine.setDns(cur.getString(51));
-            myMachine.setSharedFolderType(cur.getString(52));
-            myMachine.setBootMenu(cur.getInt(53));
+            myMachine.setExtraParams(cur.getString(29));
+            myMachine.setHostFwd(cur.getString(30));
+            myMachine.setGuestFwd(cur.getString(31));
+            myMachine.setEnableVNC(cur.getString(32).equals("VNC") ? 1 : 0);
+            myMachine.setRenderer(cur.getString(32).equals("VNC") ? 1 : 0);
+            myMachine.setDisableTSC(cur.getInt(33));
+            myMachine.setMouse(cur.getString(34));
+            myMachine.setKeyboard(cur.getString(35));
+            myMachine.setEnableMTTCG(cur.getInt(36));
+            myMachine.setEnableKVM(cur.getInt(37));
+            myMachine.setHdaInterface(cur.getString(38));
+            myMachine.setHdbInterface(cur.getString(39));
+            myMachine.setHdcInterface(cur.getString(40));
+            myMachine.setHddInterface(cur.getString(41));
+            myMachine.setCdInterface(cur.getString(42));
+            myMachine.setPrio(cur.getInt(43));
+            myMachine.setEnableVenus(cur.getInt(44));
+            myMachine.setBios(cur.getString(45));
+            myMachine.setBiosType(cur.getString(46));
+            myMachine.setBiosCode(cur.getString(47));
+            myMachine.setBiosVars(cur.getString(48));
+            myMachine.setTcgBuffer(cur.getInt(49));
+            myMachine.setDns(cur.getString(50));
+            myMachine.setSharedFolderType(cur.getString(51));
+            myMachine.setBootMenu(cur.getInt(52));
+            myMachine.setUsbImagePath(cur.getString(53));
+            if (myMachine.getUsbImagePath() != null)
+                myMachine.setEnableUSB(true);
         }
         cur.close();
 

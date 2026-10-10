@@ -17,10 +17,10 @@ public class Config {
     public static final int FILEMAN_RETURN_CODE = 1002;
 
     // Defining UEFI BIOS naming
-    public static final String UEFI_X86_CODE = "edk2-x86_64-code.fd";
-    public static final String UEFI_X86_VARS = "edk2-i386-vars.fd";
-    public static final String UEFI_ARM_CODE = "edk2-aarch64-code.fd";
-    public static final String UEFI_ARM_VARS = "edk2-arm-vars.fd";
+    public static final String UEFI_X86_CODE = "QUBE_x86_EFI.fd";
+    public static final String UEFI_X86_VARS = "QUBE_x86_VARS.fd";
+    public static final String UEFI_ARM_CODE = "QUBE_ARM_EFI.fd";
+    public static final String UEFI_ARM_VARS = "QUBE_ARM_VARS.fd";
 
     public static final int QGE_REQUEST_CODE = 1007;
     public static final int QGE_QUIT_RESULT_CODE = 1009;

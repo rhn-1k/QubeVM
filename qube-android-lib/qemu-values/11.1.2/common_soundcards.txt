@@ -4,4 +4,5 @@ adlib
 cs4231a
 gus
 es1370
-hda
+intel-hda
+ich9-intel-hda

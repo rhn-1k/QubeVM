@@ -67,6 +67,8 @@ public class ArchDefinitions {
         if (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64) {
             vgaValues.add("cirrus");
             vgaValues.add("vmware");
+            vgaValues.add("ati-vga");
+            vgaValues.add("bochs-display");
             vgaValues.add("isa-cirrus-vga");
             vgaValues.add("virtio-gpu-pci");
             vgaValues.add(GraphicsCapabilities.VIRTIO);
@@ -120,6 +122,10 @@ public class ArchDefinitions {
         arrList.add("ps2");
         arrList.add("usb-mouse");
         arrList.add("usb-tablet");
+        arrList.add("virtio-mouse-pci");
+        arrList.add("virtio-mouse-device");
+        arrList.add("virtio-tablet-pci");
+        arrList.add("virtio-tablet-device");
         return arrList;
     }
 

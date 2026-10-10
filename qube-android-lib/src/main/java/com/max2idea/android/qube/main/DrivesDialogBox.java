@@ -44,9 +44,11 @@ public class DrivesDialogBox implements Observer {
     public Spinner mCD;
     public Spinner mFDA;
     public Spinner mFDB;
+    public Spinner mUSB;
     public LinearLayout mCDLayout;
     public LinearLayout mFDALayout;
     public LinearLayout mFDBLayout;
+    public LinearLayout mUSBLayout;
     public FileType fileType;
     private Activity activity;
     private ViewListener viewListener;
@@ -104,12 +106,16 @@ public class DrivesDialogBox implements Observer {
         mFDB = (Spinner) dialog.findViewById(R.id.floppybimgval);
         mFDBLayout = dialog.findViewById(R.id.floppybimgl);
 
+        mUSB = (Spinner) dialog.findViewById(R.id.usbimgval);
+        mUSBLayout = dialog.findViewById(R.id.usbimgl);
+
     }
 
     private void setupListeners() {
         setupListener(mCD, MachineProperty.CDROM, FileType.CDROM);
         setupListener(mFDA, MachineProperty.FDA, FileType.FDA);
         setupListener(mFDB, MachineProperty.FDB, FileType.FDB);
+        setupListener(mUSB, MachineProperty.USB, FileType.USB);
     }
 
     private void setupListener(final Spinner spinner, final MachineProperty machineDrive,
@@ -186,6 +192,11 @@ public class DrivesDialogBox implements Observer {
                 } else {
                     mFDBLayout.setVisibility(View.GONE);
                 }
+                if (currMachine.isEnableUSB()) {
+                    populateDiskAdapter(mUSB, FileType.USB, false, currMachine.getUsbImagePath());
+                } else {
+                    mUSBLayout.setVisibility(View.GONE);
+                }
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     public void run() {
                         setupListeners();
@@ -208,6 +219,9 @@ public class DrivesDialogBox implements Observer {
         } else if (file != null && !file.trim().equals("") && fileType == FileType.FDB) {
             notifyFieldChange(MachineProperty.REMOVABLE_DRIVE, new Object[]{ MachineProperty.FDB, file});
             setSpinnerValue(mFDB, file);
+        } else if (file != null && !file.trim().equals("") && fileType == FileType.USB) {
+            notifyFieldChange(MachineProperty.REMOVABLE_DRIVE, new Object[]{ MachineProperty.USB, file});
+            setSpinnerValue(mUSB, file);
         }
     }
 
@@ -272,6 +286,10 @@ public class DrivesDialogBox implements Observer {
             case FDB:
                 if(value == null)
                     setDiskValue(mFDB, "");
+                break;
+            case USB:
+                if(value == null)
+                    setDiskValue(mUSB, "");
                 break;
         }
     }

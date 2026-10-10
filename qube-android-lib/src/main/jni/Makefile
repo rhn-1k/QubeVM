@@ -149,14 +149,6 @@ COPY_ROMS=-mkdir -p ../assets/roms && cp -rf ./qemu/pc-bios/*.rom \
 ./qemu/pc-bios/README \
 ../assets/roms/
 
-# Extract QEMU edk2 firmware for Android UEFI assets
-COPY_UEFI_X86=mkdir -p ../../../../qube-android-x86/src/main/assets/roms/ && \
-    bzip2 -dc ./qemu/pc-bios/edk2-x86_64-code.fd.bz2 > ../../../../qube-android-x86/src/main/assets/roms/edk2-x86_64-code.fd && \
-    bzip2 -dc ./qemu/pc-bios/edk2-i386-vars.fd.bz2 > ../../../../qube-android-x86/src/main/assets/roms/edk2-i386-vars.fd
-COPY_UEFI_ARM=mkdir -p ../../../../qube-android-arm/src/main/assets/roms/ && \
-    bzip2 -dc ./qemu/pc-bios/edk2-aarch64-code.fd.bz2 > ../../../../qube-android-arm/src/main/assets/roms/edk2-aarch64-code.fd && \
-    bzip2 -dc ./qemu/pc-bios/edk2-arm-vars.fd.bz2 > ../../../../qube-android-arm/src/main/assets/roms/edk2-arm-vars.fd
-
 COPY_KEYMAPS=cp -rf ./qemu/pc-bios/keymaps ../assets/roms/
 COPY_QEMU_VERSION=cp -f ./qemu/VERSION ../assets/QEMU_VERSION
 COPY_RESOLV_CONF=mkdir -p ../assets/roms/etc/ && printf "nameserver 1.1.1.1\n\n" > ../assets/roms/etc/resolv.conf
@@ -475,10 +467,8 @@ install:
 	make install-common
 	$(SYNC_LIBS_X86)
 	$(COPY_ASSETS_X86)
-	$(COPY_UEFI_X86)
 	$(SYNC_LIBS_ARM)
 	$(COPY_ASSETS_ARM)
-	$(COPY_UEFI_ARM)
 	$(SYNC_LIBS_PPC)
 	$(COPY_ASSETS_PPC)
 	$(SYNC_LIBS_M68K)

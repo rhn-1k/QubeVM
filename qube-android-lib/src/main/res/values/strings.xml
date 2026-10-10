@@ -230,6 +230,7 @@
     <string name="cdrom_label">CDROM</string>
     <string name="floppy_a_label">Floppy A</string>
     <string name="floppy_b_label">Floppy B</string>
+    <string name="usb_label">USB Drive</string>
 
     <!-- BIOS section -->
     <string name="section_bios">BIOS</string>
@@ -322,6 +323,7 @@
     <string name="summary_cdrom">CDROM</string>
     <string name="summary_fda">FDA</string>
     <string name="summary_fdb">FDB</string>
+    <string name="summary_usb">USB</string>
     <string name="summary_boot_from">Boot from</string>
     <string name="summary_kernel">kernel</string>
     <string name="summary_initrd">initrd</string>

@@ -44,6 +44,7 @@ class VMExecutor extends MachineExecutor {
     private static final String cdDeviceName = "ide1-cd0";
     private static final String fdaDeviceName = "floppy0";
     private static final String fdbDeviceName = "floppy1";
+    private static final String usbDeviceName = "usb-drive0";
     private static final String SHARED_FOLDER_FSDEV_ID = "sharedfolder0";
     private static final String SHARED_FOLDER_MOUNT_TAG = "hostshare";
     private static final String DEFAULT_UEFI = "Default";
@@ -123,7 +124,8 @@ class VMExecutor extends MachineExecutor {
     }
 
     private void addUIOptions(Context context, ArrayList<String> paramsList) {
-        if (Machine.isNoGraphic(getMachine().getVga())) {
+        boolean headless = Machine.isNoGraphic(getMachine().getVga());
+        if (headless) {
             // Headless, no display backend and no VNC server to open
         } else if (getMachine().getRenderer() == 1) {
             paramsList.add("-vnc");
@@ -139,21 +141,38 @@ class VMExecutor extends MachineExecutor {
             paramsList.add("qube-qge");
         }
 
-        if (getMachine().getKeyboard() != null) {
+        // The keyboard layout only matters with a display
+        if (!headless && getMachine().getKeyboard() != null) {
             paramsList.add("-k");
             paramsList.add(getMachine().getKeyboard());
         }
 
-        if (getMachine().getMouse() != null && !getMachine().getMouse().equals("ps2")) {
-            // Arm needs specific usb type to allow usb-tablet
-            if (QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64) {
+        boolean isArm = QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64;
+        String mouse = getMachine().getMouse();
+        boolean usbMouse = mouse != null && mouse.startsWith("usb-");
+
+        // Arm has no ps2 keyboard, so it needs usb-kbd, which in turn needs a usb controller
+        boolean usbKbd = isArm;
+
+        if (usbMouse || usbKbd) {
+            // Arm needs specific usb type to allow usb-tablet and usb-kbd
+            if (isArm) {
                 paramsList.add("-device");
                 paramsList.add("qemu-xhci");
             }
 
             paramsList.add("-usb");
+        }
+
+        if (usbKbd) {
             paramsList.add("-device");
-            paramsList.add(getMachine().getMouse());
+            paramsList.add("usb-kbd");
+        }
+
+        if (mouse != null && !mouse.equals("ps2")) {
+            // virtio input devices don't need the USB controller
+            paramsList.add("-device");
+            paramsList.add(mouse);
         }
     }
 
@@ -174,10 +193,11 @@ class VMExecutor extends MachineExecutor {
         paramsList.add("-audiodev");
         paramsList.add("qube,id=qube-audio-out");
 
-        if (soundCard.toLowerCase().equals("hda")) {
+        if (soundCard.toLowerCase().endsWith("intel-hda")) {
+            // intel-hda and ich9-intel-hda are only controllers, they need a codec
             // Use hda-output (not duplex/micro) since our audiodev is output only
             paramsList.add("-device");
-            paramsList.add("intel-hda");
+            paramsList.add(soundCard);
             paramsList.add("-device");
             paramsList.add("hda-output,audiodev=qube-audio-out");
         } else {
@@ -377,7 +397,7 @@ class VMExecutor extends MachineExecutor {
     }
 
     private void addGraphicsOptions(Context context, ArrayList<String> paramsList) {
-        // We don't pass graphics values for m68k because every machine has it's own
+        // We don't pass graphics values for m68k because every machine has it's own video card
         if (QubeApplication.arch == Config.Arch.m68k) {
             return;
         }
@@ -388,9 +408,6 @@ class VMExecutor extends MachineExecutor {
             } else if (vga.equals("nographic")) {
                 paramsList.add("-nographic");
             } else if (GraphicsCapabilities.isDeviceBackedGpu(vga)) {
-                // -vga lacks the virtio-gpu-* variants
-                // These must use -device instead
-
                 // q35 machine auto-adds default VGA, stealing it from our GL device
                 // so we set -vga none to prevent it from choosing
                 paramsList.add("-vga");
@@ -572,8 +589,21 @@ class VMExecutor extends MachineExecutor {
     public void addHardDisk(ArrayList<String> paramsList, String imagePath, int index, String hdInterface) {
         if (imagePath != null && !imagePath.trim().equals("")) {
             String cache = QubeSettingsManager.getDiskCache(QubeApplication.getInstance());
+            if ("ahci".equals(hdInterface) || "nvme".equals(hdInterface)) {
+                String driveId = "hd" + index;
+                addNoneDrive(paramsList, driveId, "disk", imagePath, cache);
+                if ("ahci".equals(hdInterface)) {
+                    addAhciController(paramsList);
+                    paramsList.add("-device");
+                    paramsList.add("ide-hd,drive=" + driveId + ",bus=" + AHCI_ID + "." + index);
+                } else {
+                    paramsList.add("-device");
+                    paramsList.add("nvme,drive=" + driveId + ",serial=qubenvme" + index);
+                }
+                return;
+            }
             if ("piix3-ide".equals(hdInterface) || "piix4-ide".equals(hdInterface)) {
-                // XXX: piix3-ide / piix4-ide are devices, not valid "-drive if=" values
+                // XXX: piix3-ide and piix4-ide are devices, not "-drive" values
                 String ctrlId = "qubeide_" + hdInterface.replace("-", "_");
                 if (!paramsList.contains(hdInterface + ",id=" + ctrlId)) {
                     paramsList.add("-device");
@@ -588,9 +618,7 @@ class VMExecutor extends MachineExecutor {
                     param += ",cache=" + cache;
                 paramsList.add(param);
                 paramsList.add("-device");
-                paramsList.add("ide-hd,drive=" + driveId
-                        + ",bus=" + ctrlId + "." + (index / 2)
-                        + ",unit=" + (index % 2));
+                paramsList.add("ide-hd,drive=" + driveId + ",bus=" + ctrlId + "." + (index / 2) + ",unit=" + (index % 2));
                 return;
             }
             paramsList.add("-drive");
@@ -605,6 +633,37 @@ class VMExecutor extends MachineExecutor {
                 param += ",cache=" + cache;
             paramsList.add(param);
         }
+    }
+
+    private static final String AHCI_ID = "qubeahci";
+
+    private void addAhciController(ArrayList<String> paramsList) {
+        String dev = "ich9-ahci,id=" + AHCI_ID;
+        if (!paramsList.contains(dev)) {
+            paramsList.add("-device");
+            paramsList.add(dev);
+        }
+    }
+
+    private static final String USB_ID = "qubeusb";
+
+    private void addUsbController(ArrayList<String> paramsList) {
+        String dev = "qemu-xhci,id=" + USB_ID;
+        if (!paramsList.contains(dev)) {
+            paramsList.add("-device");
+            paramsList.add(dev);
+        }
+    }
+
+    // Backend only, the caller attaches it to a device
+    private void addNoneDrive(ArrayList<String> paramsList, String id, String media, String imagePath, String cache) {
+        String param = "if=none,id=" + id + ",media=" + media;
+        if (!imagePath.equals(""))
+            param += ",file=" + qemuOpt(imagePath);
+        if (cache != null && !cache.equals("default"))
+            param += ",cache=" + cache;
+        paramsList.add("-drive");
+        paramsList.add(param);
     }
 
     public void addSharedFolder(ArrayList<String> paramsList, String sharedFolderPath) {
@@ -665,7 +724,12 @@ class VMExecutor extends MachineExecutor {
         String cdImagePath = getDriveFilePath(getMachine().getCdImagePath());
         if (cdImagePath != null) {
             String cdInterface = getMachine().getCDInterface();
-            if ("piix3-ide".equals(cdInterface) || "piix4-ide".equals(cdInterface)) {
+            if ("ahci".equals(cdInterface)) {
+                addNoneDrive(paramsList, cdDeviceName, "cdrom", cdImagePath, null);
+                addAhciController(paramsList);
+                paramsList.add("-device");
+                paramsList.add("ide-cd,drive=" + cdDeviceName + ",bus=" + AHCI_ID + ".4");
+            } else if ("piix3-ide".equals(cdInterface) || "piix4-ide".equals(cdInterface)) {
                 String ctrlId = "qubeide_" + cdInterface.replace("-", "_");
                 if (!paramsList.contains(cdInterface + ",id=" + ctrlId)) {
                     paramsList.add("-device");
@@ -711,6 +775,19 @@ class VMExecutor extends MachineExecutor {
                 param += ",file=" + qemuOpt(fdbImagePath);
             }
             paramsList.add(param);
+        }
+
+        // USB drive is a removable usb-storage disk, so it can be empty and swapped over QMP
+        String usbImagePath = getDriveFilePath(getMachine().getUsbImagePath());
+        if (usbImagePath != null) {
+            addNoneDrive(paramsList, usbDeviceName, "disk", usbImagePath, null);
+            addUsbController(paramsList);
+            String usbDevice = "usb-storage,drive=" + usbDeviceName + ",bus=" + USB_ID + ".0,removable=on";
+            // -boot order has no letter for USB (and is ignored on arm), so boot order uses bootindex
+            if ("USB".equals(getMachine().getBootDevice()))
+                usbDevice += ",bootindex=0";
+            paramsList.add("-device");
+            paramsList.add(usbDevice);
         }
     }
 
@@ -794,6 +871,8 @@ class VMExecutor extends MachineExecutor {
                 return fdaDeviceName;
             case FDB:
                 return fdbDeviceName;
+            case USB:
+                return usbDeviceName;
         }
         return null;
     }

@@ -53,11 +53,11 @@ public class Machine extends Observable {
     private boolean enableCDROM;
     private boolean enableFDA;
     private boolean enableFDB;
-    private boolean enableSD;
+    private boolean enableUSB;
     private String cdImagePath;
     private String fdaImagePath;
     private String fdbImagePath;
-    private String sdImagePath;
+    private String usbImagePath;
     private String cdInterface = "ide";
     // Default Settings
     private String bootDevice = "Default";
@@ -441,17 +441,28 @@ public class Machine extends Observable {
 
     }
 
-    public boolean isEnableSD() {
-        return enableSD;
+    public boolean isEnableUSB() {
+        return enableUSB;
     }
 
-    void setEnableSD(boolean enableSD) {
-        if (this.enableSD != enableSD) {
-            this.enableSD = enableSD;
+    void setEnableUSB(boolean enableUSB) {
+        if (this.enableUSB != enableUSB) {
+            this.enableUSB = enableUSB;
             setChanged();
-            notifyChanged(MachineProperty.OTHER, enableSD);
+            notifyChanged(MachineProperty.OTHER, enableUSB);
         }
+    }
 
+    public String getUsbImagePath() {
+        return usbImagePath;
+    }
+
+    void setUsbImagePath(String usbImagePath) {
+        if (this.usbImagePath == null || !this.usbImagePath.equals(usbImagePath)) {
+            this.usbImagePath = usbImagePath;
+            setChanged();
+            notifyChanged(MachineProperty.USB, usbImagePath);
+        }
     }
 
     public String getCdImagePath() {
@@ -694,7 +705,7 @@ public class Machine extends Observable {
     }
 
     public boolean hasRemovableDevices() {
-        return enableCDROM || enableFDA || enableFDB || enableSD;
+        return enableCDROM || enableFDA || enableFDB || enableUSB;
     }
 
     // nographic means headless, so no display, no QGE and no VNC
@@ -714,6 +725,7 @@ public class Machine extends Observable {
             cpu = "Default";
             vga = "ramfb";
             biosType = "UEFI";
+            mouse = "usb-mouse";
         } else if (QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64) {
             arch = "PPC";
             machineType = "Default";
@@ -814,7 +826,7 @@ public class Machine extends Observable {
     }
 
     public enum FileType {
-        CDROM, FDA, FDB, SD,
+        CDROM, FDA, FDB, USB,
         HDA, HDB, HDC, HDD, SHARED_DIR,
         KERNEL, INITRD, BIOS, BIOS_CODE, BIOS_VARS,
         IMAGE_DIR, LOG_DIR

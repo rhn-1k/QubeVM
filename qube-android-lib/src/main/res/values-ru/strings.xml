@@ -229,6 +229,7 @@
     <string name="cdrom_label">CDROM</string>
     <string name="floppy_a_label">Дискета A</string>
     <string name="floppy_b_label">Дискета B</string>
+    <string name="usb_label">USB-накопитель</string>
 
     <!-- BIOS section -->
     <string name="section_bios">BIOS</string>
@@ -321,6 +322,7 @@
     <string name="summary_cdrom">CDROM</string>
     <string name="summary_fda">FDA</string>
     <string name="summary_fdb">FDB</string>
+    <string name="summary_usb">USB</string>
     <string name="summary_boot_from">Загрузка с</string>
     <string name="summary_kernel">ядро</string>
     <string name="summary_initrd">initrd</string>

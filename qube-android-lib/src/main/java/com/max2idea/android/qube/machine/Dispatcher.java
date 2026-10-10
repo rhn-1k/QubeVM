@@ -180,9 +180,9 @@ public final class Dispatcher implements ViewListener {
                 MachineController.getInstance().changeRemovableDevice(diskFileType, drivePath);
                 MachineFilePaths.insertRecentFilePath(Machine.FileType.FDB, drivePath);
                 break;
-            case SD:
+            case USB:
                 MachineController.getInstance().changeRemovableDevice(diskFileType, drivePath);
-                MachineFilePaths.insertRecentFilePath(Machine.FileType.SD, drivePath);
+                MachineFilePaths.insertRecentFilePath(Machine.FileType.USB, drivePath);
                 break;
             case BIOS:
                 machine.setBios(drivePath);
@@ -221,8 +221,8 @@ public final class Dispatcher implements ViewListener {
             case FDB:
                 machine.setEnableFDB(isChecked);
                 break;
-            case SD:
-                machine.setEnableSD(isChecked);
+            case USB:
+                machine.setEnableUSB(isChecked);
                 break;
             default:
                 break;
@@ -308,8 +308,8 @@ public final class Dispatcher implements ViewListener {
                 return machine.isEnableFDA();
             case FDB:
                 return machine.isEnableFDB();
-            case SD:
-                return machine.isEnableSD();
+            case USB:
+                return machine.isEnableUSB();
             default:
                 return true;
         }

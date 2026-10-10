@@ -336,7 +336,7 @@ See qube-android-lib/src/main/assets/CHANGELOG for release notes
 11. License
 
 QubeVM Emulator is released under GPL v3 License.
-All icons under /res are from the Material 3 Project
+Some icons under /res are from the Material 3 Project
 See file COPYING under root directory
 and LICENSE under qube-android-lib/src/main/assets
 

@@ -20,12 +20,12 @@ operating system for usability as well as performance.
 
 QubeVM is built for the following types of Android devices:
 
-**ARM 32 and 64 bit devices**
+**ARM 64 bit devices**
 This should include most Android phones and tablets including desktop
 enabled devices like Samsung Dex capable devices as well as laptops
-running Chrome OS on ARM.
+running Chrome OS or Aluminum OS on ARM.
 
-**Intel x86 32/64 bit devices**
+**Intel x86 64 bit devices**
 This should include older Android phones running on x86 cpus like Asus
 Zenfone and laptops running Android x86 or Chromium OS.
 
@@ -49,11 +49,11 @@ ARM 32 and 64bit
 You can run various operating systems for ARM CPUs, including boards
 like Raspberry Pi.
 
-**SPARC**
-You can boot and run many older operating systems.
-
 **PowerPC**
 You can run various operating systems for PowerPC.
+
+**m68k**
+You can run various operating systems for m68k.
 
 **Note for developers:**
 Similarly if you would like to try another guest architecture that is
@@ -68,15 +68,15 @@ files need to be modified.
 
 QubeVM emulation for the following device families via its front end:
 
-- **[Board](board.md)**: CPU, RAM Memory (up to 8 GB), TCG
+- **[Board](board.md)**: CPU, RAM Memory (up to 12 GB), TCG
   acceleration single and multithreaded, KVM acceleration, TSC, ACPI,
   HPET.
-- **[Disk Drives](video-audio-network.md)**: IDE/SCSI up to 4 HDC
+- **[Disk Drives](video-audio-network.md)**: IDE/ up to 4 HDC
   cannot be used if CDROM is attached, CD ROM (1 IDE slot), Floppy
   Drives (up to 2), SD Card (only image files, does NOT bridge to
   Android external SD Card, only works for some emulators)
 - **[Graphics](video-audio-network.md)**: (standard, SVGA cirrus, SVGA
-  VM Ware, sg3 for SPARC)
+  VM Ware, virtio cards for each arch, and more.)
 - **[Audio](video-audio-network.md)**: (only suport under QGE
   interface)
 - **[Network](video-audio-network.md)**: (User mode for NAT network,

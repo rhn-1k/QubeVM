@@ -23,14 +23,16 @@ Super VGA adapter emulation should provide larger resolution and more
 colors within the guest. Make sure you have the appropriate drivers if
 you are install other operating systems.
 
+**isa-cirrus-vga**
+An ISA-bus variant of the Cirrus Logic VGA adapter, available on x86 and PowerPC guests.
+
 **VMWare**
 This is an SVGA type emulation by VMWare that usually have optimized
 performance with the VMWare Tools installed within the guest (not
 supported).
 
-**cg3 (Creator graphics card)**
-This is the standard graphics card emulated by the SPARC emulator (not
-available for other emulators)
+**bochs-display**
+A VGA-compatible display adapter available on x86 and PowerPC guests.
 
 **virtio with gl (Virgl 3D acceleration)**
 Paravirtual graphics card with GPU-accelerated 3D via Virgl. Guest OpenGL

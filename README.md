@@ -66,7 +66,7 @@ Any and all donations are appreciated.
 **(USDC on Arc)** `0x3A6179c7369f6CE578b795B90Cc834136824F9ec`
 
 ## License
-The QubeVM project is licensed under the **GPL-3.0**
+This project is licensed under the **GPL-3.0**
 See [COPYING](COPYING) for more info
 
 ## Credits

@@ -45,14 +45,6 @@ QubeVM can use the following virtual image types for reading and writing:
 
 ------------------------------------------------------------------------
 
-## File Access After Import
-
-If you have just imported one or more virtual machines from an older version of QubeVM or from another Android device, you might not have immediate access to the image files. This is due to Android file permissions. If an error occurs while starting the virtual machine, re-select the image file from the drive drop-down list by choosing **Open**. This additional step may be needed for both hard disk files and removable-drive images.
-
-We recommend reopening and selecting the hard disk image and ISO files after importing a virtual machine to ensure that QubeVM has the required access.
-
-------------------------------------------------------------------------
-
 ## Shared Folder
 
 Shared Folder support is available again in QubeVM. You can use the shared folder to exchange files between your Android device and your virtual machine. To learn more, go to **[Share Files](share-files.md)**.

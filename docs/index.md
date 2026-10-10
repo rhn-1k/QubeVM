@@ -6,7 +6,6 @@ read the tutorials to know more on how to make QubeVM work
 better on your Android device.
 
 Releases are not scheduled but don't be discouraged we listen to your
-feedback and always make our goal to improve QubeVM. Join our Telegram
-group to let us know what we can do better.
+feedback and always make our goal to improve QubeVM. Join our discord server to let us know what we can do better.
 
 [TUTORIALS](tutorials.md)

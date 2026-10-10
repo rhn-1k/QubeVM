@@ -111,19 +111,18 @@ device volume press on the menu item that looks like a soundcard on the
 QubeVM toolbar and use the slider on the popup window to change the
 device audio volume.
 
-## **Key Mapper**
+## **Virtual Keys**
 
-QubeVM provides a new feature called Key Mapper for QGE that provides a
+QubeVM provides a feature called Virtual Keys for QGE that provides a
 tiled-layout keymap that you can customize with keyboard keys and mouse
-buttons. This is a great feature that lets you creating your own game
-controller keypad if you want to use with games.
+buttons.
 
 **Instructions**
 Start you virtual machine using QGE interface.
-Bring up the Key Mapper under edit mode by tapping on the option "Toggle
-Key Mapper" from the menu.
-To create a new Mapper press on the "**+**" button.
-Give a name to your new Key Mapper.
+Bring up the Virtual Keys under edit mode by tapping on the option "Toggle
+Virtual Keys" from the menu.
+To create a new Virtual Keys layout press on the "**+**" button.
+Give a name to your new Virtual Keys layout.
 Now you can assign key and mouse buttons to the tiled layout that appear
 on your screen.
 Press on a tile to highlight it and then press a key from your virtual
@@ -141,12 +140,12 @@ of 6 keys and/or buttons.
 To clear a key press on the "**x**" button from the menu.
 If you want the action to repeat for a tile you can press on the
 Rotation button.
-To use the Key Mapper you just created and set up press the Checkmark
+To use the Virtual Keys layout you just created and set up press the Checkmark
 button.
-If you want to delete a Key Mapper press the trash bin button.
-To select a Key Mapper use the scroll list and press on the name of the
-Key Mapper you want to use/edit.
-To rename a Key Mapper press on the white strip containing the name and
+If you want to delete a Virtual Keys layout press the trash bin button.
+To select a Virtual Keys layout use the scroll list and press on the name of the
+Virtual Keys layout you want to use/edit.
+To rename a Virtual Keys layout press on the white strip containing the name and
 type the new name.
 
 ------------------------------------------------------------------------

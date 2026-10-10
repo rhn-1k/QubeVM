@@ -28,7 +28,7 @@ experience problems choose Default or qemu32 if the operating system is
 made for x86 32 bit architecture or qemu64 if the guest architecture is
 made for x86 64 bit architecture. Some operating systems are only made
 for x86 64bit CPUs and should inform you during boot up that they
-require a 64 bit processor. For PowerPC, SPARC, and ARM emulators you
+require a 64 bit processor. For PowerPC, m68k, and ARM emulators you
 need to specify the combination of CPU and Board your operating system
 is made for otherwise it won't boot up.
 

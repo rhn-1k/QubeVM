@@ -10,8 +10,7 @@ import urllib.request
 
 XKB_URL = "https://raw.githubusercontent.com/xkbcommon/libxkbcommon/master/include/xkbcommon/xkbcommon-keysyms.h"
 QEMU_URL = "https://raw.githubusercontent.com/qemu/qemu/v%s/ui/vnc_keysym.h"
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "qube-android-lib", "src", "main",
-                   "java", "com", "max2idea", "android", "qube", "keyboard", "UnicodeKeysyms.java")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "qube-android-lib", "src", "main", "java", "com", "max2idea", "android", "qube", "keyboard", "UnicodeKeysyms.java")
 
 TEMPLATE = """/*
 Copyright (C) Rhn 2026

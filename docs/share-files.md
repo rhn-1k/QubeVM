@@ -2,9 +2,9 @@
 
 ## Share Files
 
-QubeVM has a three ways of sharing your device files
+QubeVM has three ways of sharing your device files:
 
-1. **Shared Folder** this is the default option and it uses QEMU VVFAT, can be used in `Disks` section.
+1. **Shared Folder** this uses QEMU VVFAT by default, but also supports VirtIO-9P as an alternative interface. You can choose between them in the `Disks` section.
 
 2. **Shared Folder Server** that shares your Android Downloads
 folder with the guest over HTTP, no extra apps or network setup
@@ -12,15 +12,30 @@ required.
 
 3. **ISO images** creating iso images and mounting them to the virtual machine
 
+To switch between the Shared Folder interfaces (VVFAT and VirtIO-9P), click on the **Shared Folder icon** in the toolbar.
+
 ------------------------------------------------------------------------
 
 ## Shared Folder
 
-QubeVM adds your shared folder as a drive to make the operating system detect it as a hard drive
+QubeVM adds your shared folder as a drive to make the operating system detect it as a hard drive.
 
-## Limitations of Shared Folder
+There are two interfaces you can choose between:
+
+- **VVFAT** - the default option, works with all guests including Windows.
+- **VirtIO-9P** - a paravirtualized file system that provides better performance and live file sharing, but it is only supported by Linux guests (Windows guests do not support it).
+
+## Limitations of Shared Folder (VVFAT)
 1. The shared folder is limited on 500mb size, more than 500mb can make the virtual machine unbootable
 2. The Shared Folder doesn't support live updates for files when changes occur on the host's side, which means you should restart the whole VM to see the changes, this is a QEMU limitation for the VVFAT device and we can't do anything about it.
+
+## VirtIO-9P
+VirtIO-9P is a paravirtualized file system that allows the guest to access
+a shared folder with better performance and live updates (changes on the
+host are reflected immediately in the guest).
+
+**Note:** VirtIO-9P only works with **Linux guests**. Windows guests do
+not support this device, so for Windows you should use the VVFAT interface instead.
 
 ## Shared Folder Server
 
@@ -64,6 +79,6 @@ your Android filesystem but that could be a good thing. To be able to
 add Android files to ISO images download and
 install **[ISOCraft](https://play.google.com/store/apps/details?id=com.pb.android.isocraft)** from
 the Play Store, it even supports large files that would normally fit in
-a DVD size disk..
+a DVD size disk.
 
 [TUTORIALS](tutorials.md)

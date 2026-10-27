@@ -32,7 +32,7 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
         }
     }
     lint {
@@ -46,13 +46,16 @@ android {
         }
     }
 
-    // Naming apk on host ABI(s) the native libs were built for
-    // if not found, name the apk to unknown
-    def hostArch = new File(projectDir, 'src/main/jniLibs').list()?.sort()?.join('+') ?: 'unknown'
+}
 
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            outputFileName = "qube-sparc-q${rootProject.ext.qemuVersion}-android-${hostArch}-${variant.buildType.name}.apk"
+// Naming apk on host ABI(s) the native libs were built for
+// if not found, name the apk to unknown
+def hostArch = new File(projectDir, 'src/main/jniLibs').list()?.sort()?.join('+') ?: 'unknown'
+
+androidComponents {
+    onVariants(selector()) { variant ->
+        variant.outputs.each { output ->
+            output.outputFileName.set("qube-sparc-q${rootProject.ext.qemuVersion}-android-${hostArch}-${variant.buildType}.apk")
         }
     }
 }
@@ -61,7 +64,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0-rc01'
+    implementation 'com.google.android.material:material:1.14.0'
 
     implementation project(':qube-android-lib')
 }

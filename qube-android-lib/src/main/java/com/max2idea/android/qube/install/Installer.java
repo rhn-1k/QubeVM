@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.loadingindicator.LoadingIndicator;
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileInstaller;
 import com.max2idea.android.qube.toast.ToastUtils;
@@ -60,8 +60,7 @@ public class Installer extends AsyncTask<Void, Void, Void> {
             public void run() {
                 int pad = (int) (24 * activity.getResources().getDisplayMetrics().density);
 
-                CircularProgressIndicator progressIndicator = new CircularProgressIndicator(activity);
-                progressIndicator.setIndeterminate(true);
+                LoadingIndicator progressIndicator = new LoadingIndicator(activity);
 
                 TextView messageView = new TextView(activity);
                 messageView.setText(activity.getString(R.string.InstallingBIOS));

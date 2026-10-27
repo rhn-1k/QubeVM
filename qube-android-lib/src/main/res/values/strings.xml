@@ -90,6 +90,15 @@
     <string name="ViewLog">View Log</string>
     <string name="Changelog">Changelog</string>
     <string name="License">License</string>
+    <string name="About">About</string>
+    <string name="app_version_format">Version %1$s</string>
+    <string name="about_engine">Based on QEMU %1$s</string>
+    <string name="about_independent">QubeVM is a community maintained version of the Limbo PC Emulator project which is based on QEMU</string>
+    <string name="about_community">Community</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_discord">Discord</string>
+    <string name="version_unknown">Unknown</string>
+    <string name="could_not_open_link">No app is available to open this link.</string>
     <string name="Exit">Exit</string>
     <string name="TapDeviceFound">TAP Device found</string>
     <string name="tunDeviceWarning">Warning! Make sure device /dev/net/tun has appropriate permissions\nUser ID</string>

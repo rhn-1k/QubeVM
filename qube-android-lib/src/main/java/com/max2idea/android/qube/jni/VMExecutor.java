@@ -99,6 +99,8 @@ class VMExecutor extends MachineExecutor {
                 return "libqemu-system-ppc.so";
             case ppc64:
                 return "libqemu-system-ppc64.so";
+            case sparc:
+                return "libqemu-system-sparc.so";
             case m68k:
                 return "libqemu-system-m68k.so";
             default:

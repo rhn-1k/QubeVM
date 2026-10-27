@@ -10,16 +10,15 @@
         android:id="@+id/virtual_keys_top_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:backgroundTint="@color/toolbarBackgroundTint"
-        android:backgroundTintMode="multiply">
+        android:background="@android:color/transparent">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:titleTextColor="@android:color/white" />
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            style="@style/Widget.Material3.Toolbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -74,6 +73,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_key_btn"
             style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="true"
@@ -94,6 +94,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/move_up_btn"
                 style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -108,6 +109,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/move_down_btn"
                 style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -123,6 +125,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/delete_btn"
             style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="true"
@@ -145,7 +148,7 @@
 
         <Button
             android:id="@+id/cancel_btn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.Material3Expressive.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"

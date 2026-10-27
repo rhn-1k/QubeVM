@@ -2,6 +2,7 @@
 <com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Material3.Button.IconButton.Filled"
+    app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium"
     android:layout_width="48dp"
     android:layout_height="48dp"
     android:layout_margin="4dp"

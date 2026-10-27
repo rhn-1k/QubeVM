@@ -14,9 +14,8 @@ public class QubeEmuActivity extends QubeActivity {
         QubeApplication.arch = Config.Arch.m68k;
         Config.clientClass = this.getClass();
         Config.enableKVM = false;
-        //XXX: m68k audio isn't ready (yet)
         Config.enableMTTCG = false;
-        Config.enableQGESound = false;
+        Config.enableQGESound = true;
         Config.machineFolder = Config.machineFolder + "other/m68k_machines/";
         super.onCreate(bundle);
         Logger.setupLogFile("/qube/qube-m68k-log.txt");

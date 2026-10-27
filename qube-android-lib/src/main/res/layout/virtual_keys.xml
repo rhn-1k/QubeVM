@@ -6,9 +6,9 @@
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="4dp"
-    android:background="?colorSurface"
-    android:backgroundTint="#cfff"
-    android:backgroundTintMode="multiply"
+    android:background="@drawable/bg_virtual_keys"
+    android:clipToOutline="true"
+    android:clipToPadding="false"
     android:scrollbars="none"
     android:visibility="gone">
 

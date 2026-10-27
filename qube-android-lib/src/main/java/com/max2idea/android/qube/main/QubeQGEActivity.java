@@ -745,9 +745,9 @@ public class QubeQGEActivity extends AppCompatActivity
         mSurface = new QubeQGESurface(this, this);
 
         setContentView(R.layout.qube_qge);
-        RelativeLayout mLayout = findViewById(R.id.vnc_layout);
+        RelativeLayout mLayout = findViewById(R.id.qge_layout);
 
-        RelativeLayout mVncContainer = findViewById(R.id.vnc);
+        RelativeLayout mVncContainer = findViewById(R.id.qge);
         mVncContainer.addView(mSurface);
 
         mGap = findViewById(R.id.gap);

@@ -66,6 +66,11 @@ public class Config {
     public static final String newVersionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
     public static final String discordLink = "https://discord.gg/MrbJ9QNXNJ";
 
+    // ???
+    public static final int SOMETHING_TAPS = 5;
+    public static final long SOMETHING_WINDOW_MS = 1000;
+    public static final String SOMETHING_URL = "https://youtu.be/dQw4w9WgXcQ?si=wj7g8HBsPx6dlkiM";
+
     public static final boolean enableMouseOption = true;
 
     // Debug

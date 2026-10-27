@@ -111,6 +111,7 @@ public class QubeActivity extends AppCompatActivity
     private static final int CREATE = 9;
     private static final int SETTINGS = 13;
     private static final int TOOLS = 14;
+    private static final int ABOUT = 15;
     private static final int POST_NOTIFICATIONS_REQUEST = 16;
 
     // TCG Buffer
@@ -2010,6 +2011,7 @@ public class QubeActivity extends AppCompatActivity
         // UEFI isn't available for some architectures
         if (QubeApplication.arch == Config.Arch.ppc
                 || QubeApplication.arch == Config.Arch.ppc64
+                || QubeApplication.arch == Config.Arch.sparc
                 || QubeApplication.arch == Config.Arch.m68k) {
             View biosTypeRow = findViewById(R.id.biostypel);
             if (biosTypeRow != null)
@@ -2021,6 +2023,7 @@ public class QubeActivity extends AppCompatActivity
                 || QubeApplication.arch == Config.Arch.ppc64
                 || QubeApplication.arch == Config.Arch.arm
                 || QubeApplication.arch == Config.Arch.arm64
+                || QubeApplication.arch == Config.Arch.sparc
                 || QubeApplication.arch == Config.Arch.m68k) {
             View bootMenuLabel = findViewById(R.id.bootmenul);
             if (bootMenuLabel != null)
@@ -3230,6 +3233,7 @@ public class QubeActivity extends AppCompatActivity
         menu.add(0, HELP, 0, R.string.help).setIcon(R.drawable.help_24px);
         menu.add(0, CHANGELOG, 0, R.string.Changelog).setIcon(R.drawable.notes_24px);
         menu.add(0, LICENSE, 0, R.string.License).setIcon(R.drawable.copyright_24px);
+        menu.add(0, ABOUT, 0, R.string.About).setIcon(R.drawable.info_24px);
         menu.add(0, QUIT, 0, R.string.Exit).setIcon(R.drawable.power_settings_new_24px);
 
         for (int i = 0; i < 2; i++) {
@@ -3262,6 +3266,8 @@ public class QubeActivity extends AppCompatActivity
             QubeActivityCommon.showChangelog(QubeActivity.this);
         } else if (item.getItemId() == LICENSE) {
             promptLicense();
+        } else if (item.getItemId() == ABOUT) {
+            startActivity(new Intent(this, AboutActivity.class));
         } else if (item.getItemId() == QUIT) {
             exit();
         }

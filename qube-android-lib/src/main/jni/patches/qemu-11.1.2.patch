@@ -897,7 +897,7 @@ diff -ru --no-dereference qemu-11.1.2/ui/vnc.c qemu-11.1.2-work/ui/vnc.c
  #include "monitor/monitor.h"
  
 -#define VNC_REFRESH_INTERVAL_BASE GUI_REFRESH_INTERVAL_DEFAULT
-+// QUBE: changing vnc refresh rate to 16 which is 62.5fps instead of 30
++// QUBE: override vnc refresh rate to 16ms which is 62.5Hz
 +#define VNC_REFRESH_INTERVAL_BASE 16
  #define VNC_REFRESH_INTERVAL_INC  50
  #define VNC_REFRESH_INTERVAL_MAX  GUI_REFRESH_INTERVAL_IDLE

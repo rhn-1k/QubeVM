@@ -49,6 +49,9 @@ public class ArchDefinitions {
             case ppc64:
                 networkCards.addAll(commonNetworkCards);
                 break;
+            case sparc:
+                networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.sparc_nic_cards)));
+                break;
             case m68k:
                 networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_nic_cards)));
                 break;
@@ -92,6 +95,10 @@ public class ArchDefinitions {
             vgaValues.add(GraphicsCapabilities.VIRTIO_VGA);
             vgaValues.add(GraphicsCapabilities.VIRTIO_GPU_GL_PCI);
             vgaValues.add(GraphicsCapabilities.VIRTIO_VGA_GL);
+        }
+
+        if (QubeApplication.arch == Config.Arch.sparc) {
+            vgaValues.add("cg3");
         }
 
         //XXX: some archs don't support vga on QEMU
@@ -161,6 +168,10 @@ public class ArchDefinitions {
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.ppc_cpu)));
                 break;
+            case sparc:
+                arrList.add("Default");
+                arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.sparc_cpu)));
+                break;
             case m68k:
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_cpu)));
@@ -188,6 +199,10 @@ public class ArchDefinitions {
             case ppc64:
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.ppc_machine_types)));
+                break;
+            case sparc:
+                arrList.add("Default");
+                arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.sparc_machine_types)));
                 break;
             case m68k:
                 arrList.add("Default");

@@ -25,9 +25,9 @@ QubeVM currently supports **QEMU 11.1.2 and 7.2.22**, compiled natively for Andr
 
 ## Supported CPU Architecture
 
-**Guest OS** is the operating system you plan to run
+**Guest** is the operating system you plan to run
 
-**Host device** is the device running the guest OS
+**Host** is your device running the guest operating system
 
 Guest architectures: x86, ARM, PowerPC, m68k
 

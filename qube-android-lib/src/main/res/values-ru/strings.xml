@@ -91,6 +91,15 @@
     <string name="ViewLog">Просмотреть журнал</string>
     <string name="Changelog">Список изменений</string>
     <string name="License">Лицензия</string>
+    <string name="About">О приложении</string>
+    <string name="app_version_format">Версия %1$s</string>
+    <string name="about_engine">Основано на QEMU %1$s</string>
+    <string name="about_independent">QubeVM это поддерживаемая сообществом версия проекта Limbo PC Emulator, основанного на QEMU</string>
+    <string name="about_community">Сообщество</string>
+    <string name="about_github">GitHub</string>
+    <string name="about_discord">Discord</string>
+    <string name="version_unknown">Неизвестно</string>
+    <string name="could_not_open_link">Нет приложения, которое может открыть эту ссылку.</string>
     <string name="Exit">Выход</string>
     <string name="TapDeviceFound">Устройство TAP найдено</string>
     <string name="tunDeviceWarning">Внимание! Убедитесь, что устройство /dev/net/tun имеет соответствующие права\nUser ID</string>

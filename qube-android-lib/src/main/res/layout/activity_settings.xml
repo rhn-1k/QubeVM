@@ -10,18 +10,17 @@
         android:id="@+id/settings_top_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:backgroundTint="@color/toolbarBackgroundTint"
-        android:backgroundTintMode="multiply">
+        android:background="@android:color/transparent">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            app:titleTextColor="@android:color/white" />
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            style="@style/Widget.Material3.Toolbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

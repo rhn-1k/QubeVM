@@ -7,13 +7,15 @@ package com.max2idea.android.qube.machine;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
 
-import java.util.Observable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Class holds the machine properties. This class can notify any Observer for changes.
+ * Class holds the machine properties and notifies registered change listeners.
  */
-public class Machine extends Observable {
+public class Machine {
     private static String TAG = "Machine";
+    private final Set<ChangeListener> changeListeners = new HashSet<>();
 
     private String name;
     private String keyboard = Config.defaultKeyboardLayout;
@@ -103,7 +105,6 @@ public class Machine extends Observable {
     void setEnableVNC(int enableVNC) {
         if (this.enableVNC != enableVNC) {
             this.enableVNC = enableVNC;
-            setChanged();
         }
     }
 
@@ -114,7 +115,6 @@ public class Machine extends Observable {
     void setRenderer(int renderer) {
         if (this.renderer != renderer) {
             this.renderer = renderer;
-            setChanged();
             notifyChanged(MachineProperty.UI, renderer);
         }
     }
@@ -126,7 +126,6 @@ public class Machine extends Observable {
     void setArch(String arch) {
         if (this.arch == null || !this.arch.equals(arch)) {
             this.arch = arch;
-            setChanged();
             notifyChanged(MachineProperty.ARCH, arch);
         }
     }
@@ -138,7 +137,6 @@ public class Machine extends Observable {
     void setMachineType(String machineType) {
         if (this.machineType == null || !this.machineType.equals(machineType)) {
             this.machineType = machineType;
-            setChanged();
             notifyChanged(MachineProperty.MACHINETYPE, machineType);
         }
     }
@@ -150,7 +148,6 @@ public class Machine extends Observable {
     void setCpu(String cpu) {
         if (!this.cpu.equals(cpu)) {
             this.cpu = cpu;
-            setChanged();
             notifyChanged(MachineProperty.CPU, cpu);
         }
     }
@@ -162,7 +159,6 @@ public class Machine extends Observable {
     void setCpuNum(int cpuNum) {
         if (this.cpuNum != cpuNum) {
             this.cpuNum = cpuNum;
-            setChanged();
             notifyChanged(MachineProperty.CPUNUM, cpuNum);
         }
     }
@@ -174,7 +170,6 @@ public class Machine extends Observable {
     void setMemory(int memory) {
         if (this.memory != memory) {
             this.memory = memory;
-            setChanged();
             notifyChanged(MachineProperty.MEMORY, memory);
         }
     }
@@ -186,7 +181,6 @@ public class Machine extends Observable {
     void setTcgBuffer(int tcgBuffer) {
         if (this.tcgBuffer != tcgBuffer) {
             this.tcgBuffer = tcgBuffer;
-            setChanged();
             notifyChanged(MachineProperty.TCG_BUFFER, tcgBuffer);
         }
     }
@@ -198,7 +192,6 @@ public class Machine extends Observable {
     void setEnableMTTCG(int enableMTTCG) {
         if (this.enableMTTCG != enableMTTCG) {
             this.enableMTTCG = enableMTTCG;
-            setChanged();
             notifyChanged(MachineProperty.ENABLE_MTTCG, enableMTTCG);
         }
     }
@@ -210,7 +203,6 @@ public class Machine extends Observable {
     void setEnableKVM(int enableKVM) {
         if (this.enableKVM != enableKVM) {
             this.enableKVM = enableKVM;
-            setChanged();
             notifyChanged(MachineProperty.ENABLE_KVM, enableKVM);
         }
     }
@@ -222,7 +214,6 @@ public class Machine extends Observable {
     void setPrio(int prio) {
         if (this.prio != prio) {
             this.prio = prio;
-            setChanged();
             notifyChanged(MachineProperty.PRIO, prio);
         }
     }
@@ -234,7 +225,6 @@ public class Machine extends Observable {
     void setBootMenu(int bootMenu) {
         if (this.bootMenu != bootMenu) {
             this.bootMenu = bootMenu;
-            setChanged();
             notifyChanged(MachineProperty.BOOT_MENU, bootMenu);
         }
     }
@@ -246,7 +236,6 @@ public class Machine extends Observable {
     void setDisableACPI(int disableACPI) {
         if (this.disableACPI != disableACPI) {
             this.disableACPI = disableACPI;
-            setChanged();
             notifyChanged(MachineProperty.DISABLE_ACPI, disableACPI);
         }
 
@@ -259,7 +248,6 @@ public class Machine extends Observable {
     void setDisableFdBootChk(int disableFdBootChk) {
         if (this.disableFdBootChk != disableFdBootChk) {
             this.disableFdBootChk = disableFdBootChk;
-            setChanged();
             notifyChanged(MachineProperty.DISABLE_FD_BOOT_CHK, disableFdBootChk);
         }
 
@@ -272,7 +260,6 @@ public class Machine extends Observable {
     void setDisableTSC(int disableTSC) {
         if (this.disableTSC != disableTSC) {
             this.disableTSC = disableTSC;
-            setChanged();
             notifyChanged(MachineProperty.DISABLE_TSC, disableTSC);
         }
 
@@ -285,7 +272,6 @@ public class Machine extends Observable {
     void setHdaImagePath(String hdaImagePath) {
         if (this.hdaImagePath == null || !this.hdaImagePath.equals(hdaImagePath)) {
             this.hdaImagePath = hdaImagePath;
-            setChanged();
             notifyChanged(MachineProperty.HDA, hdaImagePath);
         }
     }
@@ -297,7 +283,6 @@ public class Machine extends Observable {
     void setHdbImagePath(String hdbImagePath) {
         if (this.hdbImagePath == null || !this.hdbImagePath.equals(hdbImagePath)) {
             this.hdbImagePath = hdbImagePath;
-            setChanged();
             notifyChanged(MachineProperty.HDB, hdbImagePath);
         }
     }
@@ -309,7 +294,6 @@ public class Machine extends Observable {
     void setHdcImagePath(String hdcImagePath) {
         if (this.hdcImagePath == null || !this.hdcImagePath.equals(hdcImagePath)) {
             this.hdcImagePath = hdcImagePath;
-            setChanged();
             notifyChanged(MachineProperty.HDC, hdcImagePath);
         }
 
@@ -322,7 +306,6 @@ public class Machine extends Observable {
     void setHddImagePath(String hddImagePath) {
         if (this.hddImagePath == null || !this.hddImagePath.equals(hddImagePath)) {
             this.hddImagePath = hddImagePath;
-            setChanged();
             notifyChanged(MachineProperty.HDD, hddImagePath);
         }
 
@@ -335,7 +318,6 @@ public class Machine extends Observable {
     void setHdaInterface(String hdInterface) {
         if (this.hdaInterface == null || !this.hdaInterface.equals(hdInterface)) {
             this.hdaInterface = hdInterface;
-            setChanged();
             notifyChanged(MachineProperty.HDA_INTERFACE, hdInterface);
         }
     }
@@ -347,7 +329,6 @@ public class Machine extends Observable {
     void setHdbInterface(String hdInterface) {
         if (this.hdbInterface == null || !this.hdbInterface.equals(hdInterface)) {
             this.hdbInterface = hdInterface;
-            setChanged();
             notifyChanged(MachineProperty.HDB_INTERFACE, hdInterface);
         }
     }
@@ -359,7 +340,6 @@ public class Machine extends Observable {
     void setHdcInterface(String hdInterface) {
         if (this.hdcInterface == null || !this.hdcInterface.equals(hdInterface)) {
             this.hdcInterface = hdInterface;
-            setChanged();
             notifyChanged(MachineProperty.HDC_INTERFACE, hdInterface);
         }
     }
@@ -371,7 +351,6 @@ public class Machine extends Observable {
     void setHddInterface(String hdInterface) {
         if (this.hddInterface == null || !this.hddInterface.equals(hdInterface)) {
             this.hddInterface = hdInterface;
-            setChanged();
             notifyChanged(MachineProperty.HDD_INTERFACE, hdInterface);
         }
     }
@@ -389,7 +368,6 @@ public class Machine extends Observable {
             sharedFolderType = "vvfat";
         if (this.sharedFolderType == null || !this.sharedFolderType.equals(sharedFolderType)) {
             this.sharedFolderType = sharedFolderType;
-            setChanged();
             notifyChanged(MachineProperty.SHARED_FOLDER_TYPE, sharedFolderType);
         }
     }
@@ -397,7 +375,6 @@ public class Machine extends Observable {
     void setSharedFolderPath(String sharedFolderPath) {
         if (this.sharedFolderPath == null || !this.sharedFolderPath.equals(sharedFolderPath)) {
             this.sharedFolderPath = sharedFolderPath;
-            setChanged();
             notifyChanged(MachineProperty.SHARED_FOLDER, sharedFolderPath);
         }
 
@@ -410,7 +387,6 @@ public class Machine extends Observable {
     void setEnableCDROM(boolean enableCDROM) {
         if (this.enableCDROM != enableCDROM) {
             this.enableCDROM = enableCDROM;
-            setChanged();
             notifyChanged(MachineProperty.OTHER, enableCDROM);
         }
     }
@@ -422,7 +398,6 @@ public class Machine extends Observable {
     void setEnableFDA(boolean enableFDA) {
         if (this.enableFDA != enableFDA) {
             this.enableFDA = enableFDA;
-            setChanged();
             notifyChanged(MachineProperty.OTHER, enableFDA);
         }
 
@@ -435,7 +410,6 @@ public class Machine extends Observable {
     void setEnableFDB(boolean enableFDB) {
         if (this.enableFDB != enableFDB) {
             this.enableFDB = enableFDB;
-            setChanged();
             notifyChanged(MachineProperty.OTHER, enableFDB);
         }
 
@@ -448,7 +422,6 @@ public class Machine extends Observable {
     void setEnableUSB(boolean enableUSB) {
         if (this.enableUSB != enableUSB) {
             this.enableUSB = enableUSB;
-            setChanged();
             notifyChanged(MachineProperty.OTHER, enableUSB);
         }
     }
@@ -460,7 +433,6 @@ public class Machine extends Observable {
     void setUsbImagePath(String usbImagePath) {
         if (this.usbImagePath == null || !this.usbImagePath.equals(usbImagePath)) {
             this.usbImagePath = usbImagePath;
-            setChanged();
             notifyChanged(MachineProperty.USB, usbImagePath);
         }
     }
@@ -473,7 +445,6 @@ public class Machine extends Observable {
 
         if (this.cdImagePath == null || !this.cdImagePath.equals(cdImagePath)) {
             this.cdImagePath = cdImagePath;
-            setChanged();
             notifyChanged(MachineProperty.CDROM, cdImagePath);
         }
     }
@@ -485,7 +456,6 @@ public class Machine extends Observable {
     void setFdaImagePath(String fdaImagePath) {
         if (this.fdaImagePath == null || !this.fdaImagePath.equals(fdaImagePath)) {
             this.fdaImagePath = fdaImagePath;
-            setChanged();
             notifyChanged(MachineProperty.FDA, fdaImagePath);
         }
 
@@ -498,7 +468,6 @@ public class Machine extends Observable {
     void setFdbImagePath(String fdbImagePath) {
         if (this.fdbImagePath == null || !this.fdbImagePath.equals(fdbImagePath)) {
             this.fdbImagePath = fdbImagePath;
-            setChanged();
             notifyChanged(MachineProperty.FDB, fdbImagePath);
         }
     }
@@ -510,7 +479,6 @@ public class Machine extends Observable {
     void setCdInterface(String mediaInterface) {
         if (this.cdInterface == null || !this.cdInterface.equals(mediaInterface)) {
             this.cdInterface = mediaInterface;
-            setChanged();
             notifyChanged(MachineProperty.CDROM_INTERFACE, mediaInterface);
         }
     }
@@ -522,7 +490,6 @@ public class Machine extends Observable {
     void setBootDevice(String bootDevice) {
         if (this.bootDevice == null || !this.bootDevice.equals(bootDevice)) {
             this.bootDevice = bootDevice;
-            setChanged();
             notifyChanged(MachineProperty.BOOT_CONFIG, bootDevice);
         }
     }
@@ -534,7 +501,6 @@ public class Machine extends Observable {
     void setBios(String bios) {
         if (this.bios == null || !this.bios.equals(bios)) {
             this.bios = bios;
-            setChanged();
             notifyChanged(MachineProperty.BIOS, bios);
         }
     }
@@ -546,7 +512,6 @@ public class Machine extends Observable {
     void setBiosType(String biosType) {
         if (this.biosType == null || !this.biosType.equals(biosType)) {
             this.biosType = biosType;
-            setChanged();
             notifyChanged(MachineProperty.BIOS_TYPE, biosType);
         }
     }
@@ -558,7 +523,6 @@ public class Machine extends Observable {
     void setBiosCode(String biosCode) {
         if (this.biosCode == null || !this.biosCode.equals(biosCode)) {
             this.biosCode = biosCode;
-            setChanged();
             notifyChanged(MachineProperty.BIOS_CODE, biosCode);
         }
     }
@@ -570,7 +534,6 @@ public class Machine extends Observable {
     void setBiosVars(String biosVars) {
         if (this.biosVars == null || !this.biosVars.equals(biosVars)) {
             this.biosVars = biosVars;
-            setChanged();
             notifyChanged(MachineProperty.BIOS_VARS, biosVars);
         }
     }
@@ -582,7 +545,6 @@ public class Machine extends Observable {
     void setKernel(String kernel) {
         if (this.kernel == null || !this.kernel.equals(kernel)) {
             this.kernel = kernel;
-            setChanged();
             notifyChanged(MachineProperty.KERNEL, kernel);
         }
 
@@ -595,7 +557,6 @@ public class Machine extends Observable {
     void setInitRd(String initRd) {
         if (this.initRd == null || !this.initRd.equals(initRd)) {
             this.initRd = initRd;
-            setChanged();
             notifyChanged(MachineProperty.INITRD, initRd);
         }
 
@@ -608,7 +569,6 @@ public class Machine extends Observable {
     void setAppend(String append) {
         if (this.append == null || !this.append.equals(append)) {
             this.append = append;
-            setChanged();
             notifyChanged(MachineProperty.APPEND, append);
         }
 
@@ -621,7 +581,6 @@ public class Machine extends Observable {
     void setNetwork(String network) {
         if (this.network == null || !this.network.equals(network)) {
             this.network = network;
-            setChanged();
             notifyChanged(MachineProperty.NETCONFIG, network);
         }
 
@@ -634,7 +593,6 @@ public class Machine extends Observable {
     void setNetworkCard(String networkCard) {
         if (this.networkCard == null || !this.networkCard.equals(networkCard)) {
             this.networkCard = networkCard;
-            setChanged();
             notifyChanged(MachineProperty.NICCONFIG, networkCard);
         }
 
@@ -647,7 +605,6 @@ public class Machine extends Observable {
     void setGuestFwd(String guestFwd) {
         if (this.guestFwd == null || !this.guestFwd.equals(guestFwd)) {
             this.guestFwd = guestFwd;
-            setChanged();
             notifyChanged(MachineProperty.GUESTFWD, guestFwd);
         }
 
@@ -660,7 +617,6 @@ public class Machine extends Observable {
     void setHostFwd(String hostFwd) {
         if (this.hostFwd == null || !this.hostFwd.equals(hostFwd)) {
             this.hostFwd = hostFwd;
-            setChanged();
             notifyChanged(MachineProperty.HOSTFWD, hostFwd);
         }
 
@@ -673,7 +629,6 @@ public class Machine extends Observable {
     void setVga(String vga) {
         if (this.vga == null || !this.vga.equals(vga)) {
             this.vga = vga;
-            setChanged();
             notifyChanged(MachineProperty.VGA, vga);
         }
 
@@ -686,7 +641,6 @@ public class Machine extends Observable {
     void setExtraParams(String extraParams) {
         if (this.extraParams == null || !this.extraParams.equals(extraParams)) {
             this.extraParams = extraParams;
-            setChanged();
             notifyChanged(MachineProperty.EXTRA_PARAMS, extraParams);
         }
 
@@ -699,7 +653,6 @@ public class Machine extends Observable {
     void setShared_folder_mode(int shared_folder_mode) {
         if (this.sharedFolderMode != shared_folder_mode) {
             this.sharedFolderMode = shared_folder_mode;
-            setChanged();
             notifyChanged(MachineProperty.SHARED_FOLDER_MODE, shared_folder_mode);
         }
     }
@@ -747,7 +700,6 @@ public class Machine extends Observable {
     void setSoundCard(String soundCard) {
         if (this.soundCard == null || !this.soundCard.equals(soundCard)) {
             this.soundCard = soundCard;
-            setChanged();
             notifyChanged(MachineProperty.SOUNDCARD, soundCard);
         }
     }
@@ -759,7 +711,6 @@ public class Machine extends Observable {
     void setKeyboard(String keyboard) {
         if (this.keyboard == null || !this.keyboard.equals(keyboard)) {
             this.keyboard = keyboard;
-            setChanged();
             notifyChanged(MachineProperty.KEYBOARD, keyboard);
         }
     }
@@ -771,7 +722,6 @@ public class Machine extends Observable {
     void setMouse(String mouse) {
         if (this.keyboard == null || this.mouse != mouse) {
             this.mouse = mouse;
-            setChanged();
             notifyChanged(MachineProperty.MOUSE, mouse);
         }
     }
@@ -783,7 +733,6 @@ public class Machine extends Observable {
     void setDns(String dns) {
         if (this.dns == null || !this.dns.equals(dns)) {
             this.dns = dns;
-            setChanged();
             notifyChanged(MachineProperty.DNS, dns);
         }
     }
@@ -799,7 +748,6 @@ public class Machine extends Observable {
     void setDisableHPET(int disableHPET) {
         if (this.disableHPET != disableHPET) {
             this.disableHPET = disableHPET;
-            setChanged();
             notifyChanged(MachineProperty.DISABLE_HPET, disableHPET);
         }
 
@@ -812,21 +760,33 @@ public class Machine extends Observable {
     void setEnableVenus(int enableVenus) {
         if (this.enableVenus != enableVenus) {
             this.enableVenus = enableVenus;
-            setChanged();
             notifyChanged(MachineProperty.ENABLE_VENUS, enableVenus);
         }
     }
 
+    public void addChangeListener(ChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    public void removeChangeListener(ChangeListener listener) {
+        changeListeners.remove(listener);
+    }
+
     private void notifyChanged(MachineProperty property, Object value) {
-        notifyObservers(new Object[]{property, value});
+        for (ChangeListener listener : new HashSet<>(changeListeners)) {
+            listener.onMachineChanged(this, property, value);
+        }
     }
 
     // Notifies the UI of a failed live drive change (e.g. VM shutting down / QMP
     // unavailable) without touching the persisted path, so the user's selection
     // isn't lost.
     void notifyDriveChangeFailed(MachineProperty property) {
-        setChanged();
         notifyChanged(property, null);
+    }
+
+    public interface ChangeListener {
+        void onMachineChanged(Machine machine, MachineProperty property, Object value);
     }
 
     public enum FileType {

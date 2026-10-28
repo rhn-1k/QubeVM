@@ -75,6 +75,7 @@
     <string name="PortraitReverse">Portrait Reverse</string>
     <string name="PleaseWait">Please Wait</string>
     <string name="InstallingBIOS">Installing BIOS</string>
+    <string name="BIOSKeymapInstalled">BIOS and keymap files installed</string>
     <string name="CouldNotOpenDocFile">Could not open DocumentFile</string>
     <string name="PleaseReassingYourDiskFiles">Please re-open your disk files from the file manager</string>
     <string name="RemovableDrives">Removable Drives</string>

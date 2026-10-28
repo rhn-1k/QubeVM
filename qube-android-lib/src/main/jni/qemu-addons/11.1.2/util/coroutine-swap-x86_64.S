@@ -37,7 +37,7 @@ coro_swap:
     .globl coro_bootstrap_init
     .type coro_bootstrap_init, @function
 coro_bootstrap_init:
-    // QUBE: build frame so first coro_swap() jumps into the trampoline
+    // build frame so first coro_swap() jumps into the trampoline
     subq    $64, %rdi
     movq    %rsi, 16(%rdi) // r12 slot = entry fn
     movq    %rdx, 24(%rdi) // r13 slot = arg

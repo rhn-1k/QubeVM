@@ -183,7 +183,7 @@ public class MachineService extends Service {
 
     private void setupLocks() {
         WifiManager wm = (WifiManager) service.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, Config.wifiLockTag);
+        mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, Config.wifiLockTag);
         mWifiLock.setReferenceCounted(false);
 
         PowerManager pm = (PowerManager) service.getApplicationContext().getSystemService(Context.POWER_SERVICE);
@@ -211,7 +211,7 @@ public class MachineService extends Service {
     private void stopService() {
         releaseLocks();
         if (service != null) {
-            service.stopForeground(true);
+            service.stopForeground(Service.STOP_FOREGROUND_REMOVE);
             service.stopSelf();
         }
     }

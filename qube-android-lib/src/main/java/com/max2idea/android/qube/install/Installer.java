@@ -6,7 +6,6 @@ package com.max2idea.android.qube.install;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,8 +17,9 @@ import com.max2idea.android.qube.toast.ToastUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
-public class Installer extends AsyncTask<Void, Void, Void> {
+public class Installer {
     private static final String TAG = "Installer";
 
     private boolean force;
@@ -49,12 +49,10 @@ public class Installer extends AsyncTask<Void, Void, Void> {
 
     public static void installFiles(Activity activity, boolean force) {
         Installer installer = new Installer(activity, force);
-        installer.force = force;
-        installer.execute();
+        installer.start();
     }
 
-    @Override
-    protected Void doInBackground(Void... arg0) {
+    private void start() {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -80,14 +78,13 @@ public class Installer extends AsyncTask<Void, Void, Void> {
                         .show();
             }
         });
-        FileInstaller.installFiles(activity, force);
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void test) {
-        ToastUtils.toastShort(activity, "BIOS and Keymap files installed");
-        if (progDialog != null && progDialog.isShowing())
-            progDialog.dismiss();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            FileInstaller.installFiles(activity, force);
+            activity.runOnUiThread(() -> {
+                ToastUtils.toastShort(activity, activity.getString(R.string.BIOSKeymapInstalled));
+                if (progDialog != null && progDialog.isShowing())
+                    progDialog.dismiss();
+            });
+        });
     }
 }

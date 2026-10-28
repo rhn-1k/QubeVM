@@ -57,9 +57,6 @@ public class KeyboardLayoutDialog {
                 .setView(view)
                 .setNegativeButton(R.string.Cancel, null)
                 .create();
-        // the list shrinks above the soft keyboard instead of being covered
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         // ignore taps during the close delay, so the layout is only applied once
         boolean[] done = {false};
         LayoutAdapter adapter = new LayoutAdapter(ArchDefinitions.getKeyboardValues(activity), selected, layout -> {

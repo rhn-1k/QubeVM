@@ -13,7 +13,6 @@ import com.max2idea.android.qube.main.QubeApplication;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Observer;
 
 /**
  * Class communicates to the qemu process via the jni bridge MachineExecutor. It is responsible for
@@ -168,11 +167,11 @@ public class MachineController {
     void setMachine(Machine machine) {
         if (this.machine != machine) {
             if (this.machine != null) {
-                this.machine.deleteObservers();
+                this.machine.removeChangeListener(machineDatabase);
             }
             this.machine = machine;
             if (this.machine != null)
-                this.machine.addObserver((Observer) machineDatabase);
+                this.machine.addChangeListener(machineDatabase);
             notifyEventListeners(Event.MachineLoaded, machine);
         }
     }

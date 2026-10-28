@@ -18,13 +18,11 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * DAO implementation for storing our machines into an SQLite database
  */
-public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatabase, Observer {
+public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatabase, Machine.ChangeListener {
     private static final String TAG = "MachineOpenHelper";
 
     private static final int DATABASE_VERSION = 27;
@@ -442,21 +440,18 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
 
 
     @Override
-    public void update(Observable observable, Object o) {
-        Object[] params = (Object[]) o;
-        MachineProperty property = (MachineProperty) params[0];
-        Object value = params[1];
+    public void onMachineChanged(Machine machine, MachineProperty property, Object value) {
         switch(property) {
             case UI:
-                updateMachineField((Machine) observable, property, ((int) params[1]) == 1 ? "VNC" : "QGE");
+                updateMachineField(machine, property, ((int) value) == 1 ? "VNC" : "QGE");
                 return;
             case OTHER:
                 return;
         }
         if(value instanceof Integer)
-            updateMachineField((Machine) observable, property, ((int) params[1])+"");
+            updateMachineField(machine, property, ((int) value)+"");
         else
-            updateMachineField((Machine) observable, property, (String) params[1]);
+            updateMachineField(machine, property, (String) value);
 
     }
 }

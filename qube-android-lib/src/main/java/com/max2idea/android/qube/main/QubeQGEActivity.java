@@ -525,11 +525,11 @@ public class QubeQGEActivity extends AppCompatActivity
     // grave and send it as text
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_MULTIPLE && event.getKeyCode() == KeyEvent.KEYCODE_UNKNOWN) {
-            sendText(event.getCharacters());
+        if (event.getKeyCode() == KeyEvent.KEYCODE_UNKNOWN && event.getUnicodeChar() != 0) {
+            sendText(new String(Character.toChars(event.getUnicodeChar())));
             return true;
         } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            onBackPressed();
+            handleBackPressed();
             return true;
         }
         if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
@@ -582,7 +582,7 @@ public class QubeQGEActivity extends AppCompatActivity
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                    () -> onBackPressed()
+                    this::handleBackPressed
             );
         }
     }
@@ -638,7 +638,7 @@ public class QubeQGEActivity extends AppCompatActivity
         Window window = getWindow();
         Display display = window.getDecorView().getDisplay();
         if (display == null) {
-            display = getWindowManager().getDefaultDisplay();
+            display = getWindow().getDecorView().getDisplay();
         }
         if (display == null) {
             Log.e(TAG, "applyRefreshRate: no display available, bailing");
@@ -926,7 +926,7 @@ public class QubeQGEActivity extends AppCompatActivity
         machineRunning = true;
     }
 
-    public void onBackPressed() {
+    private void handleBackPressed() {
         if (!QubeSettingsManager.getAlwaysShowMenuToolbar(this)) {
             ActionBar bar = getSupportActionBar();
             if (bar != null) {

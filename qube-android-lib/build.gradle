@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def qemuVersion = project.hasProperty('qemuVersion') ? project.property('qemuVersion') : '7.2.22' // fallback
+def qemuVersion = rootProject.findProperty('qemuVersion') ?: '7.2.22' // fallback
 
 // This is for giving the specific qemu version it's values, copies to raw directory
 tasks.register('syncQemuValues') {
@@ -32,23 +32,23 @@ android {
         targetSdk = 37
         // Controls whether Venus is enabled into the app (show or hide)
         // fallbacks to false
-        buildConfigField "boolean", "USE_VENUS", "${project.hasProperty('useVenus') ? project.property('useVenus') : 'false'}"
+        buildConfigField "boolean", "USE_VENUS", "${rootProject.findProperty('useVenus') ?: 'false'}"
     }
 
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            jniDebuggable true
+            jniDebuggable = true
         }
     }
 

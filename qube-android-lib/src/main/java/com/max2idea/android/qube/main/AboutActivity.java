@@ -33,7 +33,7 @@ public final class AboutActivity extends AppCompatActivity {
         ToolbarUtils.setup(this, ToolbarUtils.config()
                 .homeAsUp(true)
                 .title(this, R.string.About)
-                .onNavigationClick(this::onBackPressed));
+                .onNavigationClick(() -> getOnBackPressedDispatcher().onBackPressed()));
 
         TextView version = findViewById(R.id.about_version);
         version.setText(getString(R.string.app_version_format, readVersionName()));

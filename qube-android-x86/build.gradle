@@ -12,28 +12,28 @@ android {
         ndk { abiFilters "arm64-v8a", "x86_64" }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     signingConfigs {
         release {
-            storeFile file("${rootProject.projectDir}/keystore/testkey.keystore")
-            storePassword "android"
-            keyAlias "androidtestkey"
-            keyPassword "android"
-            enableV1Signing true
-            enableV2Signing true
-            enableV3Signing true
+            storeFile = file("${rootProject.projectDir}/keystore/testkey.keystore")
+            storePassword = "android"
+            keyAlias = "androidtestkey"
+            keyPassword = "android"
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
         }
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
+            signingConfig = signingConfigs.release
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            jniDebuggable true
+            jniDebuggable = true
         }
     }
     lint {

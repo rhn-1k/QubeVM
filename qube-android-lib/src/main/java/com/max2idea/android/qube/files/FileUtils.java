@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
@@ -652,11 +653,17 @@ public class FileUtils {
         return file;
     }
 
+    @SuppressWarnings("deprecation")
     public static FileType getFileTypeFromIntent(Activity activity, Intent data) {
         if (data == null)
             return null;
         Bundle b = data.getExtras();
-        FileType fileType = (FileType) b.getSerializable("fileType");
+        FileType fileType;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            fileType = b.getSerializable("fileType", FileType.class);
+        } else {
+            fileType = (FileType) b.getSerializable("fileType");
+        }
         return fileType;
     }
 

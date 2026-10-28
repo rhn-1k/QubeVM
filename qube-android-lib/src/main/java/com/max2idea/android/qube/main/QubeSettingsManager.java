@@ -13,12 +13,11 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.qube.emu.lib.R;
@@ -210,7 +209,7 @@ public class QubeSettingsManager extends AppCompatActivity {
         ToolbarUtils.setup(this, ToolbarUtils.config()
                 .homeAsUp(true)
                 .title(this, R.string.Settings)
-                .onNavigationClick(this::onBackPressed));
+                .onNavigationClick(() -> getOnBackPressedDispatcher().onBackPressed()));
 
         Intent data = new Intent();
         setResult(Config.SETTINGS_RETURN_CODE, data);
@@ -317,7 +316,7 @@ public class QubeSettingsManager extends AppCompatActivity {
         new MaterialAlertDialogBuilder(activity)
                 .setTitle(getString(R.string.ClearDirHistory))
                 .setMessage(getString(R.string.ClearDirHistoryConfirm))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                .setPositiveButton(R.string.Yes, (dialog, which) -> {
                     MachineFilePaths.clearAllRecentFilePaths();
                     ToastUtils.toastShort(activity, getString(R.string.DirHistoryCleared));
                 })

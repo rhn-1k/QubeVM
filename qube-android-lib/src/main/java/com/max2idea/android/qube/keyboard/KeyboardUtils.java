@@ -23,7 +23,7 @@ public class KeyboardUtils {
         if (toggle || !Config.enableToggleKeyboard) {
             if (view != null) {
                 view.requestFocus();
-                inputMgr.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+                inputMgr.showSoftInput(view, 0);
             }
         } else {
             if (view != null) {

@@ -30,13 +30,11 @@ import com.max2idea.android.qube.ui.SpinnerAdapter;
 import com.max2idea.android.qube.files.FileUtils;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 /** A simple custom dialog that serves as a way to change removable drives for Qube.
  * This class communicates passively with the ViewController which observes for changes on the ui.
  */
-public class DrivesDialogBox implements Observer {
+public class DrivesDialogBox implements Machine.ChangeListener {
     private static final String TAG = "DrivesDialogBox";
 
     private final Machine currMachine;
@@ -67,10 +65,10 @@ public class DrivesDialogBox implements Observer {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 setViewListener(null);
-                MachineController.getInstance().getMachine().deleteObserver(DrivesDialogBox.this);
+                MachineController.getInstance().getMachine().removeChangeListener(DrivesDialogBox.this);
             }
         });
-        MachineController.getInstance().getMachine().addObserver(this);
+        MachineController.getInstance().getMachine().addChangeListener(this);
     }
 
     public void show() {
@@ -269,10 +267,7 @@ public class DrivesDialogBox implements Observer {
     }
 
     @Override
-    public void update(Observable observable, Object o) {
-        Object[] params = (Object[]) o;
-        MachineProperty property = (MachineProperty) params[0];
-        Object value = params[1];
+    public void onMachineChanged(Machine machine, MachineProperty property, Object value) {
         //XXX: if the executor is not able to change the drive then we reset the spinner
         switch(property) {
             case CDROM:

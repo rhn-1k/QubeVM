@@ -66,7 +66,7 @@ public class VirtualKeysEditorActivity extends AppCompatActivity {
         ToolbarUtils.setup(this, ToolbarUtils.config()
                 .homeAsUp(true)
                 .title(this, R.string.pref_customize_virtual_keys)
-                .onNavigationClick(this::onBackPressed));
+                .onNavigationClick(() -> getOnBackPressedDispatcher().onBackPressed()));
 
         focusOverlay = AppCompatResources.getDrawable(this, R.drawable.focus_overlay);
 

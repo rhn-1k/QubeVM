@@ -6,8 +6,7 @@ package com.max2idea.android.qube.screen;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.graphics.Point;
-import android.view.Display;
+import android.content.res.Configuration;
 
 import com.max2idea.android.qube.main.QubeSettingsManager;
 
@@ -39,10 +38,8 @@ public class ScreenUtils {
     }
 
     public static boolean isLandscapeOrientation(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point screenSize = new Point();
-        display.getSize(screenSize);
-        return screenSize.x >= screenSize.y;
+        return activity.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
 }

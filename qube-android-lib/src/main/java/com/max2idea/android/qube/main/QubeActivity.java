@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -20,11 +19,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Display;
 import android.view.View.OnClickListener;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
@@ -49,6 +48,8 @@ import android.widget.ScrollView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
@@ -88,14 +89,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class QubeActivity extends AppCompatActivity
         implements MachineController.OnMachineStatusChangeListener,
-        MachineController.OnEventListener, Observer {
+        MachineController.OnEventListener, Machine.ChangeListener {
 
     private static final String TAG = "QubeActivity";
 
@@ -113,6 +112,10 @@ public class QubeActivity extends AppCompatActivity
     private static final int TOOLS = 14;
     private static final int ABOUT = 15;
     private static final int POST_NOTIFICATIONS_REQUEST = 16;
+
+    private final ActivityResultLauncher<Intent> qgeActivityLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->
+                    handleActivityResult(Config.QGE_REQUEST_CODE, result.getResultCode(), result.getData()));
 
     // TCG Buffer
     private static final int TCG_MIN = 256;
@@ -1868,7 +1871,7 @@ public class QubeActivity extends AppCompatActivity
     // Start QGE display wrapper if selected
     public void startQGE() {
         Intent intent = new Intent(QubeActivity.this, QubeQGEActivity.class);
-        startActivityForResult(intent, Config.QGE_REQUEST_CODE);
+        qgeActivityLauncher.launch(intent);
     }
 
     // Start VNC host if selected
@@ -2581,7 +2584,7 @@ public class QubeActivity extends AppCompatActivity
                     }
                 }, 1000);
                 setCPUOptions();
-                getMachine().addObserver(QubeActivity.this);
+                getMachine().addChangeListener(QubeActivity.this);
             }
         });
     }
@@ -2866,10 +2869,12 @@ public class QubeActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        handleActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (resultCode == Config.QGE_QUIT_RESULT_CODE) {
-            if (getParent() != null) {
-                getParent().finish();
-            }
             finish();
             if (MachineController.getInstance().isRunning()) {
                 notifyAction(MachineAction.STOP_VM, null);
@@ -2969,7 +2974,7 @@ public class QubeActivity extends AppCompatActivity
         MachineController.getInstance().removeOnStatusChangeListener(this);
         Machine machine = getMachine();
         if (machine != null) {
-            machine.deleteObserver(QubeActivity.this);
+            machine.removeChangeListener(QubeActivity.this);
         }
         setViewListener(null);
         super.onDestroy();
@@ -3322,11 +3327,11 @@ public class QubeActivity extends AppCompatActivity
         new MaterialAlertDialogBuilder(this).setTitle(getString(R.string.DeleteVM) + ": " + getMachine().getName())
                 .setIcon(R.drawable.delete_24px)
                 .setMessage(R.string.deleteVMWarning)
-                .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         onDeleteMachine();
                     }
-                }).setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             }
         }).show();
@@ -3379,10 +3384,8 @@ public class QubeActivity extends AppCompatActivity
     }
 
     public boolean isLandscapeOrientation(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point screenSize = new Point();
-        display.getSize(screenSize);
-        return screenSize.x >= screenSize.y;
+        return activity.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -3430,20 +3433,16 @@ public class QubeActivity extends AppCompatActivity
     }
 
     @Override
-    public void update(Observable observable, final Object o) {
+    public void onMachineChanged(Machine machine, final MachineProperty property, final Object value) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Object [] params = (Object[] ) o;
-                if (params[0] instanceof MachineProperty) {
-                    MachineProperty property = (MachineProperty) params[0];
-                    if (property == MachineProperty.UI) {
+                if (property == MachineProperty.UI) {
 
-                        mSoundCard.setEnabled(getMachine().getRenderer() != 1);
-                    } else if (property == MachineProperty.KEYBOARD) {
-                        // changed from the QGE dialog
-                        SpinnerAdapter.setDiskAdapterValue(mKeyboard, getMachine().getKeyboard());
-                    }
+                    mSoundCard.setEnabled(getMachine().getRenderer() != 1);
+                } else if (property == MachineProperty.KEYBOARD) {
+                    // changed from the QGE dialog
+                    SpinnerAdapter.setDiskAdapterValue(mKeyboard, getMachine().getKeyboard());
                 }
                 updateSummary();
             }

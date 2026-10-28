@@ -76,6 +76,7 @@
     <string name="PortraitReverse">Портретная перевёрнутая</string>
     <string name="PleaseWait">Пожалуйста, подождите</string>
     <string name="InstallingBIOS">Установка BIOS</string>
+    <string name="BIOSKeymapInstalled">Файлы BIOS и раскладки клавиатуры установлены</string>
     <string name="CouldNotOpenDocFile">Не удалось открыть DocumentFile</string>
     <string name="PleaseReassingYourDiskFiles">Пожалуйста, заново откройте файлы дисков через файловый менеджер</string>
     <string name="RemovableDrives">Съёмные диски</string>

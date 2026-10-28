@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /** A DAO interface for saving user defined machines. This could be anything but for Android we
  * prefer an SQLite Helpers
   */
-public interface IMachineDatabase {
+public interface IMachineDatabase extends Machine.ChangeListener {
     Machine getMachine(String value);
     void updateMachineFieldAsync(Machine machine, MachineProperty property, String value);
     void updateMachineField(Machine machine, MachineProperty property, String value);

@@ -38,6 +38,7 @@ public class SpinnerAdapter extends ArrayAdapter<String> {
         return -1;
     }
 
+    @SuppressWarnings("unchecked")
     public static void addItem(Spinner spinner, String value) {
         ((ArrayAdapter<String>) spinner.getAdapter()).add(value);
     }

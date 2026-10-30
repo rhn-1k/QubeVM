@@ -7,6 +7,8 @@ ifeq ($(APP_ABI),arm64-v8a)
 else ifeq ($(APP_ABI),x86_64)
 	QUBE_CPU_FAMILY = x86_64
 	QUBE_CPU = x86_64
+else
+	$(error Unsupported ABI '$(APP_ABI)'. Expected one of: arm64-v8a, x86_64)
 endif
 
 ifeq ($(NDK_ENV), windows)
@@ -37,7 +39,8 @@ DEL_LIBSDIR=rm -rf $(NDK_PROJECT_PATH)/libs/* \
 	$(QUBE_APP_ARM)/jniLibs/* \
 	$(QUBE_APP_PPC)/jniLibs/* \
 	$(QUBE_APP_SPARC)/jniLibs/* \
-	$(QUBE_APP_M68K)/jniLibs/*
+	$(QUBE_APP_M68K)/jniLibs/* \
+	$(QUBE_APP_HPPA)/jniLibs/* \
 
 GLIB_BUILD_DIR=$(QUBE_JNI_ROOT)/glib/build
 GLIB_CROSS_FILE=$(QUBE_JNI_ROOT)/glib-android-cross.ini
@@ -121,6 +124,7 @@ QUBE_APP_ARM=$(QUBE_PRJ_ROOT)/qube-android-arm/src/main
 QUBE_APP_PPC=$(QUBE_PRJ_ROOT)/qube-android-ppc/src/main
 QUBE_APP_SPARC=$(QUBE_PRJ_ROOT)/qube-android-sparc/src/main
 QUBE_APP_M68K=$(QUBE_PRJ_ROOT)/qube-android-m68k/src/main
+QUBE_APP_HPPA=$(QUBE_PRJ_ROOT)/qube-android-hppa/src/main
 
 SYNC_LIBS_X86=rsync -av --include='libqemu-system-x86*.so' \
     --include='gdbserver' --include='gdb.setup' \
@@ -139,10 +143,14 @@ SYNC_LIBS_SPARC=rsync -av --include='libqemu-system-sparc*.so' \
     --include='gdbserver' --include='gdb.setup' \
     --include='*/' --exclude='*' \
     ../libs/ $(QUBE_APP_SPARC)/jniLibs/
-SYNC_LIBS_M68K=rsync -av --include='libqemu-system-m68k*.so' \
+SYNC_LIBS_M68K=rsync -av --include='libqemu-system-m68k.so' \
     --include='gdbserver' --include='gdb.setup' \
     --include='*/' --exclude='*' \
     ../libs/ $(QUBE_APP_M68K)/jniLibs/
+SYNC_LIBS_HPPA=rsync -av --include='libqemu-system-hppa.so' \
+    --include='gdbserver' --include='gdb.setup' \
+    --include='*/' --exclude='*' \
+    ../libs/ $(QUBE_APP_HPPA)/jniLibs/
 
 COPY_ROMS=-mkdir -p ../assets/roms && cp -rf ./qemu/pc-bios/*.rom \
 ./qemu/pc-bios/*.bin \
@@ -169,6 +177,8 @@ COPY_ASSETS_SPARC=mkdir -p ../../../../qube-android-sparc/src/main/assets/ && \
     cp -rf ../assets/* ../../../../qube-android-sparc/src/main/assets/
 COPY_ASSETS_M68K=mkdir -p ../../../../qube-android-m68k/src/main/assets/ && \
     cp -rf ../assets/* ../../../../qube-android-m68k/src/main/assets/
+COPY_ASSETS_HPPA=mkdir -p ../../../../qube-android-hppa/src/main/assets/ && \
+    cp -rf ../assets/* ../../../../qube-android-hppa/src/main/assets/
 
 #RENAME_TUNCTL=mv -f $(NDK_PROJECT_PATH)/libs/$(APP_ABI)/tunctl \
 	$(NDK_PROJECT_PATH)/libs/$(APP_ABI)/libtunctl.so
@@ -440,6 +450,7 @@ clean-qemu:
 	-rm -rf $(QUBE_APP_PPC)/assets/roms/*
 	-rm -rf $(QUBE_APP_SPARC)/assets/roms/*
 	-rm -rf $(QUBE_APP_M68K)/assets/roms/*
+	-rm -rf $(QUBE_APP_HPPA)/assets/roms/*
 
 config-deps: ndk config-ffi config-glib config-pixman config-epoxy epoxy config-virgl
 deps: ndk ffi glib pixman epoxy virglrenderer
@@ -484,6 +495,8 @@ install:
 	$(COPY_ASSETS_SPARC)
 	$(SYNC_LIBS_M68K)
 	$(COPY_ASSETS_M68K)
+	$(SYNC_LIBS_HPPA)
+	$(COPY_ASSETS_HPPA)
 
 qube:
 	make ndk
@@ -493,7 +506,7 @@ qube:
 	make qemu
 	make install
 
-EXPORT_GUEST_ALL=export BUILD_GUEST=x86_64-softmmu,aarch64-softmmu,ppc64-softmmu,sparc-softmmu,m68k-softmmu
+EXPORT_GUEST_ALL=export BUILD_GUEST=x86_64-softmmu,aarch64-softmmu,ppc64-softmmu,sparc-softmmu,m68k-softmmu,hppa-softmmu
 
 #most common combinations
 all:
@@ -523,7 +536,7 @@ clean:
 	
 help:
 	@echo " Usage: export BUILD_GUEST=<emu-arch>-softmmu && export BUILD_HOST=<eabi> && make qube"
-	@echo "  emu-arch (emulator): x86_64, aarch64, ppc64, sparc, m68k"
+	@echo "  emu-arch (emulator): x86_64, aarch64, ppc64, sparc, m68k, hppa"
 	@echo "  eabi (device): arm64-v8a, x86_64"
 	@echo "  optional: export NDK_DEBUG=1 for debuggable binaries"
 	@echo " example: export BUILD_GUEST=x86_64-softmmu && export BUILD_HOST=arm64-v8a && make qube"

@@ -1554,7 +1554,11 @@ public class QubeActivity extends AppCompatActivity
 
     public void onFirstLaunch() {
         autoDetectAndSaveRefreshRate();
-        promptLicense(true);
+        Installer.installFiles(this, true);
+        runOnUiThread(() -> {
+            Help.showHelp(this, this::checkStoragePermission);
+            QubeSettingsManager.setFirstLaunch(this);
+        });
     }
 
     // Detects the screen's own max refresh rate and saves it to settings
@@ -1633,19 +1637,11 @@ public class QubeActivity extends AppCompatActivity
     }
 
     private void promptLicense() {
-        promptLicense(false);
-    }
-
-    private void promptLicense(boolean isFirstLaunch) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    QubeActivityCommon.promptLicense(QubeActivity.this,
-                            Config.APP_NAME + " " + QubeApplication.getQubeVersionString()
-                            + " " + "QEMU" + " " + QubeApplication.getQemuVersionString() ,
-                            FileUtils.LoadFile(QubeActivity.this, "LICENSE", false),
-                            isFirstLaunch ? QubeActivity.this::checkStoragePermission : null);
+                    QubeActivityCommon.promptLicense(QubeActivity.this, Config.APP_NAME + " " + QubeApplication.getQubeVersionString(), FileUtils.LoadFile(QubeActivity.this, "LICENSE", false));
                 } catch (IOException e) {
 
                     e.printStackTrace();
@@ -2012,27 +2008,30 @@ public class QubeActivity extends AppCompatActivity
         mBootMenu = findViewById(R.id.bootmenuval);
 
         // UEFI isn't available for some architectures
-        if (QubeApplication.arch == Config.Arch.ppc
-                || QubeApplication.arch == Config.Arch.ppc64
-                || QubeApplication.arch == Config.Arch.sparc
-                || QubeApplication.arch == Config.Arch.m68k) {
+        if (QubeApplication.arch != Config.Arch.x86
+                && QubeApplication.arch != Config.Arch.x86_64
+                && QubeApplication.arch != Config.Arch.arm
+                && QubeApplication.arch != Config.Arch.arm64) {
             View biosTypeRow = findViewById(R.id.biostypel);
             if (biosTypeRow != null)
                 biosTypeRow.setVisibility(View.GONE);
         }
 
-        // Boot menu is x86 option only, hiding it from others
-        if (QubeApplication.arch == Config.Arch.ppc
-                || QubeApplication.arch == Config.Arch.ppc64
-                || QubeApplication.arch == Config.Arch.arm
-                || QubeApplication.arch == Config.Arch.arm64
-                || QubeApplication.arch == Config.Arch.sparc
-                || QubeApplication.arch == Config.Arch.m68k) {
+        // Boot menu is x86 exclusive, hiding it from others
+        if (QubeApplication.arch != Config.Arch.x86
+                && QubeApplication.arch != Config.Arch.x86_64) {
             View bootMenuLabel = findViewById(R.id.bootmenul);
             if (bootMenuLabel != null)
                 bootMenuLabel.setVisibility(View.GONE);
             if (mBootMenu != null)
                 mBootMenu.setVisibility(View.GONE);
+        }
+
+        // USB is not supported for m68k and hppa, hide it
+        if (QubeApplication.arch == Config.Arch.m68k || QubeApplication.arch == Config.Arch.hppa) {
+            View usbImgLayout = findViewById(R.id.usbimgl);
+            if (usbImgLayout != null)
+                usbImgLayout.setVisibility(View.GONE);
         }
 
         //boot
@@ -2046,8 +2045,9 @@ public class QubeActivity extends AppCompatActivity
         mVGAConfigInfo = findViewById(R.id.vgacfgInfo);
         mUIInfo = findViewById(R.id.uiInfo);
 
-        // We hide the graphics section for m68k because each machine has it's own integrated graphics card
-        if (QubeApplication.arch == Config.Arch.m68k) {
+        // We hide the graphics section for m68k and hppa
+        // because each machine has it's own card
+        if (QubeApplication.arch == Config.Arch.m68k || QubeApplication.arch == Config.Arch.hppa) {
             View graphicsSection = findViewById(R.id.graphicssectionl);
             if (graphicsSection != null)
                 graphicsSection.setVisibility(View.GONE);

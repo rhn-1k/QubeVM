@@ -14,10 +14,13 @@ public class QubeEmuActivity extends QubeActivity {
         QubeApplication.arch = Config.Arch.m68k;
         Config.clientClass = this.getClass();
         Config.enableKVM = false;
+        //XXX: m68k emulators are not mttcg capable (yet)
         Config.enableMTTCG = false;
         Config.enableQGESound = true;
         Config.machineFolder = Config.machineFolder + "other/m68k_machines/";
         super.onCreate(bundle);
+        // TODO: change location to something that the user will have access outside of qube
+        // like internal storage
         Logger.setupLogFile("/qube/qube-m68k-log.txt");
     }
 

@@ -103,6 +103,8 @@ class VMExecutor extends MachineExecutor {
                 return "libqemu-system-sparc.so";
             case m68k:
                 return "libqemu-system-m68k.so";
+            case hppa:
+                return "libqemu-system-hppa.so";
             default:
                 throw new IllegalStateException("Unexpected value: " + QubeApplication.arch);
         }
@@ -237,9 +239,6 @@ class VMExecutor extends MachineExecutor {
             paramsList.add("file=" + Config.traceDir);
         }
 
-        // tb-size moved into addAccelerationOptions() single -accel line
-        // QEMU only honors the first -accel entry, a second one is ignored entirely
-
         paramsList.add("-overcommit");
         paramsList.add("mem-lock=off");
 
@@ -274,7 +273,11 @@ class VMExecutor extends MachineExecutor {
             paramsList.add(machineOpt.toString());
         }
 
+        // XXX: QEMU 7.x has spaces between SPARC cpu names
+        // we add them inside a quote to prevent crash
         String cpu = getMachine().getCpu();
+        if (getMachine().getCpu() != null && getMachine().getCpu().contains(" "))
+            cpu = "'" + getMachine().getCpu() + "'";
 
         //XXX: we disable tsc feature for x86 since some guests are kernel panicking
         // if the cpu has not specified by user we use the internal qemu32/64
@@ -399,8 +402,8 @@ class VMExecutor extends MachineExecutor {
     }
 
     private void addGraphicsOptions(Context context, ArrayList<String> paramsList) {
-        // We don't pass graphics values for m68k because every machine has it's own video card
-        if (QubeApplication.arch == Config.Arch.m68k) {
+        // No vga for m68k and hppa
+        if (QubeApplication.arch == Config.Arch.m68k || QubeApplication.arch == Config.Arch.hppa) {
             return;
         }
         String vga = getMachine().getVga();
@@ -410,7 +413,7 @@ class VMExecutor extends MachineExecutor {
             } else if (vga.equals("nographic")) {
                 paramsList.add("-nographic");
             } else if (GraphicsCapabilities.isDeviceBackedGpu(vga)) {
-                // q35 machine auto-adds default VGA, stealing it from our GL device
+                // q35 machine adds default VGA, stealing it from our GL device
                 // so we set -vga none to prevent it from choosing
                 paramsList.add("-vga");
                 paramsList.add("none");

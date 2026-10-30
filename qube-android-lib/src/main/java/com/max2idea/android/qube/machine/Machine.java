@@ -662,9 +662,9 @@ public class Machine {
     }
 
     // nographic means headless, so no display, no QGE and no VNC
-    // m68k ignores the vga option so we ignore it
+    // m68k and hppa ignores the vga option so we ignore it
     public static boolean isNoGraphic(String vga) {
-        return "nographic".equals(vga) && QubeApplication.arch != Config.Arch.m68k;
+        return "nographic".equals(vga) && QubeApplication.arch != Config.Arch.m68k && QubeApplication.arch != Config.Arch.hppa;
     }
 
     void setDefaults() {
@@ -684,11 +684,14 @@ public class Machine {
             machineType = "Default";
         } else if (QubeApplication.arch == Config.Arch.sparc) {
             arch = "SPARC";
-            vga = "cg3";
+            vga = "tcx";
             machineType = "Default";
         } else if (QubeApplication.arch == Config.Arch.m68k) {
             arch = "m68k";
             vga = "macfb";
+            machineType = "Default";
+        } else if (QubeApplication.arch == Config.Arch.hppa) {
+            arch = "hppa";
             machineType = "Default";
         }
     }

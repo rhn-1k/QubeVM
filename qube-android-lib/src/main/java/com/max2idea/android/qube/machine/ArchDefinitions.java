@@ -55,6 +55,9 @@ public class ArchDefinitions {
             case m68k:
                 networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_nic_cards)));
                 break;
+            case hppa:
+                networkCards.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.hppa_nic_cards)));
+                break;
         }
         return networkCards;
     }
@@ -98,10 +101,11 @@ public class ArchDefinitions {
         }
 
         if (QubeApplication.arch == Config.Arch.sparc) {
+            vgaValues.add("tcx");
             vgaValues.add("cg3");
         }
 
-        //XXX: some archs don't support vga on QEMU
+        // nographic for headless runs
         vgaValues.add("nographic");
         return vgaValues;
     }
@@ -132,7 +136,6 @@ public class ArchDefinitions {
         arrList.add("virtio-mouse-pci");
         arrList.add("virtio-mouse-device");
         arrList.add("virtio-tablet-pci");
-        arrList.add("virtio-tablet-device");
         return arrList;
     }
 
@@ -176,6 +179,10 @@ public class ArchDefinitions {
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_cpu)));
                 break;
+            case hppa:
+                arrList.add("Default");
+                arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.hppa_cpu)));
+                break;
         }
 
         if (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64 || QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64)
@@ -207,6 +214,10 @@ public class ArchDefinitions {
             case m68k:
                 arrList.add("Default");
                 arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.m68k_machine_types)));
+                break;
+            case hppa:
+                arrList.add("Default");
+                arrList.addAll(Arrays.asList(Installer.getAttrs(context, R.raw.hppa_machine_types)));
                 break;
         }
         return arrList;

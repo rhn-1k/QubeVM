@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- Fixed colors for scrims and overlays only -->
-    <!-- Do not add M3 theme colors here, they're managed automatically -->
-    <color name="transparent">#00000000</color>
-
-</resources>

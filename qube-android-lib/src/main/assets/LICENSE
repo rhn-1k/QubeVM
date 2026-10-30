@@ -12,7 +12,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
 
-====== Qube SOURCE CODE =======
+====== QUBE SOURCE CODE =======
 
  Source Code, Wiki, and Other information can be found at:
  https://github.com/rhn-1k/QubeVM
@@ -21,6 +21,9 @@
 
      Special Thanks to Fabrice Bellard:
      Fabrice Bellard http://bellard.org
+
+     Special Thanks to Max Kastanas:
+     Limbo PC Emulator https://github.com/limboemu/limbo
 
 ====== END ========
 

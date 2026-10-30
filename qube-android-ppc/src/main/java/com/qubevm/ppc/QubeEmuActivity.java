@@ -22,6 +22,8 @@ public class QubeEmuActivity extends QubeActivity {
         }
         Config.machineFolder = Config.machineFolder + "other/ppc_machines/";
         super.onCreate(bundle);
+        // TODO: change location to something that the user will have access outside of qube
+        // like internal storage
         Logger.setupLogFile("/qube/qube-ppc-log.txt");
     }
 

@@ -45,8 +45,7 @@ public class Help {
         mLayout.addView(checkUpdates);
 
         new MaterialAlertDialogBuilder(activity)
-                .setTitle(Config.APP_NAME + " " + QubeApplication.getQubeVersionString()
-                        + " " + "QEMU" + " " + QubeApplication.getQemuVersionString())
+                .setTitle(Config.APP_NAME + " " + QubeApplication.getQubeVersionString())
                 .setIcon(R.drawable.help_24px)
                 .setView(mLayout)
                 .setPositiveButton(activity.getString(R.string.GoToWiki),

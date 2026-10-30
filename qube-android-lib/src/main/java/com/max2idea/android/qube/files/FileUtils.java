@@ -653,7 +653,6 @@ public class FileUtils {
         return file;
     }
 
-    @SuppressWarnings("deprecation")
     public static FileType getFileTypeFromIntent(Activity activity, Intent data) {
         if (data == null)
             return null;
@@ -662,7 +661,7 @@ public class FileUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             fileType = b.getSerializable("fileType", FileType.class);
         } else {
-            fileType = (FileType) b.getSerializable("fileType");
+            fileType = (FileType) b.get("fileType");
         }
         return fileType;
     }

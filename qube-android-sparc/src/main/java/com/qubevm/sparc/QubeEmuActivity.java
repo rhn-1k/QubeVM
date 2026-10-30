@@ -20,6 +20,8 @@ public class QubeEmuActivity extends QubeActivity {
         Config.enableQGESound = false;
         Config.machineFolder = Config.machineFolder + "other/sparc_machines/";
         super.onCreate(bundle);
+        // TODO: change location to something that the user will have access outside of qube
+        // like internal storage
         Logger.setupLogFile("/qube/qube-sparc-log.txt");
     }
 

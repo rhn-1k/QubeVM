@@ -19,8 +19,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileUtils;
-import com.max2idea.android.qube.help.Help;
-import com.max2idea.android.qube.install.Installer;
 import com.max2idea.android.qube.machine.Machine;
 import com.max2idea.android.qube.machine.MachineAction;
 import com.max2idea.android.qube.network.NetworkUtils;
@@ -69,10 +67,6 @@ public final class QubeActivityCommon {
     }
 
     public static void promptLicense(final Activity activity, final String title, final String body) {
-        promptLicense(activity, title, body, null);
-    }
-
-    public static void promptLicense(final Activity activity, final String title, final String body, final Runnable onFirstLaunchComplete) {
         activity.runOnUiThread(() -> {
             TextView textView = new TextView(activity);
             textView.setText(body == null ? "" : body);
@@ -80,24 +74,12 @@ public final class QubeActivityCommon {
             textView.setPadding(20, 20, 20, 20);
             ScrollView scrollView = new ScrollView(activity);
             scrollView.addView(textView);
-            final androidx.appcompat.app.AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)
+            new MaterialAlertDialogBuilder(activity)
                     .setTitle(title)
                     .setIcon(R.drawable.copyright_24px)
                     .setView(scrollView)
-                    .setPositiveButton(R.string.IAcknowledge, (dialog, which) -> {
-                        if (QubeSettingsManager.isFirstLaunch(activity)) {
-                            Installer.installFiles(activity, true);
-                            Help.showHelp(activity, onFirstLaunchComplete);
-                        }
-                        QubeSettingsManager.setFirstLaunch(activity);
-                    })
-                    .create();
-            alertDialog.setOnCancelListener(dialog -> {
-                if (QubeSettingsManager.isFirstLaunch(activity)) {
-                    finishParentOrActivity(activity);
-                }
-            });
-            alertDialog.show();
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
         });
     }
 
@@ -194,12 +176,4 @@ public final class QubeActivityCommon {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private static void finishParentOrActivity(Activity activity) {
-        if (activity.getParent() != null) {
-            activity.getParent().finish();
-        } else {
-            activity.finish();
-        }
-    }
 }

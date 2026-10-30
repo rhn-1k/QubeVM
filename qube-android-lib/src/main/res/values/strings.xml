@@ -160,12 +160,12 @@
     <string name="OkIUnderstand">Allow</string>
     <string name="SendText">Send Text</string>
     <string name="Send">Send</string>
-    <string name="GoToWiki">Online Wiki</string>
+    <string name="GoToWiki">Wiki</string>
     <string name="Discord">Discord</string>
     <string name="DoNotShowAgain">Do not Show Again</string>
-    <string name="GenNewVersion">Get New Version</string>
+    <string name="GenNewVersion">Get</string>
     <string name="Cancel">Cancel</string>
-    <string name="CopyTo">Copy To</string>
+    <string name="CopyTo">Save</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="NewVersionWarning">There is a new version available with fixes and new features. Do you want to update?</string>

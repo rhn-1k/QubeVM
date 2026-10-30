@@ -37,7 +37,7 @@
         Выберите Мышь = «usb-tablet» в Qube перед загрузкой машины.</string>
     <string name="externalMouseInstructions">Подключите USB/Bluetooth-мышь к устройству Android.</string>
     <string name="toggle_virtual_keys">Переключить виртуальные клавиши</string>
-    <string name="welcomeText">Добро пожаловать в Qube Emulator, порт QEMU для устройств Android. Qube может эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков вы найдёте в Qube Wiki. Загружайте программы и образы только с надёжных сайтов!</string>
+    <string name="welcomeText">Добро пожаловать в Qube Emulator, порт QEMU для устройств Android. Qube может эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков вы найдёте в Qube Вики. Загружайте программы и образы только с надёжных сайтов!</string>
     <string name="checkForUpdates">Проверять обновления при запуске</string>
     <string name="sdcardNotMounted">Ошибка: SD-карта не подключена</string>
     <string name="vmNotRunning">ВМ не запущена</string>
@@ -159,12 +159,12 @@
     <string name="OkIUnderstand">Разрешить</string>
     <string name="SendText">Отправить текст</string>
     <string name="Send">Отправить</string>
-    <string name="GoToWiki">Онлайн Wiki</string>
+    <string name="GoToWiki">Вики</string>
     <string name="Discord">Discord</string>
     <string name="DoNotShowAgain">Больше не показывать</string>
-    <string name="GenNewVersion">Получить новую версию</string>
+    <string name="GenNewVersion">Получить</string>
     <string name="Cancel">Отмена</string>
-    <string name="CopyTo">Копировать в</string>
+    <string name="CopyTo">Сохранить</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
     <string name="NewVersionWarning">Доступна новая версия с исправлениями и новыми функциями. Хотите обновить?</string>

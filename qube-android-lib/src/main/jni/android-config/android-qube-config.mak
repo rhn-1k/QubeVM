@@ -34,8 +34,8 @@ BUILD_HOST?=arm64-v8a
 BUILD_GUEST?=x86_64-softmmu
 
 # QEMU Version
-# values: 7.2.22, 11.1.2
-USE_QEMU_VERSION ?= 11.1.2
+# values: 7.2.22, 11.1.3
+USE_QEMU_VERSION ?= 11.1.3
 
 # Enable Venus (Vulkan passthrough) acceleration
 # controls both app UI and native side

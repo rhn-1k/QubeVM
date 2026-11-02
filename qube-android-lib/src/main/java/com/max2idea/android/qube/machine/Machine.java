@@ -38,16 +38,19 @@ public class Machine {
     private int disableFdBootChk = 0;
     private int disableTSC = 0; //TSC left enabled by default (not recommended to disable on modern guests)
     private int enableVenus = 0;
+    private int venusHostMem = 32;
     // Storage
     private String hdaImagePath;
     private String hdbImagePath;
     private String hdcImagePath;
     private String hddImagePath;
+    // Overriding interfaces because we change that in setDefaults
+    private String defaultInterfaceType = "ide";
     // HDD interface
-    private String hdaInterface = "ide";
-    private String hdbInterface = "ide";
-    private String hdcInterface = "ide";
-    private String hddInterface = "ide";
+    private String hdaInterface = defaultInterfaceType;
+    private String hdbInterface = defaultInterfaceType;
+    private String hdcInterface = defaultInterfaceType;
+    private String hddInterface = defaultInterfaceType;
     private String sharedFolderPath;
     // Shared folder interface
     private String sharedFolderType = "vvfat";
@@ -60,7 +63,7 @@ public class Machine {
     private String fdaImagePath;
     private String fdbImagePath;
     private String usbImagePath;
-    private String cdInterface = "ide";
+    private String cdInterface = defaultInterfaceType;
     // Default Settings
     private String bootDevice = "Default";
     private String bios;
@@ -78,6 +81,7 @@ public class Machine {
     private String hostFwd;
     //display
     private String vga = "std";
+    private int videoMemory = 16;
     //sound
     private String soundCard = null;
     //extra qemu params
@@ -88,7 +92,9 @@ public class Machine {
         this.name = name;
         if (loadDefaults)
             setDefaults();
-    }
+            // using our var for all
+            hdaInterface = hdbInterface = hdcInterface = hddInterface = cdInterface = defaultInterfaceType;
+        }
 
     public String getName() {
         return name;
@@ -634,6 +640,17 @@ public class Machine {
 
     }
 
+    public int getVideoMemory() {
+        return videoMemory;
+    }
+
+    void setVideoMemory(int videoMemory) {
+        if (this.videoMemory != videoMemory) {
+            this.videoMemory = videoMemory;
+            notifyChanged(MachineProperty.VIDEO_MEMORY, videoMemory);
+        }
+    }
+
     public String getExtraParams() {
         return extraParams;
     }
@@ -676,6 +693,7 @@ public class Machine {
             arch = "ARM";
             machineType = "virt";
             cpu = "Default";
+            defaultInterfaceType = "virtio";
             vga = "ramfb";
             biosType = "UEFI";
             mouse = "usb-mouse";
@@ -684,15 +702,21 @@ public class Machine {
             machineType = "Default";
         } else if (QubeApplication.arch == Config.Arch.sparc) {
             arch = "SPARC";
-            vga = "tcx";
             machineType = "Default";
+            defaultInterfaceType = "esp";
+            vga = "tcx";
+            mouse = null;
         } else if (QubeApplication.arch == Config.Arch.m68k) {
             arch = "m68k";
-            vga = "macfb";
             machineType = "Default";
+            defaultInterfaceType = "esp";
+            vga = "macfb";
+            mouse = null;
         } else if (QubeApplication.arch == Config.Arch.hppa) {
             arch = "hppa";
             machineType = "Default";
+            defaultInterfaceType = "lsi53c895a";
+            mouse = null;
         }
     }
 
@@ -764,6 +788,17 @@ public class Machine {
         if (this.enableVenus != enableVenus) {
             this.enableVenus = enableVenus;
             notifyChanged(MachineProperty.ENABLE_VENUS, enableVenus);
+        }
+    }
+
+    public int getVenusHostMem() {
+        return venusHostMem;
+    }
+
+    void setVenusHostMem(int venusHostMem) {
+        if (this.venusHostMem != venusHostMem) {
+            this.venusHostMem = venusHostMem;
+            notifyChanged(MachineProperty.VENUS_HOST_MEM, venusHostMem);
         }
     }
 

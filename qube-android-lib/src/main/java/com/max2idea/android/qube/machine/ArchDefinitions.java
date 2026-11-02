@@ -130,12 +130,25 @@ public class ArchDefinitions {
 
     public static ArrayList<String> getMouseValues(Context context) {
         ArrayList<String> arrList = new ArrayList<>();
+
+        // Some architectures use their own models, so no mouse values for them
+        if (QubeApplication.arch == Config.Arch.sparc || QubeApplication.arch == Config.Arch.m68k || QubeApplication.arch == Config.Arch.hppa)
+            return arrList;
+
         arrList.add("ps2");
         arrList.add("usb-mouse");
         arrList.add("usb-tablet");
-        arrList.add("virtio-mouse-pci");
-        arrList.add("virtio-mouse-device");
-        arrList.add("virtio-tablet-pci");
+
+        if (QubeApplication.arch == Config.Arch.x86 || QubeApplication.arch == Config.Arch.x86_64 || QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64 || QubeApplication.arch == Config.Arch.ppc || QubeApplication.arch == Config.Arch.ppc64) {
+            arrList.add("virtio-mouse-pci");
+            arrList.add("virtio-tablet-pci");
+        }
+
+        if (QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64) {
+            arrList.add("virtio-mouse-device");
+            arrList.add("virtio-tablet-device");
+        }
+
         return arrList;
     }
 

@@ -6,6 +6,7 @@ package com.max2idea.android.qube.main;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
+import com.max2idea.android.qube.utils.ThemeUtils;
 import com.max2idea.android.qube.utils.ToolbarUtils;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.ShapeAppearanceModel;
@@ -27,6 +29,7 @@ public final class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtils.trackNightMode(this);
         setContentView(R.layout.activity_about);
         EdgeToEdgeUtils.apply(this, R.id.about_root, R.id.about_top_app_bar, R.id.about_content);
 
@@ -34,6 +37,9 @@ public final class AboutActivity extends AppCompatActivity {
                 .homeAsUp(true)
                 .title(this, R.string.About)
                 .onNavigationClick(() -> getOnBackPressedDispatcher().onBackPressed()));
+
+        TextView appName = findViewById(R.id.about_name);
+        appName.setText(Config.APP_NAME);
 
         TextView version = findViewById(R.id.about_version);
         version.setText(getString(R.string.app_version_format, readVersionName()));
@@ -59,12 +65,19 @@ public final class AboutActivity extends AppCompatActivity {
         setupSomething();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ThemeUtils.recreateIfThemeChanged(this, newConfig);
+    }
+
     // ???
     private final long[] somethingTapTimes = new long[Config.SOMETHING_TAPS];
     private int somethingTapCount;
 
     private void setupSomething() {
         android.view.View icon = findViewById(R.id.about_icon);
+        icon.setContentDescription(Config.APP_NAME);
         icon.setOnTouchListener((view, event) -> {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:

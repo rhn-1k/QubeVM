@@ -25,7 +25,7 @@ import java.util.Date;
 public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatabase, Machine.ChangeListener {
     private static final String TAG = "MachineOpenHelper";
 
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 29;
     private static final String DATABASE_NAME = "QUBE";
     private static final String MACHINE_TABLE_NAME = "machines";
 
@@ -48,7 +48,9 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             + MachineProperty.DNS.name() + " TEXT, "
             + MachineProperty.SHARED_FOLDER_TYPE.name() + " TEXT, "
             + MachineProperty.BOOT_MENU.name() + " INTEGER, "
-            + MachineProperty.USB.name() + " TEXT "
+            + MachineProperty.USB.name() + " TEXT, "
+            + MachineProperty.VIDEO_MEMORY.name() + " INTEGER, "
+            + MachineProperty.VENUS_HOST_MEM.name() + " INTEGER "
             + ");";
 
     private static MachineOpenHelper sInstance;
@@ -176,6 +178,12 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         if (newVersion >= 27 && oldVersion <= 26) {
             db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.USB + " TEXT;");
         }
+        if (newVersion >= 28 && oldVersion <= 27) {
+            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.VIDEO_MEMORY + " INTEGER;");
+        }
+        if (newVersion >= 29 && oldVersion <= 28) {
+            db.execSQL("ALTER TABLE " + MACHINE_TABLE_NAME + " ADD COLUMN " + MachineProperty.VENUS_HOST_MEM + " INTEGER;");
+        }
     }
 
     public synchronized int insertMachine(Machine machine) {
@@ -208,6 +216,8 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
         stateValues.put(MachineProperty.NETCONFIG.name(), machine.getNetwork());
         stateValues.put(MachineProperty.NICCONFIG.name(), machine.getNetworkCard());
         stateValues.put(MachineProperty.VGA.name(), machine.getVga());
+        stateValues.put(MachineProperty.VIDEO_MEMORY.name(), machine.getVideoMemory());
+        stateValues.put(MachineProperty.VENUS_HOST_MEM.name(), machine.getVenusHostMem());
         stateValues.put(MachineProperty.DISABLE_ACPI.name(), machine.getDisableAcpi());
         stateValues.put(MachineProperty.DISABLE_HPET.name(), machine.getDisableHPET());
         stateValues.put(MachineProperty.DISABLE_TSC.name(), machine.getDisableTSC());
@@ -295,7 +305,7 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
                 + MachineProperty.HOSTFWD + " , " + MachineProperty.GUESTFWD + " , " + MachineProperty.UI + ", " + MachineProperty.DISABLE_TSC + ", "
                 + MachineProperty.MOUSE + ", " + MachineProperty.KEYBOARD + ", " + MachineProperty.ENABLE_MTTCG + ", " + MachineProperty.ENABLE_KVM + ", "
                 + MachineProperty.HDA_INTERFACE + ", " + MachineProperty.HDB_INTERFACE + ", " + MachineProperty.HDC_INTERFACE + ", " + MachineProperty.HDD_INTERFACE + ", "
-                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " , " + MachineProperty.BOOT_MENU + " , " + MachineProperty.USB + " "
+                + MachineProperty.CDROM_INTERFACE + " , " + MachineProperty.PRIO + " , " +  MachineProperty.ENABLE_VENUS + " , " + MachineProperty.BIOS + " , " + MachineProperty.BIOS_TYPE + " , " + MachineProperty.BIOS_CODE + " , " + MachineProperty.BIOS_VARS + " , " + MachineProperty.TCG_BUFFER + " , " + MachineProperty.DNS + " , " + MachineProperty.SHARED_FOLDER_TYPE + " , " + MachineProperty.BOOT_MENU + " , " + MachineProperty.USB + " , " + MachineProperty.VIDEO_MEMORY + " , " + MachineProperty.VENUS_HOST_MEM + " "
                 + " from " + MACHINE_TABLE_NAME
                 + " where " + MachineProperty.STATUS + " = " + Config.STATUS_CREATED
                 + " and " + MachineProperty.MACHINE_NAME + "=\"" + machine + "\"" + ";";
@@ -372,6 +382,8 @@ public class MachineOpenHelper extends SQLiteOpenHelper implements IMachineDatab
             myMachine.setUsbImagePath(cur.getString(53));
             if (myMachine.getUsbImagePath() != null)
                 myMachine.setEnableUSB(true);
+            myMachine.setVideoMemory(cur.getInt(54));
+            myMachine.setVenusHostMem(cur.getInt(55));
         }
         cur.close();
 

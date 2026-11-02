@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cpusectionl"
     android:layout_width="fill_parent"
@@ -122,66 +123,88 @@
             android:id="@+id/cpunuml"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:paddingTop="5dp">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:paddingRight="5dp"
-                android:src="@drawable/developer_board_24px" />
-
-            <TextView
-                android:id="@+id/cpunumStr"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/cpu_cores_label"
-                android:textSize="15sp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <Spinner
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/developer_board_24px" />
+
+                <TextView
+                    android:id="@+id/cpunumStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cpu_cores_label"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/cpunumValueDisplay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.Slider
                 android:id="@+id/cpunumval"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="right"
-                android:singleLine="true"
-                android:text=""
-                android:textSize="15sp" />
+                app:labelBehavior="gone" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/rammeml"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:paddingTop="5dp">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical"
-                android:paddingRight="5dp"
-                android:src="@drawable/memory_alt_24px" />
-
-            <TextView
-                android:id="@+id/rammemStr"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/ram_memory_label"
-                android:textSize="15sp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <Spinner
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/memory_alt_24px" />
+
+                <TextView
+                    android:id="@+id/rammemStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ram_memory_label"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/rammemValueDisplay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.Slider
                 android:id="@+id/rammemval"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="right"
-                android:singleLine="true"
-                android:text=""
-                android:textSize="15sp" />
+                app:labelBehavior="gone" />
         </LinearLayout>
 
         <View
@@ -200,6 +223,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/speed_24px" />
 
                 <TextView
                     android:id="@+id/tcgBufferStr"
@@ -221,7 +251,8 @@
             <com.google.android.material.slider.Slider
                 android:id="@+id/tcgbufferval"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:labelBehavior="gone" />
         </LinearLayout>
 
         <LinearLayout

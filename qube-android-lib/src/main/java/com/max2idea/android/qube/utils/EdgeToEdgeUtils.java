@@ -1,5 +1,6 @@
 package com.max2idea.android.qube.utils;
 
+import android.content.res.Configuration;
 import android.view.View;
 import android.view.Window;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -42,9 +43,12 @@ public class EdgeToEdgeUtils {
         View root = activity.findViewById(rootId);
         View appBar = activity.findViewById(appBarId);
 
+        boolean isLightTheme = (activity.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES;
+
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, root);
-        controller.setAppearanceLightStatusBars(false);
-        controller.setAppearanceLightNavigationBars(false);
+        controller.setAppearanceLightStatusBars(isLightTheme);
+        controller.setAppearanceLightNavigationBars(isLightTheme);
         window.setNavigationBarContrastEnforced(false);
 
         final int appBarLeft = appBar.getPaddingLeft();

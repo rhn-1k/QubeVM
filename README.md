@@ -14,7 +14,7 @@ QubeVM is a QEMU-based virtual machine emulator for Android
 
 Emulates a full virtual machine on Android, allowing installation and execution of guest operating systems inside the app
 
-QubeVM currently supports **QEMU 11.1.2 and 7.2.22**, compiled natively for Android as a `.so` library without relying on third-party wrappers
+QubeVM currently supports **QEMU 11.1.3 and 7.2.22**, compiled natively for Android as a `.so` library without relying on third-party wrappers
 
 ## Requirements
 
@@ -29,7 +29,7 @@ QubeVM currently supports **QEMU 11.1.2 and 7.2.22**, compiled natively for Andr
 
 **Host** is your device running the guest operating system
 
-Guest architectures: x86, ARM, PowerPC, m68k
+Guest architectures: x86, ARM, PowerPC, SPARC, m68k
 
 Host architectures: ARM64 and x86_64
 

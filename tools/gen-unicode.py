@@ -91,7 +91,7 @@ def rows(values):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate UnicodeKeysyms.java")
-    parser.add_argument("versions", nargs="+", help="qemu versions such as 11.1.2")
+    parser.add_argument("versions", nargs="+", help="qemu versions such as 11.1.3")
     table = pairs(qemu_keysyms(parser.parse_args().versions))
     with open(OUT, "w") as f:
         f.write(TEMPLATE % (rows([c for c, _ in table]), rows([k for _, k in table])))

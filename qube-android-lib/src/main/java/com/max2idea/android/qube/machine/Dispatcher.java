@@ -55,6 +55,11 @@ public final class Dispatcher implements ViewListener {
                 break;
             case TCG_BUFFER:
                 machine.setTcgBuffer(convertInt(property, value));
+            case VIDEO_MEMORY:
+                machine.setVideoMemory(convertInt(property, value));
+                break;
+            case VENUS_HOST_MEM:
+                machine.setVenusHostMem(convertInt(property, value));
                 break;
             case CPUNUM:
                 machine.setCpuNum(convertInt(property, value));

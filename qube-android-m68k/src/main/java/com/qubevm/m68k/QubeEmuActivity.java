@@ -16,7 +16,8 @@ public class QubeEmuActivity extends QubeActivity {
         Config.enableKVM = false;
         //XXX: m68k emulators are not mttcg capable (yet)
         Config.enableMTTCG = false;
-        Config.enableQGESound = true;
+        //XXX: it looks like audio isn't stable for m68k
+        Config.enableQGESound = false;
         Config.machineFolder = Config.machineFolder + "other/m68k_machines/";
         super.onCreate(bundle);
         // TODO: change location to something that the user will have access outside of qube

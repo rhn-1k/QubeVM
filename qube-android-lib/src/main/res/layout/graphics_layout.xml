@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/graphicssectionl"
     android:layout_width="fill_parent"
@@ -65,7 +66,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
                 android:paddingRight="5dp"
-                android:src="@drawable/tv_displays_24px" />
+                android:src="@drawable/display_settings_24px" />
 
             <TextView
                 android:id="@+id/vgacfgStr"
@@ -144,6 +145,94 @@
                 android:id="@+id/venusaccelval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/venushostmeml"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/memory_24px" />
+
+                <TextView
+                    android:id="@+id/venusHostMemStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/venus_host_mem_label"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/venusHostMemValueDisplay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/venushostmemval"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                app:labelBehavior="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/videomeml"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/video_settings_24px" />
+
+                <TextView
+                    android:id="@+id/videomemStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/video_memory_label"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/videoMemoryValueDisplay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/videomemval"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                app:labelBehavior="gone" />
         </LinearLayout>
 
     </LinearLayout>

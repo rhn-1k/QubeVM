@@ -7,6 +7,7 @@ package com.max2idea.android.qube.virtualkeys;
 import com.max2idea.android.qube.main.QubeSettingsManager;
 
 import android.animation.LayoutTransition;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -30,6 +31,7 @@ import com.google.android.material.button.MaterialButton;
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.toast.ToastUtils;
 import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
+import com.max2idea.android.qube.utils.ThemeUtils;
 import com.max2idea.android.qube.utils.ToolbarUtils;
 
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class VirtualKeysEditorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtils.trackNightMode(this);
         setContentView(R.layout.virtual_keys_editor);
         setupEdgeToEdgeToolbar();
 
@@ -112,6 +115,12 @@ public class VirtualKeysEditorActivity extends AppCompatActivity {
 
     private void setupEdgeToEdgeToolbar() {
         EdgeToEdgeUtils.apply(this, R.id.virtual_keys_screen, R.id.virtual_keys_top_app_bar, R.id.editor_root);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ThemeUtils.recreateIfThemeChanged(this, newConfig);
     }
 
     @Override

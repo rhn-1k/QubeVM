@@ -94,7 +94,7 @@
     <string name="About">About</string>
     <string name="app_version_format">Version %1$s</string>
     <string name="about_engine">Based on QEMU %1$s</string>
-    <string name="about_independent">QubeVM is a community maintained version of the Limbo PC Emulator project which is based on QEMU</string>
+    <string name="about_independent">QubeVM is a community maintained fork of the Limbo PC Emulator</string>
     <string name="about_community">Community</string>
     <string name="about_github">GitHub</string>
     <string name="about_discord">Discord</string>
@@ -211,7 +211,7 @@
     <string name="machine_type_label">Machine Type</string>
     <string name="cpu_model_label">CPU Model</string>
     <string name="cpu_cores_label">CPU Cores</string>
-    <string name="ram_memory_label">RAM Memory (MB)</string>
+    <string name="ram_memory_label">RAM Memory</string>
     <string name="disable_hpet_label">Disable HPET</string>
     <string name="disable_tsc_label">Disable TSC</string>
     <string name="disable_acpi_label">Disable ACPI</string>
@@ -261,6 +261,8 @@
     <!-- Graphics section -->
     <string name="section_graphics">Graphics</string>
     <string name="video_display_label">Video Display</string>
+    <string name="video_memory_label">Video Memory</string>
+    <string name="venus_host_mem_label">Venus Host Memory</string>
     <string name="use_venus_accelerator_label">Venus Accelerator</string>
     <string name="virgl_requires_qge">3D acceleration uses QGE display. Qube switched to it</string>
     <string name="videoDisplayInfoTitle">Video Display</string>

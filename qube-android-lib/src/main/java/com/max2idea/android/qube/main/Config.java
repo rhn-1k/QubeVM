@@ -42,6 +42,14 @@ public class Config {
 
     // GUI Options
     public static final int MAX_CPU_NUM = 8;
+    public static final int TCG_BUFFER_STEP = 256;
+    public static final int TCG_BUFFER_MAX = 2048;
+    public static final int RAM_STEP_MB = 256;
+    public static final int RAM_MAX_MB = 12288;
+    public static final int VIDEO_MEMORY_STEP = 16;
+    public static final int VIDEO_MEMORY_MAX = 512;
+    public static final int VENUS_HOST_MEMORY_STEP = 32;
+    public static final int VENUS_HOST_MEMORY_MAX = 2048;
 
     // delay
     public static int mouseButtonDelay = 100;
@@ -59,10 +67,10 @@ public class Config {
     public static final String defaultDNSServer = "1.1.1.1";
     // App Config
     public static final String downloadLink = "https://github.com/rhn-1k/QubeVM/releases";
-    public static final String guidesLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/tutorials.md";
-    public static final String CpuLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/board.md#cpu-features";
-    public static final String toolsLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/advanced.md";
-    public static final String NetworkLink = "https://github.com/rhn-1k/QubeVM/blob/main/docs/video-audio-network.md#network";
+    public static final String guidesLink = "https://qubevm.vercel.app/docs/index.html";
+    public static final String CpuLink = "https://qubevm.vercel.app/docs/board.html";
+    public static final String toolsLink = "https://qubevm.vercel.app/docs/advanced.html";
+    public static final String NetworkLink = "https://qubevm.vercel.app/docs/video-audio-network.html";
     public static final String newVersionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
     public static final String discordLink = "https://discord.gg/MrbJ9QNXNJ";
 
@@ -83,10 +91,6 @@ public class Config {
 
     // Enabling or disabling sound in the QGE build
     public static boolean enableQGESound = true;
-
-    // size of the host visible blob resource for memory in Venus accelerator
-    // TODO: Add a slider like TCG Buffer in app
-    public static String venusHostMem = "256M";
 
     // if you don't want to enable software updates set to false
     public static boolean enableSoftwareUpdates = true;

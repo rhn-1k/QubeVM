@@ -56,6 +56,7 @@ import android.provider.Settings;
 import androidx.core.widget.NestedScrollView;
 
 import com.max2idea.android.qube.utils.EdgeToEdgeUtils;
+import com.max2idea.android.qube.utils.ThemeUtils;
 import com.max2idea.android.qube.utils.ToolbarUtils;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -97,7 +98,6 @@ public class QubeActivity extends AppCompatActivity
         MachineController.OnEventListener, Machine.ChangeListener {
 
     private static final String TAG = "QubeActivity";
-
     private static final int HELP = 0;
     private static final int QUIT = 1;
     private static final int INSTALL = 2;
@@ -118,14 +118,11 @@ public class QubeActivity extends AppCompatActivity
                     handleActivityResult(Config.QGE_REQUEST_CODE, result.getResultCode(), result.getData()));
 
     // TCG Buffer
-    private static final int TCG_MIN = 256;
-    private static final int TCG_MAX = 2048;
 
     // disk mapping
     private static final Hashtable<FileType, DiskInfo> diskMapping = new Hashtable<>();
 
     private static boolean libLoaded;
-    public View parent;
     private boolean machineLoaded;
     private FileType browseFileType = null;
 
@@ -139,7 +136,8 @@ public class QubeActivity extends AppCompatActivity
     private Spinner mMachine;
     private Spinner mCPU;
     private Spinner mMachineType;
-    private Spinner mCPUNum;
+    private com.google.android.material.slider.Slider mCPUNum;
+    private TextView mCPUNumDisplay;
     private Spinner mKernel;
     private Spinner mInitrd;
     private Spinner mBios;
@@ -176,12 +174,20 @@ public class QubeActivity extends AppCompatActivity
     private TextView mUSBStr;
 
     // misc
-    private Spinner mRamSize;
+    private com.google.android.material.slider.Slider mRamSize;
+    private TextView mRamSizeDisplay;
+    private ArrayList<String> mRamValues;
     private Spinner mBootDevices;
     private Spinner mNetworkCard;
     private Spinner mNetConfig;
     private Spinner mVGAConfig;
     private ImageView mVGAConfigInfo;
+    private com.google.android.material.slider.Slider mVideoMemory;
+    private TextView mVideoMemoryDisplay;
+    private View mVideoMemoryRow;
+    private com.google.android.material.slider.Slider mVenusHostMem;
+    private TextView mVenusHostMemDisplay;
+    private View mVenusHostMemRow;
     private ImageView mUIInfo;
     private MaterialSwitch mEnableVenus;
     private ImageView mEnableVenusInfo;
@@ -428,33 +434,31 @@ public class QubeActivity extends AppCompatActivity
             }
         });
 
-        mCPUNum.setOnItemSelectedListener(new OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (getMachine() == null)
+        mCPUNum.addOnChangeListener(new com.google.android.material.slider.Slider.OnChangeListener() {
+            public void onValueChange(com.google.android.material.slider.Slider slider, float value, boolean fromUser) {
+                if (getMachine() == null || !fromUser)
                     return;
-                final String cpuNum = (String) ((ArrayAdapter<?>) mCPUNum.getAdapter()).getItem(position);
-                if (position > 0 && getMachine().getEnableMTTCG() != 1 && getMachine().getEnableKVM() != 1 && !firstMTTCGCheck) {
+                vibrateTick();
+                final int cpuNumInt = (int) value;
+                final String cpuNum = cpuNumInt + "";
+                mCPUNumDisplay.setText(cpuNum);
+                if (cpuNumInt > 1 && getMachine().getEnableMTTCG() != 1 && getMachine().getEnableKVM() != 1 && !firstMTTCGCheck) {
                     firstMTTCGCheck = true;
                     promptMultiCPU(cpuNum);
                 } else {
                     notifyFieldChange(MachineProperty.CPUNUM, cpuNum);
                 }
             }
-
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
         });
 
-        mRamSize.setOnItemSelectedListener(new OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (getMachine() == null)
+        mRamSize.addOnChangeListener(new com.google.android.material.slider.Slider.OnChangeListener() {
+            public void onValueChange(com.google.android.material.slider.Slider slider, float value, boolean fromUser) {
+                if (getMachine() == null || !fromUser)
                     return;
-                String ram = (String) ((ArrayAdapter<?>) mRamSize.getAdapter()).getItem(position);
+                vibrateTick();
+                String ram = mRamValues.get((int) value);
+                mRamSizeDisplay.setText(ram + "M");
                 notifyFieldChange(MachineProperty.MEMORY, ram);
-            }
-
-            public void onNothingSelected(AdapterView<?> parentView) {
-
             }
         });
 
@@ -607,9 +611,32 @@ public class QubeActivity extends AppCompatActivity
                     enforceQGEForVirgl();
                 }
                 updateVenusEnabledState();
+                updateVideoMemoryEnabledState();
             }
 
             public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+        mVideoMemory.addOnChangeListener(new com.google.android.material.slider.Slider.OnChangeListener() {
+            public void onValueChange(com.google.android.material.slider.Slider slider, float value, boolean fromUser) {
+                if (getMachine() == null || !fromUser)
+                    return;
+                vibrateTick();
+                int videoMemoryInt = (int) value;
+                mVideoMemoryDisplay.setText(videoMemoryInt + "M");
+                notifyFieldChange(MachineProperty.VIDEO_MEMORY, videoMemoryInt);
+            }
+        });
+
+        mVenusHostMem.addOnChangeListener(new com.google.android.material.slider.Slider.OnChangeListener() {
+            public void onValueChange(com.google.android.material.slider.Slider slider, float value, boolean fromUser) {
+                if (getMachine() == null || !fromUser)
+                    return;
+                vibrateTick();
+                int venusHostMemInt = (int) value;
+                mVenusHostMemDisplay.setText(venusHostMemInt + "M");
+                notifyFieldChange(MachineProperty.VENUS_HOST_MEM, venusHostMemInt);
             }
         });
 
@@ -778,6 +805,7 @@ public class QubeActivity extends AppCompatActivity
             public void onValueChange(com.google.android.material.slider.Slider slider, float value, boolean fromUser) {
                 if (getMachine() == null || !fromUser)
                     return;
+                vibrateTick();
                 int intValue = (int) value;
                 mTcgBufferDisplay.setText(intValue + "M");
                 notifyFieldChange(MachineProperty.TCG_BUFFER, (int) value);
@@ -980,13 +1008,15 @@ public class QubeActivity extends AppCompatActivity
         DialogInterface.OnClickListener cancelListener =
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mCPUNum.setSelection(0);
+                        mCPUNum.setValue(1);
+                        mCPUNumDisplay.setText("1");
                     }
                 };
         DialogInterface.OnClickListener helpListener =
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mCPUNum.setSelection(0);
+                        mCPUNum.setValue(1);
+                        mCPUNumDisplay.setText("1");
                         QubeActivityCommon.goToURL(QubeActivity.this, Config.CpuLink);
                     }
                 };
@@ -1067,12 +1097,7 @@ public class QubeActivity extends AppCompatActivity
         if(getMachine() == null)
             return;
 
-        final String[] items = machineDriveName == MachineProperty.SHARED_FOLDER
-                ? new String[] { "vvfat", "virtio9p" }
-                // cdrom has no nvme, it would show up as a plain disk instead of a real CD drive
-                : machineDriveName == MachineProperty.CDROM
-                ? new String[] { "ide", "virtio","ahci", "piix3-ide", "piix4-ide" }
-                : new String[] { "ide", "virtio", "ahci", "nvme", "piix3-ide", "piix4-ide" };
+        final String[] items = getDriveInterfaces(machineDriveName);
         final AlertDialog.Builder mBuilder = new MaterialAlertDialogBuilder(this);
         String driveTitle = machineDriveName == MachineProperty.SHARED_FOLDER
                 ? getString(R.string.SharedFolder)
@@ -1091,6 +1116,51 @@ public class QubeActivity extends AppCompatActivity
         });
         final AlertDialog alertDialog = mBuilder.create();
         alertDialog.show();
+    }
+
+    private String[] getDriveInterfaces(MachineProperty driveType) {
+        // Shared folder interfaces
+        if (driveType == MachineProperty.SHARED_FOLDER) {
+            switch (QubeApplication.arch) {
+                case x86:
+                case x86_64:
+                case arm:
+                case arm64:
+                case ppc:
+                case ppc64:
+                    return new String[] { "vvfat", "virtio9p" };
+                default:
+                    return new String[] { "vvfat" };
+            }
+        }
+        // CDROM has problems with nvme, using this to guard it
+        boolean isCdrom = driveType == MachineProperty.CDROM;
+
+        switch (QubeApplication.arch) {
+            // x86
+            case x86:
+            case x86_64:
+                return isCdrom
+                        ? new String[] { "ide", "virtio", "ahci", "virtio-scsi-pci", "lsi53c895a", "piix3-ide", "piix4-ide" }
+                        : new String[] { "ide", "virtio", "ahci", "nvme", "virtio-scsi-pci", "lsi53c895a", "piix3-ide", "piix4-ide" };
+            case arm:
+            case arm64:
+                return isCdrom
+                        ? new String[] { "virtio", "ahci", "virtio-scsi-pci" }
+                        : new String[] { "virtio", "ahci", "nvme", "virtio-scsi-pci" };
+            case ppc:
+            case ppc64:
+                return new String[] { "ide", "virtio", "virtio-scsi-pci", "lsi53c895a" };
+            case m68k:
+                return new String[] { "esp" };
+            case sparc:
+                return new String[] { "esp" };
+            case hppa:
+                return new String[] { "lsi53c895a" };
+            // fallback if unknown
+            default:
+                return new String[] { "ide" };
+        }
     }
 
     private int getMachineInterface(MachineProperty machineDriveName, String[] items) {
@@ -1119,7 +1189,7 @@ public class QubeActivity extends AppCompatActivity
             if(items[i].equals(hdInterfaceStr))
                 return i;
         }
-        return 0;
+        return -1;
     }
 
     public void setupSharedFolderDisk() {
@@ -1129,19 +1199,18 @@ public class QubeActivity extends AppCompatActivity
                 if (getMachine() == null)
                     return;
 
-                String shared_folder = (String) ((ArrayAdapter<?>) mSharedFolder.getAdapter()).getItem(position);
-                if (position == 0) {
-                    notifyFieldChange(MachineProperty.NON_REMOVABLE_DRIVE, new Object[]{MachineProperty.SHARED_FOLDER, shared_folder});
-                } else if (position == 1) {
+                if (position == 1) {
                     browseFileType = FileType.SHARED_DIR;
                     FileUtils.browse(QubeActivity.this, browseFileType, Config.OPEN_SHARED_DIR_REQUEST_CODE);
                   // Reset spinner to "Open" without re-triggering listener to avoid overwriting saved value
                     mSharedFolder.setOnItemSelectedListener(null);
                     mSharedFolder.setSelection(0);
                     mSharedFolder.setOnItemSelectedListener(this);
-                } else if (position > 1) {
-                    notifyFieldChange(MachineProperty.NON_REMOVABLE_DRIVE, new Object[]{MachineProperty.SHARED_FOLDER, shared_folder});
+                    return;
                 }
+
+                String shared_folder = (String) ((ArrayAdapter<?>) mSharedFolder.getAdapter()).getItem(position);
+                notifyFieldChange(MachineProperty.NON_REMOVABLE_DRIVE, new Object[]{MachineProperty.SHARED_FOLDER, shared_folder});
             }
 
             public void onNothingSelected(AdapterView<?> parentView) {
@@ -1186,8 +1255,6 @@ public class QubeActivity extends AppCompatActivity
         mMouse.setOnItemSelectedListener(null);
         mMachineType.setOnItemSelectedListener(null);
         mCPU.setOnItemSelectedListener(null);
-        mCPUNum.setOnItemSelectedListener(null);
-        mRamSize.setOnItemSelectedListener(null);
         mDisableACPI.setOnCheckedChangeListener(null);
         mDisableHPET.setOnCheckedChangeListener(null);
         mDisableTSC.setOnCheckedChangeListener(null);
@@ -1217,12 +1284,11 @@ public class QubeActivity extends AppCompatActivity
         mExtraParams.setOnFocusChangeListener(null);
     }
 
-    /**
-     * Called when the activity is first created.
-     */
+    // Called when the activity is first created.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtils.trackNightMode(this);
         setupAppEnvironment();
         clearNotifications();
         setupStrictMode();
@@ -1514,6 +1580,8 @@ public class QubeActivity extends AppCompatActivity
         populateCPUNum();
         populateRAM();
         populateTcgBuffer();
+        populateVideoMemory();
+        populateVenusHostMem();
         populateDisks();
         populateBiosType();
         populateBootDevices();
@@ -1554,9 +1622,11 @@ public class QubeActivity extends AppCompatActivity
 
     public void onFirstLaunch() {
         autoDetectAndSaveRefreshRate();
-        Installer.installFiles(this, true);
         runOnUiThread(() -> {
-            Help.showHelp(this, this::checkStoragePermission);
+            Help.showHelp(this, () -> {
+                Installer.installFiles(this, true);
+                checkStoragePermission();
+            });
             QubeSettingsManager.setFirstLaunch(this);
         });
     }
@@ -1705,6 +1775,13 @@ public class QubeActivity extends AppCompatActivity
         fadeViewEnabledState(mSoundCard, enabled, true, true, Config.FADE_IN_MS, Config.FADE_OUT_MS);
     }
 
+    private void updateVideoMemoryEnabledState() {
+        if (mVideoMemoryRow == null || mVGAConfig == null)
+            return;
+        boolean supported = GraphicsCapabilities.supportsVideoMemory(getSelectedVga());
+        mVideoMemoryRow.setVisibility(supported ? View.VISIBLE : View.GONE);
+    }
+
     // Only enabled if a supported virtio device is selected
     private void updateVenusEnabledState() {
         if (!BuildConfig.USE_VENUS)
@@ -1722,6 +1799,17 @@ public class QubeActivity extends AppCompatActivity
         } else {
             fadeViewEnabledState(mEnableVenus, venusSupported, true, true, Config.FADE_IN_MS, Config.FADE_OUT_MS);
         }
+        updateVenusHostMemEnabledState();
+    }
+
+    private void updateVenusHostMemEnabledState() {
+        if (!BuildConfig.USE_VENUS)
+            return;
+        if (mVenusHostMem == null || mEnableVenus == null)
+            return;
+        boolean enabled = GraphicsCapabilities.supportsVenus(getSelectedVga()) && mEnableVenus.isChecked();
+        fadeViewEnabledState(mVenusHostMem, enabled, true, true, Config.FADE_IN_MS, Config.FADE_OUT_MS);
+        fadeViewEnabledState(mVenusHostMemDisplay, enabled, true, false, Config.FADE_IN_MS, Config.FADE_OUT_MS);
     }
 
     private void enableRemovableDiskValues(boolean flag) {
@@ -1790,6 +1878,7 @@ public class QubeActivity extends AppCompatActivity
 
         //graphics
         mVGAConfig.setEnabled(flag);
+        mVideoMemory.setEnabled(flag);
 
         //audio
         if (Config.enableQGESound && getMachine() != null
@@ -1949,12 +2038,23 @@ public class QubeActivity extends AppCompatActivity
         mKeyboard = findViewById(R.id.keyboardval);
         mMouse = findViewById(R.id.mouseval);
 
+        // Mouse type is not available for some architectures, hide it
+        if (QubeApplication.arch == Config.Arch.hppa
+                || QubeApplication.arch == Config.Arch.sparc
+                || QubeApplication.arch == Config.Arch.m68k) {
+            View mouseRow = findViewById(R.id.mouse);
+            if (mouseRow != null)
+                mouseRow.setVisibility(View.GONE);
+        }
+
         //cpu/board
         mCPU = findViewById(R.id.cpuval);
         mMachineType = findViewById(R.id.machinetypeval);
         mCPUNum = findViewById(R.id.cpunumval);
+        mCPUNumDisplay = findViewById(R.id.cpunumValueDisplay);
         mUI = findViewById(R.id.uival);
         mRamSize = findViewById(R.id.rammemval);
+        mRamSizeDisplay = findViewById(R.id.rammemValueDisplay);
         mEnableKVM = findViewById(R.id.enablekvmval);
         mEnableMTTCG = findViewById(R.id.enablemttcgval);
         mTcgBuffer = findViewById(R.id.tcgbufferval);
@@ -2043,6 +2143,14 @@ public class QubeActivity extends AppCompatActivity
         //display
         mVGAConfig = findViewById(R.id.vgacfgval);
         mVGAConfigInfo = findViewById(R.id.vgacfgInfo);
+        mVideoMemory = findViewById(R.id.videomemval);
+        mVideoMemoryDisplay = findViewById(R.id.videoMemoryValueDisplay);
+        mVideoMemoryRow = findViewById(R.id.videomeml);
+        if (mVideoMemoryRow != null)
+            mVideoMemoryRow.setVisibility(View.GONE);
+        mVenusHostMem = findViewById(R.id.venushostmemval);
+        mVenusHostMemDisplay = findViewById(R.id.venusHostMemValueDisplay);
+        mVenusHostMemRow = findViewById(R.id.venushostmeml);
         mUIInfo = findViewById(R.id.uiInfo);
 
         // We hide the graphics section for m68k and hppa
@@ -2056,21 +2164,37 @@ public class QubeActivity extends AppCompatActivity
         mEnableVenus = findViewById(R.id.venusaccelval);
         mEnableVenusInfo = findViewById(R.id.venusaccelInfo);
         View mVenusRow = findViewById(R.id.venusaccell);
+        // Venus is not available for some architectures, hide it
+        if (QubeApplication.arch == Config.Arch.hppa
+                || QubeApplication.arch == Config.Arch.ppc
+                || QubeApplication.arch == Config.Arch.ppc64
+                || QubeApplication.arch == Config.Arch.m68k) {
+            if (mVenusRow != null)
+                mVenusRow.setVisibility(View.GONE);
+            if (mVenusHostMemRow != null)
+                mVenusHostMemRow.setVisibility(View.GONE);
+        }
 
         // if the Venus support was not compiled into this build, hide the whole option
         if (!BuildConfig.USE_VENUS) {
             if (mVenusRow != null)
                 mVenusRow.setVisibility(View.GONE);
+            if (mVenusHostMemRow != null)
+                mVenusHostMemRow.setVisibility(View.GONE);
         } else {
         // Starts disabled, called once a GL device is selected
         mEnableVenus.setEnabled(false);
         mEnableVenus.setAlpha(0.4f);
+        mVenusHostMem.setEnabled(false);
+        mVenusHostMem.setAlpha(0.4f);
+        mVenusHostMemDisplay.setAlpha(0.4f);
         mEnableVenus.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (getMachine() == null)
                     return;
                 notifyFieldChange(MachineProperty.ENABLE_VENUS, isChecked);
+                updateVenusHostMemEnabledState();
             }
         });
 
@@ -2459,10 +2583,10 @@ public class QubeActivity extends AppCompatActivity
         String biosType = getMachine().getBiosType();
         if (biosType == null || biosType.trim().isEmpty())
             biosType = "Default";
-        String text = null;
         View biosTypeRow = findViewById(R.id.biostypel);
-        if (biosTypeRow != null && biosTypeRow.getVisibility() == View.VISIBLE)
-            text = getString(R.string.bios_type_label) + ": " + biosType;
+        String text = biosTypeRow != null && biosTypeRow.getVisibility() == View.VISIBLE
+                ? getString(R.string.bios_type_label) + ": " + biosType
+                : null;
         if ("UEFI".equalsIgnoreCase(biosType)) {
             text = appendDriveFilename(getMachine().getBiosCode(), text,
                     getString(R.string.bios_code_label), false);
@@ -2497,7 +2621,18 @@ public class QubeActivity extends AppCompatActivity
         if (clear || getMachine() == null || mMachine.getSelectedItemPosition() < 2)
             mGraphicsSectionSummary.setText("");
         else {
-            String text = getString(R.string.summary_video_card) + ": " + getMachine().getVga();
+            Machine machine = getMachine();
+            String vga = machine.getVga();
+            String text = getString(R.string.summary_video_card) + ": " + vga;
+            boolean venusSupported = BuildConfig.USE_VENUS && GraphicsCapabilities.supportsVenus(vga);
+            if (venusSupported && machine.getEnableVenus() == 1) {
+                text = appendOption(getString(R.string.use_venus_accelerator_label), text);
+                text += ", " + getString(R.string.venus_host_mem_label) + ": "
+                        + machine.getVenusHostMem() + "M";
+            } else if (GraphicsCapabilities.supportsVideoMemory(vga)) {
+                text += ", " + getString(R.string.video_memory_label) + ": "
+                        + machine.getVideoMemory() + "M";
+            }
             mGraphicsSectionSummary.setText(text);
         }
     }
@@ -2608,8 +2743,16 @@ public class QubeActivity extends AppCompatActivity
         populateMachineType(getMachine().getMachineType());
         populateCPUs(getMachine().getCpu());
         populateNetDevices(getMachine().getNetworkCard());
-        SpinnerAdapter.setDiskAdapterValue(mCPUNum, getMachine().getCpuNum() + "");
-        SpinnerAdapter.setDiskAdapterValue(mRamSize, getMachine().getMemory() + "");
+        int cpuNumValue = getMachine().getCpuNum();
+        if (cpuNumValue < 1) cpuNumValue = 1;
+        if (cpuNumValue > Config.MAX_CPU_NUM) cpuNumValue = Config.MAX_CPU_NUM;
+        mCPUNum.setValue(cpuNumValue);
+        mCPUNumDisplay.setText(cpuNumValue + "");
+
+        int ramIndex = mRamValues.indexOf(getMachine().getMemory() + "");
+        if (ramIndex < 0) ramIndex = 0;
+        mRamSize.setValue(ramIndex);
+        mRamSizeDisplay.setText(mRamValues.get(ramIndex) + "M");
         seMachineDriveValue(FileType.KERNEL, getMachine().getKernel());
         seMachineDriveValue(FileType.INITRD, getMachine().getInitRd());
         String biosType = getMachine().getBiosType();
@@ -2666,6 +2809,15 @@ public class QubeActivity extends AppCompatActivity
         SpinnerAdapter.setDiskAdapterValue(mBootDevices, getMachine().getBootDevice());
         SpinnerAdapter.setDiskAdapterValue(mNetConfig, getMachine().getNetwork());
         SpinnerAdapter.setDiskAdapterValue(mVGAConfig, getMachine().getVga());
+        int videoMemory = getMachine().getVideoMemory();
+        if (videoMemory < Config.VIDEO_MEMORY_STEP) videoMemory = Config.VIDEO_MEMORY_STEP;
+        if (videoMemory > Config.VIDEO_MEMORY_MAX) videoMemory = Config.VIDEO_MEMORY_MAX;
+        mVideoMemory.setValue(videoMemory);
+        mVideoMemoryDisplay.setText(videoMemory + "M");
+        int venusHostMem = getMachine().getVenusHostMem();
+        if (venusHostMem > Config.VENUS_HOST_MEMORY_MAX) venusHostMem = Config.VENUS_HOST_MEMORY_MAX;
+        mVenusHostMem.setValue(venusHostMem);
+        mVenusHostMemDisplay.setText(venusHostMem + "M");
         SpinnerAdapter.setDiskAdapterValue(mSoundCard, getMachine().getSoundCard());
         SpinnerAdapter.setDiskAdapterValue(mUI, getMachine().getRenderer() == 1 ? "VNC" : "QGE");
         updateHostShareServerVisibility(getMachine().getRenderer() == 1);
@@ -2680,8 +2832,8 @@ public class QubeActivity extends AppCompatActivity
         mEnableKVM.setChecked(getMachine().getEnableKVM() == 1);
         mEnableMTTCG.setChecked(getMachine().getEnableMTTCG() == 1);
         int tcgBuffer = getMachine().getTcgBuffer();
-        if (tcgBuffer < TCG_MIN) tcgBuffer = TCG_MIN;
-        if (tcgBuffer > TCG_MAX) tcgBuffer = TCG_MAX;
+        if (tcgBuffer < Config.TCG_BUFFER_STEP) tcgBuffer = Config.TCG_BUFFER_STEP;
+        if (tcgBuffer > Config.TCG_BUFFER_MAX) tcgBuffer = Config.TCG_BUFFER_MAX;
         mTcgBuffer.setValue(tcgBuffer);
         mTcgBufferDisplay.setText(tcgBuffer + "M");
         mHighPrio.setChecked(getMachine().getPrio() == 1);
@@ -2698,6 +2850,7 @@ public class QubeActivity extends AppCompatActivity
 
         // updateVenusEnabledState must run AFTER the spinner's post{} completes
         mVGAConfig.post(() -> updateVenusEnabledState());
+        mVGAConfig.post(() -> updateVideoMemoryEnabledState());
 
         mMachine.setEnabled(false);
     }
@@ -2981,36 +3134,51 @@ public class QubeActivity extends AppCompatActivity
     }
 
     private void populateRAM() {
-        ArrayList<String> arraySpinner = new ArrayList<>();
+        mRamValues = new ArrayList<>();
         // We add these because some OSes need lower ram size to boot
-        arraySpinner.add("64");
-        arraySpinner.add("128");
-        for (int i = 0; i < 48; i++) {
-            arraySpinner.add(((i + 1) * 256) + "");
+        mRamValues.add("64");
+        mRamValues.add("128");
+        for (int mb = Config.RAM_STEP_MB; mb <= Config.RAM_MAX_MB; mb += Config.RAM_STEP_MB) {
+            mRamValues.add(mb + "");
         }
-        ArrayAdapter<String> ramAdapter = new ArrayAdapter<>(this, R.layout.custom_spinner_item, arraySpinner);
-        ramAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
-        mRamSize.setAdapter(ramAdapter);
-        mRamSize.invalidate();
+        mRamSize.setValueFrom(0);
+        mRamSize.setValueTo(mRamValues.size() - 1);
+        mRamSize.setStepSize(1);
+        mRamSize.setLabelFormatter(value -> mRamValues.get((int) value) + " MB");
+        mRamSize.setValue(0);
+        mRamSizeDisplay.setText(mRamValues.get(0) + "M");
     }
 
     private void populateCPUNum() {
-        String[] arraySpinner = new String[Config.MAX_CPU_NUM];
-        for (int i = 0; i < arraySpinner.length; i++) {
-            arraySpinner[i] = (i + 1) + "";
-        }
-        ArrayAdapter<String> cpuNumAdapter = new ArrayAdapter<>(this, R.layout.custom_spinner_item, arraySpinner);
-        cpuNumAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
-        mCPUNum.setAdapter(cpuNumAdapter);
-        mCPUNum.invalidate();
+        mCPUNum.setValueFrom(1);
+        mCPUNum.setValueTo(Config.MAX_CPU_NUM);
+        mCPUNum.setStepSize(1);
+        mCPUNum.setValue(1);
+        mCPUNumDisplay.setText("1");
     }
 
     private void populateTcgBuffer() {
-        mTcgBuffer.setValueFrom(TCG_MIN);
-        mTcgBuffer.setValueTo(TCG_MAX);
-        mTcgBuffer.setStepSize(TCG_MIN);
-        mTcgBuffer.setValue(TCG_MIN);
-        mTcgBufferDisplay.setText(TCG_MIN + "M");
+        mTcgBuffer.setValueFrom(Config.TCG_BUFFER_STEP);
+        mTcgBuffer.setValueTo(Config.TCG_BUFFER_MAX);
+        mTcgBuffer.setStepSize(Config.TCG_BUFFER_STEP);
+        mTcgBuffer.setValue(Config.TCG_BUFFER_STEP);
+        mTcgBufferDisplay.setText(Config.TCG_BUFFER_STEP + "M");
+    }
+
+    private void populateVideoMemory() {
+        mVideoMemory.setValueFrom(Config.VIDEO_MEMORY_STEP);
+        mVideoMemory.setValueTo(Config.VIDEO_MEMORY_MAX);
+        mVideoMemory.setStepSize(Config.VIDEO_MEMORY_STEP);
+        mVideoMemory.setValue(Config.VIDEO_MEMORY_STEP);
+        mVideoMemoryDisplay.setText(Config.VIDEO_MEMORY_STEP + "M");
+    }
+
+    private void populateVenusHostMem() {
+        mVenusHostMem.setValueFrom(0);
+        mVenusHostMem.setValueTo(Config.VENUS_HOST_MEMORY_MAX);
+        mVenusHostMem.setStepSize(Config.VENUS_HOST_MEMORY_STEP);
+        mVenusHostMem.setValue(Config.VENUS_HOST_MEMORY_STEP);
+        mVenusHostMemDisplay.setText(Config.VENUS_HOST_MEMORY_STEP + "M");
     }
 
     private void populateBiosType() {
@@ -3219,6 +3387,8 @@ public class QubeActivity extends AppCompatActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (ThemeUtils.recreateIfThemeChanged(this, newConfig))
+            return;
         invalidateOptionsMenu();
     }
 
@@ -3419,19 +3589,6 @@ public class QubeActivity extends AppCompatActivity
     }
 
 
-    private void updateFavAdapters() {
-        mHDA.getAdapter().getCount();
-        mHDB.getAdapter().getCount();
-        mHDC.getAdapter().getCount();
-        mHDD.getAdapter().getCount();
-        mCD.getAdapter().getCount();
-        mFDA.getAdapter().getCount();
-        mFDB.getAdapter().getCount();
-        mUSB.getAdapter().getCount();
-        mKernel.getAdapter().getCount();
-        mInitrd.getAdapter().getCount();
-    }
-
     @Override
     public void onMachineChanged(Machine machine, final MachineProperty property, final Object value) {
         runOnUiThread(new Runnable() {
@@ -3453,6 +3610,14 @@ public class QubeActivity extends AppCompatActivity
     public void notifyFieldChange(MachineProperty property, Object value) {
         if (viewListener != null)
             viewListener.onFieldChange(property, value);
+    }
+
+    private void vibrateTick() {
+        android.os.Vibrator vibrator = getSystemService(android.os.Vibrator.class);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(android.os.VibrationEffect.createPredefined(
+                    android.os.VibrationEffect.EFFECT_CLICK));
+        }
     }
 
     public void notifyAction(MachineAction action, Object value) {

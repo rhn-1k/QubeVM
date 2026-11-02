@@ -25,6 +25,19 @@ public final class GraphicsCapabilities {
         );
     }
 
+    //video memory
+    public static boolean supportsVideoMemory(String vga) {
+        return vga != null && (
+                vga.equals("std") ||
+                vga.equals("cirrus") ||
+                vga.equals("vmware") ||
+                vga.equals("ati-vga") ||
+                vga.equals("cirrus-vga") ||
+                vga.equals("isa-cirrus-vga") ||
+                vga.equals("bochs-display")
+        );
+    }
+
     public static boolean isVirglGpu(String vga) {
         return vga != null && vga.contains("-gl");
     }

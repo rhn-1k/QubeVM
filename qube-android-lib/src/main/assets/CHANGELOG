@@ -1,3 +1,19 @@
+* QubeVM v7.1.4
+- Rebased with QEMU 11.1.3
+- New drive interfaces: virtio-scsi-pci, lsi53c895a (x86/ARM/PPC) and esp (m68k)
+- CPU count and RAM are now sliders instead of spinners
+- New video memory and venus host memory configurations
+- Added haptic feedback to sliders
+- New About screen
+- Material 3 refresh with light theme support
+- New rounded virtual keys background
+- Unsupported options are now hidden per arch
+- Improved VNC refresh rate (30Hz -> 62.5Hz)
+- Upgraded glib (2.88.3 -> 2.90.1)
+- Upgraded slirp (4.9.4 -> 4.9.5)
+- Various code cleanup and refactoring
+
+
 * QubeVM v7.1.3
 - Added support for multi keyboard layouts (guest os should have the same language applied)
 - New Input devices (virtio-mouse-pci, virtio-mouse-device, virtio-tablet-pci, virtio-tablet-device)

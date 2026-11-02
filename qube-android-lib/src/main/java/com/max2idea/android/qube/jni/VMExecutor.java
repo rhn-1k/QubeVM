@@ -151,26 +151,16 @@ class VMExecutor extends MachineExecutor {
             paramsList.add(getMachine().getKeyboard());
         }
 
-        boolean isArm = QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64;
         String mouse = getMachine().getMouse();
-        boolean usbMouse = mouse != null && mouse.startsWith("usb-");
-
         // Arm has no ps2 keyboard, so it needs usb-kbd, which in turn needs a usb controller
-        boolean usbKbd = isArm;
-
-        if (usbMouse || usbKbd) {
-            // Arm needs specific usb type to allow usb-tablet and usb-kbd
-            if (isArm) {
-                paramsList.add("-device");
-                paramsList.add("qemu-xhci");
-            }
-
+        if (QubeApplication.arch == Config.Arch.arm || QubeApplication.arch == Config.Arch.arm64) {
+            paramsList.add("-device");
+            paramsList.add("qemu-xhci");
             paramsList.add("-usb");
-        }
-
-        if (usbKbd) {
             paramsList.add("-device");
             paramsList.add("usb-kbd");
+        } else if (mouse != null && mouse.startsWith("usb-")) {
+            paramsList.add("-usb");
         }
 
         if (mouse != null && !mouse.equals("ps2")) {
@@ -429,7 +419,13 @@ class VMExecutor extends MachineExecutor {
                     paramsList.add("memory-backend-memfd,id=venusmem,size=" + getMachine().getMemory() + "M");
                     paramsList.add("-machine");
                     paramsList.add("memory-backend=venusmem");
-                    deviceStr += ",blob=on,hostmem=" + Config.venusHostMem + ",venus=on";
+                    deviceStr += ",blob=on,hostmem=" + getMachine().getVenusHostMem() + "M,venus=on";
+                } else if (GraphicsCapabilities.supportsVideoMemory(vga)) {
+                    if (vga.equals("bochs-display")) {
+                        deviceStr += ",vgamem=" + getMachine().getVideoMemory() + "M";
+                    } else {
+                        deviceStr += ",vgamem_mb=" + getMachine().getVideoMemory();
+                    }
                 }
 
                 paramsList.add("-device");
@@ -445,6 +441,20 @@ class VMExecutor extends MachineExecutor {
             } else {
                 paramsList.add("-vga");
                 paramsList.add(vga);
+
+                if (GraphicsCapabilities.supportsVideoMemory(vga)) {
+                    // VGA class for each video card
+                    String vgaClass;
+                    if (vga.equals("std")) {
+                        vgaClass = "VGA";
+                    } else if (vga.equals("cirrus")) {
+                        vgaClass = "cirrus-vga";
+                    } else {
+                        vgaClass = "vmware-svga";
+                    }
+                    paramsList.add("-global");
+                    paramsList.add(vgaClass + ".vgamem_mb=" + getMachine().getVideoMemory());
+                }
             }
         }
     }
@@ -607,6 +617,31 @@ class VMExecutor extends MachineExecutor {
                 }
                 return;
             }
+            if ("virtio-scsi-pci".equals(hdInterface)) {
+                String driveId = "hd" + index;
+                addNoneDrive(paramsList, driveId, "disk", imagePath, cache);
+                addScsiController(paramsList);
+                paramsList.add("-device");
+                paramsList.add("scsi-hd,drive=" + driveId + ",bus=" + VIRTIO_SCSI_ID + ".0,scsi-id=" + (index + 1));
+                return;
+            }
+            if ("lsi53c895a".equals(hdInterface)) {
+                String driveId = "hd" + index;
+                addNoneDrive(paramsList, driveId, "disk", imagePath, cache);
+                addLsiScsiController(paramsList);
+                paramsList.add("-device");
+                paramsList.add("scsi-hd,drive=" + driveId + ",bus=" + LSI_SCSI_ID + ".0,scsi-id=" + (index + 1));
+                return;
+            }
+            if ("esp".equals(hdInterface)) {
+                // q800 has a built-in ESP controller exposed on esp.0,
+                // no -device esp is needed, just attach the disk to that bus
+                String driveId = "hd" + index;
+                addNoneDrive(paramsList, driveId, "disk", imagePath, cache);
+                paramsList.add("-device");
+                paramsList.add("scsi-hd,drive=" + driveId + ",bus=esp.0,scsi-id=" + (index + 1));
+                return;
+            }
             if ("piix3-ide".equals(hdInterface) || "piix4-ide".equals(hdInterface)) {
                 // XXX: piix3-ide and piix4-ide are devices, not "-drive" values
                 String ctrlId = "qubeide_" + hdInterface.replace("-", "_");
@@ -641,6 +676,25 @@ class VMExecutor extends MachineExecutor {
     }
 
     private static final String AHCI_ID = "qubeahci";
+
+    private static final String VIRTIO_SCSI_ID = "qubevirtioscsi";
+    private static final String LSI_SCSI_ID = "qubelsi";
+
+    private void addScsiController(ArrayList<String> paramsList) {
+        String dev = "virtio-scsi-pci,id=" + VIRTIO_SCSI_ID;
+        if (!paramsList.contains(dev)) {
+            paramsList.add("-device");
+            paramsList.add(dev);
+        }
+    }
+
+    private void addLsiScsiController(ArrayList<String> paramsList) {
+        String dev = "lsi53c895a,id=" + LSI_SCSI_ID;
+        if (!paramsList.contains(dev)) {
+            paramsList.add("-device");
+            paramsList.add(dev);
+        }
+    }
 
     private void addAhciController(ArrayList<String> paramsList) {
         String dev = "ich9-ahci,id=" + AHCI_ID;
@@ -734,6 +788,21 @@ class VMExecutor extends MachineExecutor {
                 addAhciController(paramsList);
                 paramsList.add("-device");
                 paramsList.add("ide-cd,drive=" + cdDeviceName + ",bus=" + AHCI_ID + ".4");
+            } else if ("virtio-scsi-pci".equals(cdInterface)) {
+                addNoneDrive(paramsList, cdDeviceName, "cdrom", cdImagePath, null);
+                addScsiController(paramsList);
+                paramsList.add("-device");
+                paramsList.add("scsi-cd,drive=" + cdDeviceName + ",bus=" + VIRTIO_SCSI_ID + ".0,scsi-id=0");
+            } else if ("lsi53c895a".equals(cdInterface)) {
+                addNoneDrive(paramsList, cdDeviceName, "cdrom", cdImagePath, null);
+                addLsiScsiController(paramsList);
+                paramsList.add("-device");
+                paramsList.add("scsi-cd,drive=" + cdDeviceName + ",bus=" + LSI_SCSI_ID + ".0,scsi-id=0");
+            } else if ("esp".equals(cdInterface)) {
+                // built-in ESP on q800, attach directly to esp.0
+                addNoneDrive(paramsList, cdDeviceName, "cdrom", cdImagePath, null);
+                paramsList.add("-device");
+                paramsList.add("scsi-cd,drive=" + cdDeviceName + ",bus=esp.0,scsi-id=4");
             } else if ("piix3-ide".equals(cdInterface) || "piix4-ide".equals(cdInterface)) {
                 String ctrlId = "qubeide_" + cdInterface.replace("-", "_");
                 if (!paramsList.contains(cdInterface + ",id=" + ctrlId)) {
@@ -814,7 +883,6 @@ class VMExecutor extends MachineExecutor {
                     QubeApplication.getInstance().getString(R.string.EjectedDevice) + ": " + dev);
         return response;
     }
-
 
     /**
      * Starts the service that will later start the qemu process
@@ -916,7 +984,6 @@ class VMExecutor extends MachineExecutor {
         //XXX: first we eject any previous media
         String response = VMExecutor.this.ejectdev(dev);
 
-        // if there is no media there is nothing else to do
         if (imagePath == null || imagePath.trim().equals("")) {
             return true;
         }

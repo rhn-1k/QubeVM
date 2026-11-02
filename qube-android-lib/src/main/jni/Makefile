@@ -40,7 +40,7 @@ DEL_LIBSDIR=rm -rf $(NDK_PROJECT_PATH)/libs/* \
 	$(QUBE_APP_PPC)/jniLibs/* \
 	$(QUBE_APP_SPARC)/jniLibs/* \
 	$(QUBE_APP_M68K)/jniLibs/* \
-	$(QUBE_APP_HPPA)/jniLibs/* \
+	$(QUBE_APP_HPPA)/jniLibs/*
 
 GLIB_BUILD_DIR=$(QUBE_JNI_ROOT)/glib/build
 GLIB_CROSS_FILE=$(QUBE_JNI_ROOT)/glib-android-cross.ini

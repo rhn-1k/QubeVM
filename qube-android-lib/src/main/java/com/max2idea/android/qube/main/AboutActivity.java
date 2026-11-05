@@ -58,7 +58,7 @@ public final class AboutActivity extends AppCompatActivity {
         ));
         engine.setBackground(boxBackground);
 
-        findViewById(R.id.about_github).setOnClickListener(view -> openUrl(Config.downloadLink));
+        findViewById(R.id.about_github).setOnClickListener(view -> openUrl(Config.githubLink));
         findViewById(R.id.about_discord).setOnClickListener(view -> openUrl(Config.discordLink));
 
         // Something?

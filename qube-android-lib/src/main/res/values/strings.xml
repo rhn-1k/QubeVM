@@ -118,6 +118,8 @@
     <string name="AlwaysToolbar">Always Toolbar</string>
     <string name="CheckSoftwareUpdates">Check for Software Updates</string>
     <string name="CheckSoftwareUpdatesSummary">Check for software updates on startup</string>
+    <string name="ChangelogNotFound">We couldn\'t find the changelog.</string>
+    <string name="ChangelogFetchFailed">Changelog is currently unavailable. Open the release page to view the latest changes.</string>
     <string name="FailedToSaveLogFile">\"Failed to save log file: \"</string>
     <string name="SharedFolder">Shared Folder</string>
     <string name="SharedFolderNotSupported">Shared Folder location is not accessible on this device and was skipped. Please choose a folder on the device\'s main internal storage.</string>
@@ -168,7 +170,6 @@
     <string name="CopyTo">Save</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="NewVersionWarning">There is a new version available with fixes and new features. Do you want to update?</string>
     <string name="Ok">OK</string>
     <string name="TrackpadDescr">Trackpad (Phone)</string>
     <string name="TouchScreen">Touchscreen (Tablet)</string>

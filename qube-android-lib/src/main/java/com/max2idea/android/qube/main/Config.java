@@ -66,12 +66,14 @@ public class Config {
 
     public static final String defaultDNSServer = "1.1.1.1";
     // App Config
-    public static final String downloadLink = "https://github.com/rhn-1k/QubeVM/releases";
+    public static final String githubLink = "https://github.com/rhn-1k/QubeVM/releases";
     public static final String guidesLink = "https://qubevm.vercel.app/docs/index.html";
     public static final String CpuLink = "https://qubevm.vercel.app/docs/board.html";
     public static final String toolsLink = "https://qubevm.vercel.app/docs/advanced.html";
     public static final String NetworkLink = "https://qubevm.vercel.app/docs/video-audio-network.html";
-    public static final String newVersionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
+    public static final String versionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
+    public static final String newVersionLink = "https://github.com/rhn-1k/QubeVM/releases/tag/";
+    public static final String changelogLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/CHANGELOG";
     public static final String discordLink = "https://discord.gg/MrbJ9QNXNJ";
 
     // ???
@@ -155,7 +157,7 @@ public class Config {
     public static boolean enableMTTCG = true;
 
     //Change to true in prod if you want to be notified by default for new versions
-    public static boolean defaultCheckNewVersion = false;
+    public static boolean defaultCheckNewVersion = true;
 
     //enable tracing
     // make sure you have access to the dir/files below

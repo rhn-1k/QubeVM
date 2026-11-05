@@ -117,6 +117,8 @@
     <string name="AlwaysToolbar">Всегда панель инструментов</string>
     <string name="CheckSoftwareUpdates">Проверять обновления ПО</string>
     <string name="CheckSoftwareUpdatesSummary">Проверять обновления ПО при запуске</string>
+    <string name="ChangelogNotFound">Не удалось найти журнал изменений.</string>
+    <string name="ChangelogFetchFailed">Журнал изменений сейчас недоступен. Откройте страницу релиза, чтобы увидеть последние изменения.</string>
     <string name="FailedToSaveLogFile">\"Не удалось сохранить файл журнала: \"</string>
     <string name="SharedFolder">Общая папка</string>
     <string name="SharedFolderNotSupported">Расположение общей папки недоступно на этом устройстве и было пропущено. Пожалуйста, выберите папку в основном внутреннем хранилище устройства.</string>
@@ -167,7 +169,6 @@
     <string name="CopyTo">Сохранить</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
-    <string name="NewVersionWarning">Доступна новая версия с исправлениями и новыми функциями. Хотите обновить?</string>
     <string name="Ok">ОК</string>
     <string name="TrackpadDescr">Трекпад (телефон)</string>
     <string name="TouchScreen">Сенсорный экран (планшет)</string>

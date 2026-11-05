@@ -32,6 +32,6 @@ public abstract class MachineExecutor {
 
     public abstract String getDeviceName(MachineProperty driveProperty);
 
-
+    public abstract String getVmState();
 
 }

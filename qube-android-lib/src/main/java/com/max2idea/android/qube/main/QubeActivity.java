@@ -270,6 +270,7 @@ public class QubeActivity extends AppCompatActivity
                 if (MachineController.getInstance().isRunning() || status_changed == MachineStatus.Running) {
                     mStatus.setImageResource(R.drawable.power_settings_new_24px);
                     mStatusText.setText(R.string.Running);
+                    refreshVmStateText();
                     //XXX: we block the user from changing the drives from this activity
                     // while running, since the VM thread will block on it
                     enableRemovableDiskValues(true);
@@ -292,6 +293,35 @@ public class QubeActivity extends AppCompatActivity
                 }
             });
         }
+
+    // Uses qemu real state over QMP if enabled, else uses app-side status
+    private void refreshVmStateText() {
+        if (!QubeSettingsManager.getEnableQmp(this))
+            return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String state = MachineController.getInstance().getVmState();
+                if (state.isEmpty())
+                    return;
+                final String label = formatVmState(state);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (MachineController.getInstance().isRunning())
+                            mStatusText.setText(label);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    // Makes text format better
+    // "guest-panicked" -> "Guest panicked"
+    private String formatVmState(String state) {
+        String s = state.replace('-', ' ').replace('_', ' ');
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
 
     private void onTap() {
         String userid = QubeApplication.getUserId(this);

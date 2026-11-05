@@ -950,16 +950,17 @@ class VMExecutor extends MachineExecutor {
         return null;
     }
 
-    //TODO: re-enable getting status from the vm
-    // for now, this function is no-op
+    // Real run-state from qemu over QMP
+    @Override
     public String getVmState() {
+        if (!QubeSettingsManager.getEnableQmp(QubeApplication.getInstance()))
+            return "";
         String res = QmpClient.sendCommand(QmpClient.getStateCommand());
         String state = "";
         if (res != null && !res.equals("")) {
             try {
                 JSONObject resObj = new JSONObject(res);
-                String resInfo = resObj.getString("return");
-                JSONObject resInfoObj = new JSONObject(resInfo);
+                JSONObject resInfoObj = resObj.getJSONObject("return");
                 state = resInfoObj.getString("status");
             } catch (JSONException e) {
                 e.printStackTrace();

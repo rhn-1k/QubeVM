@@ -27,7 +27,6 @@ public abstract class MachineExecutor {
 
     abstract protected void stopvm(final int restart);
 
-
     public abstract boolean changeRemovableDevice(MachineProperty drive, String diskValue);
 
     public abstract String getDeviceName(MachineProperty driveProperty);

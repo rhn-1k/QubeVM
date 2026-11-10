@@ -255,7 +255,6 @@ diff -ru --no-dereference qemu-11.1.3/hw/display/vga.c qemu-11.1.3-work/hw/displ
      g_free(snap);
      memset(s->invalidated_y_table, 0, sizeof(s->invalidated_y_table));
  }
-Only in qemu-11.1.3-work/hw/display: vga.c.orig
 diff -ru --no-dereference qemu-11.1.3/hw/display/virtio-gpu-gl.c qemu-11.1.3-work/hw/display/virtio-gpu-gl.c
 --- qemu-11.1.3/hw/display/virtio-gpu-gl.c	2026-09-29 16:33:20.000000000 +0300
 +++ qemu-11.1.3-work/hw/display/virtio-gpu-gl.c	2026-10-20 11:25:55.467963001 +0300
@@ -271,6 +270,28 @@ diff -ru --no-dereference qemu-11.1.3/hw/display/virtio-gpu-gl.c qemu-11.1.3-wor
          map = qemu_ram_mmap(-1, b->conf.hostmem, qemu_real_host_page_size(),
                              0, 0);
          if (map == MAP_FAILED) {
+diff -ru --no-dereference qemu-11.1.3/hw/display/virtio-gpu-pci.c qemu-11.1.3-work/hw/display/virtio-gpu-pci.c
+--- qemu-11.1.3/hw/display/virtio-gpu-pci.c	2026-09-29 16:33:20.000000000 +0300
++++ qemu-11.1.3-work/hw/display/virtio-gpu-pci.c	2026-10-20 11:25:55.471963001 +0300
+@@ -14,6 +14,7 @@
+ #include "qemu/osdep.h"
+ #include "qapi/error.h"
+ #include "qemu/module.h"
++#include "qemu/host-utils.h"
+ #include "hw/pci/pci.h"
+ #include "hw/core/qdev-properties.h"
+ #include "hw/virtio/virtio.h"
+@@ -35,6 +36,10 @@
+     if (virtio_gpu_hostmem_enabled(g->conf)) {
+         vpci_dev->msix_bar_idx = 1;
+         vpci_dev->modern_mem_bar_idx = 2;
++        // QUBE: round hostmem up, pci_register_bar needs a power of two
++        if (!is_power_of_2(g->conf.hostmem)) {
++            g->conf.hostmem = pow2ceil(g->conf.hostmem);
++        }
+         memory_region_init(&g->hostmem, OBJECT(g), "virtio-gpu-hostmem",
+                            g->conf.hostmem);
+         pci_register_bar(&vpci_dev->pci_dev, 4,
 diff -ru --no-dereference qemu-11.1.3/hw/input/ps2.c qemu-11.1.3-work/hw/input/ps2.c
 --- qemu-11.1.3/hw/input/ps2.c	2026-09-29 16:33:20.000000000 +0300
 +++ qemu-11.1.3-work/hw/input/ps2.c	2026-10-20 11:25:55.475963001 +0300
@@ -380,7 +401,6 @@ diff -ru --no-dereference qemu-11.1.3/hw/input/ps2.c qemu-11.1.3-work/hw/input/p
  }
  
  static void ps2_mouse_reset_hold(Object *obj, ResetType type)
-Only in qemu-11.1.3-work/hw/input: ps2.c.orig
 diff -ru --no-dereference qemu-11.1.3/hw/input/trace-events qemu-11.1.3-work/hw/input/trace-events
 --- qemu-11.1.3/hw/input/trace-events	2026-09-29 16:33:20.000000000 +0300
 +++ qemu-11.1.3-work/hw/input/trace-events	2026-10-20 11:25:55.479963001 +0300

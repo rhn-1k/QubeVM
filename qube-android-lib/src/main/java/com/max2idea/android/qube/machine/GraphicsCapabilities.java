@@ -29,11 +29,8 @@ public final class GraphicsCapabilities {
     public static boolean supportsVideoMemory(String vga) {
         return vga != null && (
                 vga.equals("std") ||
-                vga.equals("cirrus") ||
                 vga.equals("vmware") ||
                 vga.equals("ati-vga") ||
-                vga.equals("cirrus-vga") ||
-                vga.equals("isa-cirrus-vga") ||
                 vga.equals("bochs-display")
         );
     }

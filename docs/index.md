@@ -1,5 +1,8 @@
 # Home
 
+> [!WARNING]
+> **Deprecated.** These docs are no longer updated and may be removed at any time. See the new docs at https://qubevm.vercel.app/docs.
+
 Welcome to QubeVM, the official distribution site for
 QubeVM Emulator. You can browse through the links to download and
 read the tutorials to know more on how to make QubeVM work

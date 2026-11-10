@@ -65,7 +65,7 @@ Not available by default, stock Android does not expose `/dev/kvm` to apps, so T
 Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures.
 
 ## Docs
-For a detailed information, check the [Docs](docs/index.md)
+For a detailed information, check the [Docs](https://qubevm.vercel.app/docs)
 
 ## License
 This project is licensed under the **GNU General Public License v3.0**

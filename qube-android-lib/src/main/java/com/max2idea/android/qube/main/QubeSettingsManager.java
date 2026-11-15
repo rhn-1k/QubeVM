@@ -106,6 +106,12 @@ public class QubeSettingsManager extends AppCompatActivity {
         edit.apply();
     }
 
+    // log
+    public static boolean getLogToStorage(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean("logToStorage", false);
+    }
+
     // exit code
     public static int getExitCode(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

@@ -19,8 +19,6 @@ public class QubeEmuActivity extends QubeActivity {
         Config.enableQGESound = true;
         Config.machineFolder = Config.machineFolder + "other/hppa_machines/";
         super.onCreate(bundle);
-        // TODO: change location to something that the user will have access outside of qube
-        // like internal storage
         Logger.setupLogFile("/qube/qube-hppa-log.txt");
     }
 

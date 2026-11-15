@@ -5,10 +5,12 @@ Copyright (C) Rhn 2026
 package com.max2idea.android.qube.log;
 
 import android.app.Activity;
+import android.content.Context;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Environment;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -28,6 +30,7 @@ import com.max2idea.android.qube.files.FileUtils;
 import com.max2idea.android.qube.machine.Machine.FileType;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeApplication;
+import com.max2idea.android.qube.main.QubeSettingsManager;
 import com.max2idea.android.qube.toast.ToastUtils;
 import com.max2idea.android.qube.utils.ClipboardUtils;
 
@@ -40,6 +43,7 @@ public class Logger {
     public static final String TAG = "Logger";
     private static final int MAX_DISPLAY_CHARS = 50 * 1024;
     private static final int HALF_DISPLAY_CHARS = MAX_DISPLAY_CHARS / 2;
+    private static String logFileSuffix = null;
 
     private static String getLogFilePath() {
         return Config.logFilePath == null ? "" : Config.logFilePath;
@@ -318,6 +322,23 @@ public class Logger {
     }
 
     public static void setupLogFile(String filePath) {
-        Config.logFilePath = QubeApplication.getInstance().getCacheDir().toString() + filePath;
+        logFileSuffix = filePath;
+        Context context = QubeApplication.getInstance();
+        if (QubeSettingsManager.getLogToStorage(context)) {
+            File dir = new File(Environment.getExternalStorageDirectory(), Config.APP_NAME + "/logs");
+            if ((dir.isDirectory() || dir.mkdirs()) && dir.canWrite()) {
+                Config.logFilePath = new File(dir, new File(filePath).getName()).getPath();
+                return;
+            }
+            Log.w(TAG, "Storage log dir is not writable, using cache");
+        }
+        Config.logFilePath = context.getCacheDir().toString() + filePath;
+    }
+
+    // Resolve the log location again so a setting change applies on next VM start
+    public static void refreshLogFile() {
+        if (logFileSuffix != null) {
+            setupLogFile(logFileSuffix);
+        }
     }
 }

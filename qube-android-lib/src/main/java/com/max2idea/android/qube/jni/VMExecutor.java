@@ -950,25 +950,6 @@ class VMExecutor extends MachineExecutor {
         return null;
     }
 
-    // Real run-state from qemu over QMP
-    @Override
-    public String getVmState() {
-        if (!QubeSettingsManager.getEnableQmp(QubeApplication.getInstance()))
-            return "";
-        String res = QmpClient.sendCommand(QmpClient.getStateCommand());
-        String state = "";
-        if (res != null && !res.equals("")) {
-            try {
-                JSONObject resObj = new JSONObject(res);
-                JSONObject resInfoObj = resObj.getJSONObject("return");
-                state = resInfoObj.getString("status");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return state;
-    }
-
     /**
      * Function sends a command via qmp to change or eject the removable device
      *

@@ -39,6 +39,12 @@
         android:title="@string/ClearDirHistory"
         android:summary="@string/ClearDirHistorySummary" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="logToStorage"
+        android:summary="@string/LogToStorageSummary"
+        android:title="@string/LogToStorage" />
+
 </PreferenceCategory>
 
     <PreferenceCategory android:title="Screen">

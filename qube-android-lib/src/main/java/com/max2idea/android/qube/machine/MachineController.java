@@ -146,13 +146,6 @@ public class MachineController {
         return getCurrStatus() == MachineStatus.Running;
     }
 
-    // Real run-state from the emulator over QMP
-    public String getVmState() {
-        if (!isRunning())
-            return "";
-        return getMachineExecutor().getVmState();
-    }
-
     public String getMachineName() {
         return machineExecutor.getMachine().getName();
     }

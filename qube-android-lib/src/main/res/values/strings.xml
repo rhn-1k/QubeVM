@@ -198,6 +198,8 @@
     <string name="ClearDirHistoryConfirm">This will clear all remembered file paths
      Continue?</string>
     <string name="DirHistoryCleared">Directory history cleared</string>
+    <string name="LogToStorage">Save log to internal storage</string>
+    <string name="LogToStorageSummary">Write the log to the QubeVM folder, applies on next VM start</string>
 
     <!-- Main activity -->
 

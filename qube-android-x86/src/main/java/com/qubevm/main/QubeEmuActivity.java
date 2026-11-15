@@ -21,8 +21,6 @@ public class QubeEmuActivity extends QubeActivity {
             Config.enableMTTCG = false;
         }
         super.onCreate(bundle);
-        // TODO: change location to something that the user will have access outside of qube
-        // like internal storage
         Logger.setupLogFile("/qube/qube-x86-log.txt");
     }
 

@@ -197,6 +197,8 @@
     <string name="ClearDirHistoryConfirm">Это очистит все запомненные пути к файлам
      Продолжить?</string>
     <string name="DirHistoryCleared">История каталогов очищена</string>
+    <string name="LogToStorage">Сохранять журнал во внутреннюю память</string>
+    <string name="LogToStorageSummary">Записывать журнал в папку QubeVM, применяется при следующем запуске ВМ</string>
 
     <!-- Main activity -->
 

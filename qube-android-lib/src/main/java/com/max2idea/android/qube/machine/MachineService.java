@@ -25,6 +25,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.qube.emu.lib.R;
 import com.max2idea.android.qube.files.FileUtils;
+import com.max2idea.android.qube.log.Logger;
 import com.max2idea.android.qube.main.Config;
 import com.max2idea.android.qube.main.QubeActivity;
 import com.max2idea.android.qube.main.QubeSettingsManager;
@@ -81,6 +82,7 @@ public class MachineService extends Service {
             setUpAsForeground(text);
 
             // start logging
+            Logger.refreshLogFile();
             FileUtils.startLogging();
 
             // start the thread in the background

@@ -4,7 +4,7 @@
 
 <h1 align="center">QubeVM</h1>
 
-QubeVM is a QEMU-based virtual machine emulator for Android
+A QEMU-based virtual machine emulator and virtualizer for Android devices
 
 <p align="center">
   <a href="https://discord.gg/dZbQeakC6Y"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=ffffff&style=flat" alt="Discord"></a>
@@ -55,8 +55,8 @@ Qube supports two display modes:
 
 ## Network Support
 
-- **TAP**, bridges the guest directly to the host's network stack with its own IP, like a real physical machine. Requires root (`/dev/net/tun`)
-- **User (SLIRP)**, guest sits behind a virtual router. No root needed (in short, acts like ethernet)
+- **TAP**, bridges the guest directly to the host's network stack with its own IP, like a real physical machine. Requires root (`/dev/net/tun`) and more setup steps
+- **User (SLIRP)**, guest sits behind a virtual router. No root needed
 
 ## KVM Support
 
@@ -65,7 +65,7 @@ Not available by default, stock Android does not expose `/dev/kvm` to apps, so T
 Users running a **custom kernel** with KVM enabled can use KVM acceleration instead of TCG for matching host/guest architectures.
 
 ## Docs
-For a detailed information, check the [Docs](https://qubevm.vercel.app/docs)
+For a detailed information, check the [Docs](https://qubevm.vercel.app/docs]
 
 ## License
 This project is licensed under the **GNU General Public License v3.0**

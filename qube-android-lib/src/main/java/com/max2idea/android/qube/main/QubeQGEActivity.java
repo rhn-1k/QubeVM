@@ -9,8 +9,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
@@ -43,11 +45,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.MenuItemCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.max2idea.android.qube.utils.ToolbarUtils;
 
@@ -212,6 +216,8 @@ public class QubeQGEActivity extends AppCompatActivity
             finish();
         } else if (item.getItemId() == R.id.itemMouse) {
             promptMouseMode();
+        } else if (item.getItemId() == R.id.itemZoom) {
+            toggleMagnifier();
         } else if (item.getItemId() == KEYBOARD || item.getItemId() == R.id.itemKeyboard) {
             //XXX: need to delay to work properly
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -403,6 +409,13 @@ public class QubeQGEActivity extends AppCompatActivity
         }).show();
     }
 
+    // Magenifier to move content, see QubeQGESurfave
+    private void toggleMagnifier() {
+        boolean enable = !mSurface.isZoomMode();
+        mSurface.setZoomMode(enable);
+        ToastUtils.toastShortTop(this, getString(enable ? R.string.magnifier_on : R.string.magnifier_off));
+    }
+
     private void promptMouseMode() {
         String[] items = {
                 getString(R.string.TrackpadDescr),
@@ -502,6 +515,13 @@ public class QubeQGEActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         getMenuInflater().inflate(R.menu.qgeactivitymenu, menu);
+
+        MenuItem zoomItem = menu.findItem(R.id.itemZoom);
+        if (zoomItem != null && mSurface != null && mSurface.isZoomMode()) {
+            // lit up while the magnifier is on
+            MenuItemCompat.setIconTintList(zoomItem, ColorStateList.valueOf(
+                    MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.CYAN)));
+        }
 
         int maxMenuItemsShown = 4;
         int actionShow = MenuItem.SHOW_AS_ACTION_IF_ROOM;
@@ -909,7 +929,7 @@ public class QubeQGEActivity extends AppCompatActivity
     public void processTrackPadEvents(MotionEvent event) {
         if (mouseMode == MouseMode.TOUCHSCREEN)
             return;
-        mSurface.onTouchProcess(mSurface, event);
+        mSurface.onActivityTouch(event);
     }
 
     private void checkPendingActions() {

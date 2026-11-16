@@ -37,6 +37,9 @@
         Выберите Мышь = «usb-tablet» в Qube перед загрузкой машины.</string>
     <string name="externalMouseInstructions">Подключите USB/Bluetooth-мышь к устройству Android.</string>
     <string name="toggle_virtual_keys">Переключить виртуальные клавиши</string>
+    <string name="magnifier">Лупа</string>
+    <string name="magnifier_on">Масштабирование щипком, прокрутка перетаскиванием двумя пальцами</string>
+    <string name="magnifier_off">Лупа выключена</string>
     <string name="welcomeText">Добро пожаловать в Qube Emulator, порт QEMU для устройств Android. Qube может эмулировать различные операционные системы. Ссылки на загрузки, руководства и образы виртуальных дисков вы найдёте в Qube Вики. Загружайте программы и образы только с надёжных сайтов!</string>
     <string name="checkForUpdates">Проверять обновления при запуске</string>
     <string name="sdcardNotMounted">Ошибка: SD-карта не подключена</string>

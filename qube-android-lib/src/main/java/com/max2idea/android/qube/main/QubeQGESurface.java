@@ -29,22 +29,97 @@ import java.util.ArrayList;
 public class QubeQGESurface extends View implements View.OnTouchListener {
     private static final String TAG = "QubeQGESurface";
 
+    private static final float MAX_ZOOM = 6f;
+    // external mouse scrolls the zoomed picture inside this band along an edge (fraction of the shorter side)
+    private static final float EDGE_ZONE = 0.08f;
+    private static final float EDGE_SCROLL_DP_PER_FRAME = 10f;
+
     MouseState mouseState = new MouseState();
     // true from ACTION_DOWN until the finger has moved past the touch slop
     private boolean firstTouch = false;
     private final float touchSlop;
+    private final float edgeScrollSpeed;
 
     private final QubeQGEActivity QGEActivity;
     private final PointerAcceleration pointerAcceleration;
     private final Paint framePaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private final Matrix frameMatrix = new Matrix();
     private Bitmap frameBitmap;
- 
+
+    // Magnifier, zoom 1 is the normal fit-to-view picture, pan is how far the picture is
+    // shifted from the view center, in view pixels
+    private boolean zoomMode = false;
+    private float zoom = 1f;
+    private float panX = 0f;
+    private float panY = 0f;
+
+    // Two finger zoom/pan gesture, swallows all touch events until the last finger is up
+    private boolean gestureActive = false;
+    private boolean gestureHasBaseline = false;
+    private boolean gestureScaling = false;
+    private float gestureStartSpan = 0f;
+    private float gestureLastSpan = 0f;
+    private float gestureLastX = 0f;
+    private float gestureLastY = 0f;
+    private final float[] fingers = new float[3];
+    private final int[] tmpLocation = new int[2];
+    // trackpad events come in via the activity, so they are in window coordinates, not ours
+    private boolean eventsInWindowSpace = false;
+
+    // Touchscreen mode with the magnifier on: the press is held back for a tap timeout so
+    // a second finger arriving can still turn it into a zoom instead of a click
+    private boolean absDownPending = false;
+    private int absDownButton = 0;
+    private float absDownX = 0f;
+    private float absDownY = 0f;
+    private final Runnable absDownRunnable = new Runnable() {
+        @Override
+        public void run() {
+            flushAbsoluteDown();
+        }
+    };
+
+    // External mouse parked near an edge keeps scrolling the zoomed picture
+    private float hoverX = 0f;
+    private float hoverY = 0f;
+    private boolean hoverActive = false;
+    private boolean edgeScrollPosted = false;
+    private final Runnable edgeScrollRunnable = new Runnable() {
+        @Override
+        public void run() {
+            edgeScrollPosted = false;
+            if (!zoomMode || zoom <= 1f || !hoverActive || frameBitmap == null)
+                return;
+            float w = getWidth();
+            float h = getHeight();
+            float zone = Math.min(w, h) * EDGE_ZONE;
+            float sx = edgeStrength(hoverX, w, zone);
+            float sy = edgeStrength(hoverY, h, zone);
+            if (sx == 0f && sy == 0f)
+                return;
+            updateFrameMatrix();
+            float oldX = panX;
+            float oldY = panY;
+            panX += sx * edgeScrollSpeed;
+            panY += sy * edgeScrollSpeed;
+            updateFrameMatrix(); // clamps
+            if (panX == oldX && panY == oldY)
+                return; // already at the edge of the picture
+            invalidate();
+            // the picture moved under a parked pointer, so the guest pointer has to follow
+            float[] pt = toFrameBufferPoint(hoverX, hoverY);
+            QGEActivity.sendAbsoluteMove(pt[0], pt[1]);
+            edgeScrollPosted = true;
+            postOnAnimation(this);
+        }
+    };
+
     public QubeQGESurface(QubeQGEActivity QGEActivity, Context context) {
         super(context);
         this.QGEActivity = QGEActivity;
         this.pointerAcceleration = new PointerAcceleration(context);
         this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        this.edgeScrollSpeed = EDGE_SCROLL_DP_PER_FRAME * context.getResources().getDisplayMetrics().density;
         setOnTouchListener(this);
         setOnGenericMotionListener(new ExternalMouseListener());
         setFocusable(true);
@@ -52,23 +127,69 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
     }
 
     public void setFrameBitmap(Bitmap bitmap) {
+        boolean sizeChanged = frameBitmap == null || bitmap == null
+                || frameBitmap.getWidth() != bitmap.getWidth()
+                || frameBitmap.getHeight() != bitmap.getHeight();
         frameBitmap = bitmap;
+        if (sizeChanged) {
+            // the guest changed resolution, the old zoom no longer points at anything
+            zoom = 1f;
+            panX = 0f;
+            panY = 0f;
+        }
         requestLayout();
         postInvalidate();
+    }
+
+    public boolean isZoomMode() {
+        return zoomMode;
+    }
+
+    public void setZoomMode(boolean enabled) {
+        if (zoomMode == enabled)
+            return;
+        zoomMode = enabled;
+        if (!enabled) {
+            flushAbsoluteDown();
+            gestureActive = false;
+            gestureHasBaseline = false;
+            hoverActive = false;
+            removeCallbacks(edgeScrollRunnable);
+            edgeScrollPosted = false;
+            zoom = 1f;
+            panX = 0f;
+            panY = 0f;
+        }
+        invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (frameBitmap == null)
             return;
-        float sx = getWidth() / (float) frameBitmap.getWidth();
-        float sy = getHeight() / (float) frameBitmap.getHeight();
-        float scale = Math.min(sx, sy);
-        frameMatrix.setScale(scale, scale);
-        frameMatrix.postTranslate(
-                (getWidth() - frameBitmap.getWidth() * scale) / 2f,
-                (getHeight() - frameBitmap.getHeight() * scale) / 2f);
+        updateFrameMatrix();
         canvas.drawBitmap(frameBitmap, frameMatrix, framePaint);
+    }
+
+    // Maps framebuffer to view coords, fit and center, then magnifier zoom/pan
+    // toFrameBufferPoint() inverts this matrix
+    private void updateFrameMatrix() {
+        if (frameBitmap == null)
+            return;
+        float vw = getWidth();
+        float vh = getHeight();
+        if (vw <= 0f || vh <= 0f)
+            return;
+        float bw = frameBitmap.getWidth();
+        float bh = frameBitmap.getHeight();
+        float scale = Math.min(vw / bw, vh / bh) * zoom;
+        // keep the picture from being dragged off screen, an axis that fits stays centered
+        float maxPanX = Math.max(0f, (bw * scale - vw) / 2f);
+        float maxPanY = Math.max(0f, (bh * scale - vh) / 2f);
+        panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+        panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
+        frameMatrix.setScale(scale, scale);
+        frameMatrix.postTranslate((vw - bw * scale) / 2f + panX, (vh - bh * scale) / 2f + panY);
     }
 
     public void refreshSurfaceView() {
@@ -87,6 +208,7 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
     private float[] toFrameBufferPoint(float x, float y) {
         if (frameBitmap == null)
             return new float[]{x, y};
+        updateFrameMatrix();
         Matrix inverse = new Matrix();
         frameMatrix.invert(inverse);
         float[] pt = new float[]{x, y};
@@ -94,7 +216,19 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
         return pt;
     }
 
+    // Trackpad events are delivered to the activity, which hands them over here
+    public boolean onActivityTouch(MotionEvent event) {
+        eventsInWindowSpace = true;
+        try {
+            return onTouchProcess(this, event);
+        } finally {
+            eventsInWindowSpace = false;
+        }
+    }
+
     public boolean onTouchProcess(View v, MotionEvent event) {
+        if (zoomMode && handleZoomGesture(event))
+            return true;
         int action = event.getActionMasked();
         mouseState.x = event.getX();
         mouseState.y = event.getY();
@@ -102,6 +236,173 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
         processMouseMovement(action, event.getToolType(0), mouseState.x, mouseState.y);
         processMouseButton(event, action, mouseState.x, mouseState.y);
         return false;
+    }
+
+    // Two fingers, pinch zooms, moving them together scrolls, fingers only (no mouse/stylus)
+    // Returns true when the event was consumed by the gesture
+    private boolean handleZoomGesture(MotionEvent event) {
+        if (frameBitmap == null)
+            return false;
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                gestureActive = false; // a new touch always starts clean
+                return false;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if (!gestureActive && event.getToolType(0) == MotionEvent.TOOL_TYPE_FINGER)
+                    startGesture(event);
+                else if (gestureActive)
+                    setBaseline(event, -1); // another finger joined, centroid jumps
+                return gestureActive;
+            case MotionEvent.ACTION_MOVE:
+                if (!gestureActive)
+                    return false;
+                updateGesture(event);
+                return true;
+            case MotionEvent.ACTION_POINTER_UP:
+                if (!gestureActive)
+                    return false;
+                setBaseline(event, event.getActionIndex()); // rebase without the lifted finger
+                return true;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (!gestureActive)
+                    return false;
+                gestureActive = false;
+                gestureHasBaseline = false;
+                // the up of the first finger never reaches the normal path, so reset what it needs
+                mouseState.mouseUp = true;
+                mouseState.lastMouseButtonDown = -1;
+                firstTouch = false;
+                pointerAcceleration.clear();
+                return true;
+            default:
+                return gestureActive;
+        }
+    }
+
+    private void startGesture(MotionEvent event) {
+        gestureActive = true;
+        gestureScaling = false;
+        // whatever the first finger had started must not turn into a click
+        removeCallbacks(absDownRunnable);
+        absDownPending = false;
+        mouseState.down_pending = false;
+        if (mouseState.buttonSent) {
+            guessMouseButtonUp(event.getToolType(0), event.getX(0), event.getY(0));
+            mouseState.buttonSent = false;
+        }
+        mouseState.lastMouseButtonDown = -1;
+        firstTouch = false;
+        pointerAcceleration.clear();
+        setBaseline(event, -1);
+        gestureStartSpan = gestureLastSpan;
+    }
+
+    private void updateGesture(MotionEvent event) {
+        if (!measureFingers(event, -1, fingers)) {
+            gestureHasBaseline = false; // down to one finger, wait for another
+            return;
+        }
+        if (!gestureHasBaseline) {
+            setBaseline(event, -1);
+            return;
+        }
+        float cx = fingers[0];
+        float cy = fingers[1];
+        float span = fingers[2];
+        // small span changes while scrolling must not zoom, so zoom starts after some slop
+        if (!gestureScaling && Math.abs(span - gestureStartSpan) > touchSlop)
+            gestureScaling = true;
+        float factor = (gestureScaling && gestureLastSpan > 0f) ? span / gestureLastSpan : 1f;
+
+        panX += cx - gestureLastX;
+        panY += cy - gestureLastY;
+        if (factor != 1f)
+            zoomAbout(factor, cx, cy);
+        gestureLastX = cx;
+        gestureLastY = cy;
+        gestureLastSpan = span;
+        invalidate();
+    }
+
+    // Zooms around a point in view coordinates, the picture under that point stays put
+    private void zoomAbout(float factor, float fx, float fy) {
+        float newZoom = Math.max(1f, Math.min(MAX_ZOOM, zoom * factor));
+        float applied = newZoom / zoom;
+        panX = applied * panX + (1f - applied) * (fx - getWidth() / 2f);
+        panY = applied * panY + (1f - applied) * (fy - getHeight() / 2f);
+        zoom = newZoom;
+    }
+
+    private void setBaseline(MotionEvent event, int skipIndex) {
+        if (measureFingers(event, skipIndex, fingers)) {
+            gestureLastX = fingers[0];
+            gestureLastY = fingers[1];
+            gestureLastSpan = fingers[2];
+            gestureHasBaseline = true;
+        } else {
+            gestureHasBaseline = false;
+        }
+    }
+
+    // out = {centroid x, centroid y, average finger distance from the centroid}, in view
+    // coordinates. False when fewer than two fingers are left. skipIndex is a lifted finger.
+    private boolean measureFingers(MotionEvent event, int skipIndex, float[] out) {
+        int offsetX = 0;
+        int offsetY = 0;
+        if (eventsInWindowSpace) {
+            getLocationInWindow(tmpLocation);
+            offsetX = tmpLocation[0];
+            offsetY = tmpLocation[1];
+        }
+        int n = event.getPointerCount();
+        float sx = 0f;
+        float sy = 0f;
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (i == skipIndex)
+                continue;
+            sx += event.getX(i) - offsetX;
+            sy += event.getY(i) - offsetY;
+            count++;
+        }
+        if (count < 2)
+            return false;
+        float cx = sx / count;
+        float cy = sy / count;
+        float span = 0f;
+        for (int i = 0; i < n; i++) {
+            if (i == skipIndex)
+                continue;
+            span += (float) Math.hypot(event.getX(i) - offsetX - cx, event.getY(i) - offsetY - cy);
+        }
+        out[0] = cx;
+        out[1] = cy;
+        out[2] = span / count;
+        return true;
+    }
+
+    // ---- External mouse edge scrolling ----
+
+    // External mouse: absolute position is exact, so scroll when it is pushed to an edge
+    private void startEdgeScroll(float x, float y) {
+        hoverX = x;
+        hoverY = y;
+        hoverActive = true;
+        if (zoom > 1f && !edgeScrollPosted) {
+            edgeScrollPosted = true;
+            postOnAnimation(edgeScrollRunnable);
+        }
+    }
+
+    // +1 at the start edge of the band, -1 at the far edge, 0 elsewhere; the sign is the
+    // direction the picture has to move to bring more of it into view
+    private static float edgeStrength(float pos, float size, float zone) {
+        if (pos < zone)
+            return Math.min(1f, (zone - pos) / zone);
+        if (pos > size - zone)
+            return -Math.min(1f, (pos - (size - zone)) / zone);
+        return 0f;
     }
 
     private void processMouseMovement(int action, int toolType, float x, float y) {
@@ -124,12 +425,18 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
                     mouseState.old_y = y;
                     return;
                 }
-                float dx = pointerAcceleration.updateDx(x - mouseState.old_x);
-                float dy = pointerAcceleration.updateDy(y - mouseState.old_y);
+                // zoomed in, the cursor is drawn bigger too, so it moves slower to keep the same feel
+                float divisor = zoomMode ? zoom : 1f;
+                float dx = pointerAcceleration.updateDx((x - mouseState.old_x) / divisor);
+                float dy = pointerAcceleration.updateDy((y - mouseState.old_y) / divisor);
                 QGEActivity.sendRelativeMove(dx, dy);
             } else {
+                if (absDownPending && Math.hypot(x - absDownX, y - absDownY) > touchSlop)
+                    flushAbsoluteDown(); // finger is dragging, press now
                 float[] pt = toFrameBufferPoint(x, y);
                 QGEActivity.sendAbsoluteMove(pt[0], pt[1]);
+                if (zoomMode && toolType == MotionEvent.TOOL_TYPE_MOUSE)
+                    startEdgeScroll(x, y);
             }
 
             mouseState.old_x = x;
@@ -142,6 +449,7 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
         int mouseButton = getMouseButton(event);
 
         if (action == MotionEvent.ACTION_UP) {
+            flushAbsoluteDown(); // a quick tap still has to be a click
             mouseState.addAction(event.getToolType(0), System.currentTimeMillis(), event.getActionMasked(), x, y);
             //XXX: The Button state might not be available when the action is UP
             //  we should release all mouse buttons to be safe since we don't know which one fired the event
@@ -152,6 +460,7 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
                 guessMouseButtonUp(event.getToolType(0), x, y);
             }
             mouseState.lastMouseButtonDown = -1;
+            mouseState.buttonSent = false;
             mouseState.mouseUp = true;
             pointerAcceleration.clear();
 
@@ -168,12 +477,34 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
             } else {
                 float[] pt = toFrameBufferPoint(x, y);
                 QGEActivity.sendAbsoluteMove(pt[0], pt[1]);
-                QGEActivity.sendMouseEvent(mouseButton, MotionEvent.ACTION_DOWN, event.getToolType(0), x, y);
+                if (zoomMode && event.getToolType(0) == MotionEvent.TOOL_TYPE_FINGER) {
+                    holdAbsoluteDown(mouseButton, x, y);
+                } else {
+                    QGEActivity.sendMouseEvent(mouseButton, MotionEvent.ACTION_DOWN, event.getToolType(0), x, y);
+                    mouseState.buttonSent = true;
+                }
             }
             mouseState.lastMouseButtonDown = mouseButton;
         } else if (action == MotionEvent.ACTION_SCROLL) {
             QGEActivity.sendScroll(event.getAxisValue(MotionEvent.AXIS_VSCROLL));
         }
+    }
+
+    private void holdAbsoluteDown(int button, float x, float y) {
+        absDownPending = true;
+        absDownButton = button;
+        absDownX = x;
+        absDownY = y;
+        postDelayed(absDownRunnable, ViewConfiguration.getTapTimeout());
+    }
+
+    private void flushAbsoluteDown() {
+        if (!absDownPending)
+            return;
+        removeCallbacks(absDownRunnable);
+        absDownPending = false;
+        QGEActivity.sendMouseEvent(absDownButton, MotionEvent.ACTION_DOWN, MotionEvent.TOOL_TYPE_FINGER, absDownX, absDownY);
+        mouseState.buttonSent = true;
     }
 
     private void processPendingMouseButtonDown(int action, int toolType, float x, float y) {
@@ -183,6 +514,7 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
                 && ((action == MotionEvent.ACTION_MOVE && delta > 400)
                 || action == MotionEvent.ACTION_UP)) {
             QGEActivity.sendMouseEvent(mouseState.down_mouse_button, MotionEvent.ACTION_DOWN, toolType, x, y);
+            mouseState.buttonSent = true;
             mouseState.down_pending = false;
         } else if (System.currentTimeMillis() - mouseState.down_event_time > 400) {
             mouseState.down_pending = false;
@@ -254,6 +586,8 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
         private boolean mouseUp = true;
         private int lastMouseButtonDown = -1;
         private boolean down_pending = false;
+        // true once a button press was really sent to the guest, as opposed to only pending
+        private boolean buttonSent = false;
 
         public void addAction(int toolType, long time, int actionMasked, float x, float y) {
             if (taps.size() > 1 && time - taps.get(taps.size() - 2).time > 200) {
@@ -305,7 +639,11 @@ public class QubeQGESurface extends View implements View.OnTouchListener {
                     } else if (event.getActionMasked() == MotionEvent.ACTION_HOVER_MOVE) {
                         float[] pt = toFrameBufferPoint(event.getX(), event.getY());
                         QGEActivity.sendAbsoluteMove(pt[0], pt[1]);
+                        if (zoomMode)
+                            startEdgeScroll(event.getX(), event.getY());
                         return true;
+                    } else if (event.getActionMasked() == MotionEvent.ACTION_HOVER_EXIT) {
+                        hoverActive = false;
                     }
                     break;
                 default:

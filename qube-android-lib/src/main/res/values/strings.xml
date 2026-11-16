@@ -36,6 +36,9 @@
         Choose Mouse = \"usb-tablet\" from Qube before you boot the machine.</string>
     <string name="externalMouseInstructions">Plug in your USB/Bluetooth Mouse in your Android device.</string>
     <string name="toggle_virtual_keys">Toggle Virtual Keys</string>
+    <string name="magnifier">Magnifier</string>
+    <string name="magnifier_on">Pinch to zoom, drag with two fingers to scroll</string>
+    <string name="magnifier_off">Magnifier off</string>
     <string name="welcomeText">Welcome to Qube Emulator, a port of QEMU for Android devices. Qube can emulate several operating systems. For links to downloads, guides, and virtual disk images visit the Qube Wiki. Download software and images only from trusted websites!</string>
     <string name="checkForUpdates">Check for Updates on Startup</string>
     <string name="sdcardNotMounted">Error: SD card is not mounted</string>

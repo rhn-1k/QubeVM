@@ -634,12 +634,12 @@ class VMExecutor extends MachineExecutor {
                 return;
             }
             if ("esp".equals(hdInterface)) {
-                // q800 has a built-in ESP controller exposed on esp.0,
-                // no -device esp is needed, just attach the disk to that bus
+                // The machine has a built-in ESP controller, so no -device esp
+                // is needed, just attach the disk to its SCSI bus
                 String driveId = "hd" + index;
                 addNoneDrive(paramsList, driveId, "disk", imagePath, cache);
                 paramsList.add("-device");
-                paramsList.add("scsi-hd,drive=" + driveId + ",bus=esp.0,scsi-id=" + (index + 1));
+                paramsList.add("scsi-hd,drive=" + driveId + espBusOpt() + ",scsi-id=" + (index + 1));
                 return;
             }
             if ("piix3-ide".equals(hdInterface) || "piix4-ide".equals(hdInterface)) {
@@ -673,6 +673,12 @@ class VMExecutor extends MachineExecutor {
                 param += ",cache=" + cache;
             paramsList.add(param);
         }
+    }
+
+    // Only q800 (m68k) names its on board SCSI bus esp.0 On SPARC,
+    // omit bus= so QEMU attaches to the machine only SCSI bus (scsi.0)
+    private static String espBusOpt() {
+        return QubeApplication.arch == Config.Arch.sparc ? "" : ",bus=esp.0";
     }
 
     private static final String AHCI_ID = "qubeahci";
@@ -799,10 +805,10 @@ class VMExecutor extends MachineExecutor {
                 paramsList.add("-device");
                 paramsList.add("scsi-cd,drive=" + cdDeviceName + ",bus=" + LSI_SCSI_ID + ".0,scsi-id=0");
             } else if ("esp".equals(cdInterface)) {
-                // built-in ESP on q800, attach directly to esp.0
+                // built-in ESP, attach directly to its SCSI bus
                 addNoneDrive(paramsList, cdDeviceName, "cdrom", cdImagePath, null);
                 paramsList.add("-device");
-                paramsList.add("scsi-cd,drive=" + cdDeviceName + ",bus=esp.0,scsi-id=4");
+                paramsList.add("scsi-cd,drive=" + cdDeviceName + espBusOpt() + ",scsi-id=4");
             } else if ("piix3-ide".equals(cdInterface) || "piix4-ide".equals(cdInterface)) {
                 String ctrlId = "qubeide_" + cdInterface.replace("-", "_");
                 if (!paramsList.contains(cdInterface + ",id=" + ctrlId)) {

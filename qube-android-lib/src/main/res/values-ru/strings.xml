@@ -179,7 +179,7 @@
     <string name="Mouse">Мышь</string>
     <string name="ImageName">Название образа</string>
     <string name="Volume">Громкость</string>
-    <string name="NewVersion">Новая версия</string>
+    <string name="NewVersion">Новая версия:</string>
     <string name="Network">Сеть</string>
     <string name="NicCard">Сетевая карта</string>
     <string name="DNSServer">DNS-сервер</string>

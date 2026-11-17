@@ -180,7 +180,7 @@
     <string name="Mouse">Mouse</string>
     <string name="ImageName">Image Name</string>
     <string name="Volume">Volume</string>
-    <string name="NewVersion">New Version</string>
+    <string name="NewVersion">New Version:</string>
     <string name="Network">Network</string>
     <string name="NicCard">NIC Card</string>
     <string name="DNSServer">DNS Server</string>

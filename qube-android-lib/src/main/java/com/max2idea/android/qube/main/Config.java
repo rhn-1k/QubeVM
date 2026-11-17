@@ -73,7 +73,7 @@ public class Config {
     public static final String NetworkLink = "https://qubevm.vercel.app/docs/video-audio-network.html";
     public static final String versionLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/VERSION";
     public static final String newVersionLink = "https://github.com/rhn-1k/QubeVM/releases/tag/";
-    public static final String changelogLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/CHANGELOG";
+    public static final String changelogLink = "https://raw.githubusercontent.com/rhn-1k/QubeVM/refs/heads/main/qube-android-lib/src/main/assets/CHANGELOG";
     public static final String discordLink = "https://discord.gg/MrbJ9QNXNJ";
 
     // ???

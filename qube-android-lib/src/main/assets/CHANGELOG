@@ -1,3 +1,14 @@
+* QubeVM v7.1.5
+- Added screen magnification for QGE
+- Added changelog to update notifications
+- Added option to save the log to internal storage
+- Software update checks are now enabled by default
+- Fixed no sound in QGE with the Intel hda and ich9 hda audio cards
+- Fixed SPARC virtual machines failing to start with a SCSI drive or CDROM attached
+- Fixed virtual machines failing to start when using the Cirrus video card with a custom video memory size
+- Fixed virtual machines failing to start with certain video memory sizes on the Virtio GPU (Venus)
+
+
 * QubeVM v7.1.4
 - Rebased with QEMU 11.1.3
 - New drive interfaces: virtio-scsi-pci, lsi53c895a (x86/ARM/PPC) and esp (m68k)

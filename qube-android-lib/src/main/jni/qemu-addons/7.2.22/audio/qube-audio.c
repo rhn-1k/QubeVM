@@ -12,24 +12,22 @@ Copyright (C) Rhn 2026
 #define AUDIO_CAP "qube"
 #include "audio_int.h"
 
-// Format delivered to the Android callback.
 #define QUBE_AUDIO_FREQ 48000
 #define QUBE_AUDIO_CHANNELS 2
-#define QUBE_AUDIO_CALLBACK_FRAMES (QUBE_AUDIO_FREQ / 50) // 20 ms
-#define QUBE_AUDIO_BUFFER_COUNT 4
+#define QUBE_AUDIO_RING_BYTES (16 * 1024) // ~85ms at 48kHz/stereo/S16
 
 typedef struct QubeVoiceOut {
     HWVoiceOut hw;
-    int exit;
-    int initialized;
 } QubeVoiceOut;
 
-// Guards the emulation buffer shared by QEMU and Android.
 static QemuMutex qube_audio_lock;
 static int qube_audio_lock_ready;
-static QubeVoiceOut *qube_voice;
+static uint8_t qube_audio_ring[QUBE_AUDIO_RING_BYTES];
+static int qube_audio_head; // next byte to write
+static int qube_audio_tail; // next byte to read
+static int qube_audio_fill; // bytes currently buffered
 
-static void qube_audio_lock_init(void)
+static void qube_audio_ring_init(void)
 {
     if (!qube_audio_lock_ready) {
         qemu_mutex_init(&qube_audio_lock);
@@ -37,109 +35,35 @@ static void qube_audio_lock_init(void)
     }
 }
 
-// Discard queued samples and clear the backing buffer.
-static void qube_audio_clear_pending_locked(QubeVoiceOut *qube)
+// Called from the audio thread. Always accepts the whole write, if the ring
+// is full we drop the oldest bytes rather than block and stall the guest.
+static size_t qube_write(HWVoiceOut *hw, void *buf, size_t len)
 {
-    HWVoiceOut *hw = &qube->hw;
+    uint8_t *src = (uint8_t *) buf;
 
-    if (hw->buf_emul && hw->size_emul) {
-        audio_pcm_info_clear_buf(
-            &hw->info,
-            hw->buf_emul,
-            hw->size_emul / hw->info.bytes_per_frame);
+    qemu_mutex_lock(&qube_audio_lock);
+    if (len > QUBE_AUDIO_RING_BYTES) {
+        // Bigger than the whole ring, only the tail of it can ever matter.
+        src += len - QUBE_AUDIO_RING_BYTES;
+        len = QUBE_AUDIO_RING_BYTES;
     }
-    hw->pending_emul = 0;
-}
-
-// Drain QEMU output; silence fills any underrun.
-static size_t qube_callback_out_locked(
-    QubeVoiceOut *qube,
-    uint8_t *buf,
-    size_t len)
-{
-    HWVoiceOut *hw = &qube->hw;
-    size_t copied = 0;
-
-    if (!qube->exit) {
-        while (hw->pending_emul && len) {
-            size_t write_len;
-            size_t start;
-
-            start = audio_ring_posb(
-                hw->pos_emul,
-                hw->pending_emul,
-                hw->size_emul);
-            assert(start < hw->size_emul);
-
-            write_len = MIN(
-                MIN(hw->pending_emul, len),
-                hw->size_emul - start);
-            memcpy(buf, hw->buf_emul + start, write_len);
-            hw->pending_emul -= write_len;
-            copied += write_len;
-            len -= write_len;
-            buf += write_len;
-        }
+    if (qube_audio_fill + (int) len > QUBE_AUDIO_RING_BYTES) {
+        int drop = qube_audio_fill + (int) len - QUBE_AUDIO_RING_BYTES;
+        qube_audio_tail = (qube_audio_tail + drop) % QUBE_AUDIO_RING_BYTES;
+        qube_audio_fill -= drop;
     }
-
-    if (len) {
-        audio_pcm_info_clear_buf(
-            &hw->info,
-            buf,
-            len / hw->info.bytes_per_frame);
+    for (size_t i = 0; i < len; i++) {
+        qube_audio_ring[qube_audio_head] = src[i];
+        qube_audio_head = (qube_audio_head + 1) % QUBE_AUDIO_RING_BYTES;
     }
-    return copied;
-}
-
-static size_t qube_buffer_get_free(HWVoiceOut *hw)
-{
-    size_t ret;
-
-    qemu_mutex_lock(&qube_audio_lock);
-    ret = audio_generic_buffer_get_free(hw);
+    qube_audio_fill += (int) len;
     qemu_mutex_unlock(&qube_audio_lock);
-    return ret;
+
+    return len;
 }
 
-static void *qube_get_buffer_out(HWVoiceOut *hw, size_t *size)
+static int qube_init_out(HWVoiceOut *hw, struct audsettings *as, void *drv_opaque)
 {
-    void *ret;
-
-    qemu_mutex_lock(&qube_audio_lock);
-    ret = audio_generic_get_buffer_out(hw, size);
-    qemu_mutex_unlock(&qube_audio_lock);
-    return ret;
-}
-
-static size_t qube_put_buffer_out(
-    HWVoiceOut *hw,
-    void *buf,
-    size_t size)
-{
-    size_t ret;
-
-    qemu_mutex_lock(&qube_audio_lock);
-    ret = audio_generic_put_buffer_out(hw, buf, size);
-    qemu_mutex_unlock(&qube_audio_lock);
-    return ret;
-}
-
-static size_t qube_write(HWVoiceOut *hw, void *buf, size_t size)
-{
-    size_t ret;
-
-    qemu_mutex_lock(&qube_audio_lock);
-    ret = audio_generic_write(hw, buf, size);
-    qemu_mutex_unlock(&qube_audio_lock);
-    return ret;
-}
-
-static int qube_init_out(
-    HWVoiceOut *hw,
-    struct audsettings *as,
-    void *drv_opaque)
-{
-    QubeVoiceOut *qube = (QubeVoiceOut *)hw;
     struct audsettings fixed = {
         .freq = QUBE_AUDIO_FREQ,
         .nchannels = QUBE_AUDIO_CHANNELS,
@@ -147,45 +71,27 @@ static int qube_init_out(
         .endianness = AUDIO_HOST_ENDIANNESS,
     };
 
-    (void)as;
-    (void)drv_opaque;
-    qube_audio_lock_init();
-
-    // Keep QEMU's producer buffer aligned with the callback period.
+    qube_audio_ring_init();
     audio_pcm_init_info(&hw->info, &fixed);
-    hw->samples = QUBE_AUDIO_BUFFER_COUNT * QUBE_AUDIO_CALLBACK_FRAMES;
-    qube->exit = 0;
-    qube->initialized = 1;
-    qube_voice = qube;
+    hw->samples = 1024;
     return 0;
 }
 
-// Stop reads and release queued output.
 static void qube_fini_out(HWVoiceOut *hw)
 {
-    QubeVoiceOut *qube = (QubeVoiceOut *)hw;
-
-    qemu_mutex_lock(&qube_audio_lock);
-    qube->exit = 1;
-    qube_audio_clear_pending_locked(qube);
-    if (qube_voice == qube) {
-        qube_voice = NULL;
-    }
-    qube->initialized = 0;
-    qemu_mutex_unlock(&qube_audio_lock);
+    (void) hw;
 }
 
-// Reset stale samples when playback is paused.
 static void qube_enable_out(HWVoiceOut *hw, bool enable)
 {
-    QubeVoiceOut *qube = (QubeVoiceOut *)hw;
-
-    qemu_mutex_lock(&qube_audio_lock);
-    qube->exit = !enable;
+    (void) hw;
     if (!enable) {
-        qube_audio_clear_pending_locked(qube);
+        // Playback stopped/paused guest-side: drop whatever's queued so a
+        // resume doesn't dump a burst of stale audio.
+        qemu_mutex_lock(&qube_audio_lock);
+        qube_audio_head = qube_audio_tail = qube_audio_fill = 0;
+        qemu_mutex_unlock(&qube_audio_lock);
     }
-    qemu_mutex_unlock(&qube_audio_lock);
 }
 
 static void *qube_audio_init(Audiodev *dev)
@@ -196,30 +102,29 @@ static void *qube_audio_init(Audiodev *dev)
 
 static void qube_audio_fini(void *opaque)
 {
-    (void)opaque;
+    (void) opaque;
 }
 
 static struct audio_pcm_ops qube_pcm_ops = {
     .init_out = qube_init_out,
     .fini_out = qube_fini_out,
     .write = qube_write,
-    .buffer_get_free = qube_buffer_get_free,
-    .get_buffer_out = qube_get_buffer_out,
-    .put_buffer_out = qube_put_buffer_out,
+    .buffer_get_free = audio_generic_buffer_get_free,
+    .run_buffer_out = audio_generic_run_buffer_out,
     .enable_out = qube_enable_out,
 };
 
 static struct audio_driver qube_audio_driver = {
     .name = "qube",
-    .descr = "Qube Android audio output",
+    .descr = "Qube AAudio driver",
     .init = qube_audio_init,
     .fini = qube_audio_fini,
     .pcm_ops = &qube_pcm_ops,
     .can_be_default = 0,
     .max_voices_out = 1,
-    .max_voices_in = 0,
+    .max_voices_in  = 0,
     .voice_size_out = sizeof(QubeVoiceOut),
-    .voice_size_in = 0,
+    .voice_size_in  = 0,
 };
 
 static void register_audio_qube(void)
@@ -228,37 +133,30 @@ static void register_audio_qube(void)
 }
 type_init(register_audio_qube);
 
-// JNI-facing callback entry point, resolved with dlsym.
+// Called from the AAudio data callback thread. Returns bytes actually copied
+// (0 if empty), caller fills the rest with silence, never blocks on qemu.
 int qube_audio_read(void *dst, int max_bytes)
 {
-    int copied;
+    uint8_t *out = (uint8_t *) dst;
+    int n;
 
-    if (!qube_audio_lock_ready || !qube_voice || max_bytes <= 0) {
+    if (!qube_audio_lock_ready) {
         return 0;
     }
 
     qemu_mutex_lock(&qube_audio_lock);
-    copied = (int)qube_callback_out_locked(
-        qube_voice,
-        (uint8_t *)dst,
-        (size_t)max_bytes);
-    qemu_mutex_unlock(&qube_audio_lock);
-    return copied;
-}
-
-// Drop pending output before playback is stopped or reopened.
-void qube_audio_flush(void)
-{
-    if (!qube_audio_lock_ready || !qube_voice) {
-        return;
+    n = qube_audio_fill < max_bytes ? qube_audio_fill : max_bytes;
+    for (int i = 0; i < n; i++) {
+        out[i] = qube_audio_ring[qube_audio_tail];
+        qube_audio_tail = (qube_audio_tail + 1) % QUBE_AUDIO_RING_BYTES;
     }
-
-    qemu_mutex_lock(&qube_audio_lock);
-    qube_audio_clear_pending_locked(qube_voice);
+    qube_audio_fill -= n;
     qemu_mutex_unlock(&qube_audio_lock);
+
+    return n;
 }
 
-// Fixed format shared with the Android audio stream.
+// Fixed output format, exported so the native side never has to guess it.
 void qube_audio_get_format(int *rate, int *channels, int *bits)
 {
     *rate = QUBE_AUDIO_FREQ;
@@ -266,4 +164,4 @@ void qube_audio_get_format(int *rate, int *channels, int *bits)
     *bits = 16;
 }
 
-#endif // __QUBE__
+#endif /* __QUBE__ */
